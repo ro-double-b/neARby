@@ -21,8 +21,6 @@ DerivedData
 *.ipa
 *.xcuserstate
 project.xcworkspace
-ios/neARby.xcodeproj/project.pbxproj
-ios/neArby/Info.plist
 
 # Android/IJ
 #
