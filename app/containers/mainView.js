@@ -23,13 +23,19 @@ class mainView extends Component {
 
   render() {
     return (
+      <View style={{flex: 1}}>
       <Camera
         ref={(cam) => {
         this.camera = cam;
         }}
         style={styles.preview}
         aspect={Camera.constants.Aspect.fill}>
+        <WebView
+        source={{uri: 'http://pyrys-macbook-pro.local:3000'}}
+        style={{backgroundColor: 'transparent'}}
+        />
       </Camera>
+      </View>
     );
   }
 }
