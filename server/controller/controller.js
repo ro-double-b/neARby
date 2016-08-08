@@ -37,7 +37,7 @@ function findYDistance(hypotenuse, xDistance) {
 
 function getPlaces(req, res) {
   // check to see if it is the initial location
-  if (req.body.threejsLat === null && req.body.threejsLon === null) {
+  if (req.body.threejsLat === 0 && req.body.threejsLon === 0) {
     // if so recored the initial position
     initLat = req.body.latitude;
     initLon = req.body.longitude;
