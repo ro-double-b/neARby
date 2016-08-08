@@ -81,7 +81,6 @@ const calculateDistance = (coords1, coords2, callback, loggerCallback) => {
 class mainView extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       initialHeadingString: 'unknown',
       initialPositionString: 'unknown',
@@ -105,7 +104,6 @@ class mainView extends Component {
   }
 
   startDeviceLocationUpdate() {
-    //pinpoint location at a relative high accuracy before rendering and tracking location
     Location.requestAlwaysAuthorization();
     Location.setDesiredAccuracy(1);
   }
@@ -251,6 +249,7 @@ class mainView extends Component {
     );
   }
 }
+
 
 const styles = StyleSheet.create({
   container: {
