@@ -7,7 +7,7 @@ function deg2rad(deg) {
 };
 
 // calculates the total distance
-function distance(lat1,lon1,lat2,lon2) {
+function hypotenuseDistance(lat1, lon1, lat2, lon2) {
   var R = 6371000; // Radius of the earth in m
   var dLat = deg2rad(lat2-lat1);  // deg2rad below
   var dLon = deg2rad(lon2-lon1); 
@@ -48,13 +48,14 @@ function getPlaces(req, res) {
   var link = `https://maps.googleapis.com/maps/api/place/search/json?location=${req.body.actualLon},${req.body.actualLat}&radius=${radius}$key=${apiKey}`;
   request(link, function(error, response, body) {
     if (!error && response.statusCode === 200) {
-      var threeObjs = [];
-      // iterate over the data to extract data we want
+      var placesObj = [];
+      // iterate over the get request to extract data we want
       body.forEach(function(result) {
-        // calculate each of the distances in meeters
+        // calculate each of the distances in meters
         var lat = findXDistance(initLat, results.geometry.latitude);
-        var distance = distance(initLat, initLon, results.geometry.lat, results.geometry.lon);
-        var lon = findYDistance(distance, lat);
+        var distanceFromInit = hypotenuseDistance(initLat, initLon, results.geometry.lat, results.geometry.lon);
+        var distance = hypotenuseDistance(req.body.latitude, req.body.longitude, results.geometry.lat, results.geometry.lon);
+        var lon = findYDistance(distanceFromInit, lat);
         // populate an object with all necessary information
         var place = {
         name: results.name,
@@ -63,10 +64,10 @@ function getPlaces(req, res) {
         distance,
         img: results.icon,
         };
-        threeObjs.push(place);
+        placesObj.push(place);
       });
       // send back data to client side
-      res.send(threeObjs);
+      res.send(placesObj);
     }
   });
 };
