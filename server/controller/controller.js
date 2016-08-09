@@ -43,9 +43,9 @@ function getPlaces(req, res) {
     initLon = req.body.longitude;
   };
   // call to google API to get locations around
-  var radius = 5000;
+  var radius = 100;
   var apiKey = 'AIzaSyB10Fe32kWefZ8SNREvTOcYyrJXZ2Qtnu8';
-  var link = `https://maps.googleapis.com/maps/api/place/search/json?location=${req.body.actualLon},${req.body.actualLat}&radius=${radius}$key=${apiKey}`;
+  var link = `https://maps.googleapis.com/maps/api/place/search/json?location=${req.body.actualLon},${req.body.actualLat}&radius=${radius}&key=${apiKey}`;
   request(link, function(error, response, body) {
     if (!error && response.statusCode === 200) {
       var placesObj = [];
