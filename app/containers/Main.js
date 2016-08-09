@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  Text,
   View,
   TouchableHighlight,
   DeviceEventEmitter //DeviceEventEmitter is imported for geolocation update
