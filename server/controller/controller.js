@@ -37,12 +37,14 @@ function findYDistance(hypotenuse, xDistance) {
 
 function getPlaces(req, res) {
   // check to see if it is the initial location
+  console.log('REQUEST --- ', req);
   if (req.body.threejsLat === 0 && req.body.threejsLon === 0) {
     // if so recored the initial position
     initLat = req.body.latitude;
     initLon = req.body.longitude;
   };
   // call to google API to get locations around
+<<<<<<< 4a56ead483a716c2830a6098b65797ae0189fd18
   var radius = 100;
   var apiKey = 'AIzaSyB10Fe32kWefZ8SNREvTOcYyrJXZ2Qtnu8';
   var link = `https://maps.googleapis.com/maps/api/place/search/json?location=${req.body.actualLon},${req.body.actualLat}&radius=${radius}&key=${apiKey}`;
@@ -71,5 +73,31 @@ function getPlaces(req, res) {
     }
   });
 };
+<<<<<<< Updated upstream
+=======
 
+=======
+  var radius = 5000
+  var apiKey = 'AIzaSyB10Fe32kWefZ8SNREvTOcYyrJXZ2Qtnu8'
+  var link = `https://maps.googleapis.com/maps/api/place/search/json?location=${req.body.actualLon},${req.body.actualLat}&radius=${radius}$key=${apiKey}`
+  $.ajax({
+    type: "GET"
+    url: link
+  })
+  .done((data) =>
+    var threeObjs = []
+    // iterate over the data to extract data we want
+    data.results.forEach(function(result) {
+      var place = {
+        name: result.name,
+        lat: result.geometry.lat - initLat,
+        lon: result.geometry.lon - initLon,
+      }
+    })
+    // send back data to client side
+    res.send(threeObjs);
+    )
+}
+>>>>>>> feat/implementing redux
 module.exports = getPlaces;
+>>>>>>> Stashed changes
