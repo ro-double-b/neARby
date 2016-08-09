@@ -32,7 +32,7 @@ const RenderScene =
           });
           places.forEach(function(place) {
             renderPlace(place);
-          });
+          })
         }
 
         container = document.getElementById( 'container' );
@@ -44,15 +44,12 @@ const RenderScene =
         scene = new THREE.Scene();
 
         var loader = new THREE.TextureLoader();
-        loader.crossOrigin = '';
-        alert(base64.substring(0, 3));
         loader.load(base64, function(texture) {
           var material = new THREE.SpriteMaterial( { map: texture } );
           var sprite = new THREE.Sprite( material );
           sprite.needsUpdate = true;
           sprite.position.set(1, 0, 1);
           scene.add( sprite );;
-          animate();
         });
         var geometry = new THREE.BoxGeometry( 2, 2, 2 );
         var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
@@ -69,6 +66,7 @@ const RenderScene =
         renderer.domElement.style.top = 0;
         container.appendChild(renderer.domElement);
 
+
         window.addEventListener('resize', function() {
 
           camera.aspect = window.innerWidth / window.innerHeight;
@@ -77,6 +75,7 @@ const RenderScene =
 
         }, false);
 
+        animate();
 
         }, false);
 
