@@ -1,4 +1,4 @@
-import PLACES_COLLECTION from '../actions/index';
+import { PLACES_COLLECTION } from '../actions/index';
 
 const initialState = {
   collection: []
@@ -11,6 +11,7 @@ export default function(state = initialState, action) {
       return { ...state,
       collection: action.payload };
     default:
+    console.log('defaulting');
       return state;
   }
 };
