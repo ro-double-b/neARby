@@ -2,13 +2,13 @@ import req from 'axios';
 export const PLACES_COLLECTION = 'PLACES_COLLECTION';
 
 export const fetchPlaces = function() {
-const places = { body: {
-    longitude: -122.0304880086256,
-    latitude: 37.33240901400225,
-    threejsLat: 0,
-    threejsLon: 0
-  }
-};
+// const places = { body: {
+//     longitude: -122.0304880086256,
+//     latitude: 37.33240901400225,
+//     threejsLat: 0,
+//     threejsLon: 0
+//   }
+// };
 
   // const collection = req.post('http://localhost:3000/location', places)
     // .then((data) => {
