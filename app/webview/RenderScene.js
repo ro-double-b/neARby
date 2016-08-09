@@ -1,4 +1,4 @@
-const RenderScene = 
+const RenderScene =
 `
   <script>
     (function() {
@@ -53,5 +53,6 @@ const RenderScene =
 
     }());
   </script>
-`
+`;
+
 export default RenderScene;
