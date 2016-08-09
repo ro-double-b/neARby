@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  Text,
   View,
   WebView
 } from 'react-native';
@@ -24,7 +23,6 @@ class mainView extends Component {
 
   componentDidMount() {
     this.props.action.fetchPlaces();
-    console.log(this.props.places, ' PLACES');
   }
 
   render() {
@@ -60,7 +58,6 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = function(state) {
-  console.log(state, ' STATE');
   return {
     places: state.places.collection
   };

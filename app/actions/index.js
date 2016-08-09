@@ -1,24 +1,7 @@
-import axios from 'axios';
+import req from 'axios';
 export const PLACES_COLLECTION = 'PLACES_COLLECTION';
 
 export const fetchPlaces = function() {
-
-
-// const places = {
-//     longitude: -122.0304880086256,
-//     latitude: 37.33240901400225,
-//     threejsLat: 0,
-//     threejsLon: 0
-// };
-
-//   const collection = axios.post('/location', places)
-//     .then(() => {
-//       return axios.get('/location');
-//     })
-//     .catch((error) => {
-//       console.log(error);
-//     });
-
 const places = {
     longitude: -122.0304880086256,
     latitude: 37.33240901400225,
@@ -26,10 +9,35 @@ const places = {
     threejsLon: 0
 };
 
-let collection = fetch('/location', {
-  method: "GET",  
-  body: places
-})
+  const collection = req.post('/location', places)
+    .then((data) => {
+      console.log(data, 'DATA');
+      // return req.get('/location');
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+console.log(collection, 'collection');
+// const places = {
+//     longitude: -122.0304880086256,
+//     latitude: 37.33240901400225,
+//     threejsLat: 0,
+//     threejsLon: 0
+// };
+
+// let collection = fetch('/location', {
+//   method: 'POST',
+//   headers: {
+//     'Accept': 'application/json',
+//     'Content-Type': 'application/json',
+//   },
+//   body: JSON.stringify({
+//     longitude: -122.0304880086256,
+//     latitude: 37.33240901400225,
+//     threejsLat: 0,
+//     threejsLon: 0
+//   })
+// });
 
   return {
     type: PLACES_COLLECTION,
