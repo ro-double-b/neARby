@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = function(state) {
+  console.log(state, ' STATE');
   return {
     places: state.places.collection
   };
