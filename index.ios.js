@@ -6,17 +6,21 @@ import {
   View
 } from 'react-native';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, compose, applyMiddleware } from 'redux';
 import App from './app/containers/App';
 import reducers from './app/reducers/root-reducer';
+import thunk from 'redux-thunk';
+import createLogger from 'redux-logger';
+import promise from 'redux-promise';
 
-const store = createStore(reducers);
+const logger = createLogger();
+const store = createStore(reducers, applyMiddleware(thunk, promise, logger));
 
 class neARby extends Component {
   render() {
     return (
       <Provider store={store}>
-        <App store={store}/>
+        <App/>
       </Provider>
     );
   }
