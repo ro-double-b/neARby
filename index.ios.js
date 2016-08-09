@@ -1,45 +1,23 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
 import {
   AppRegistry,
   StyleSheet,
   Text,
-  View, 
-  Navigator
+  View
 } from 'react-native';
-import { mainView } from './app/containers/mainView';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import App from './app/containers/App';
+import reducers from './app/reducers/root-reducer';
 
-const ROUTES = {
-  mainView: mainView
-}
-
-const TITLES = {
-  mainView: 'Main'
-}
+const store = createStore(reducers);
 
 class neARby extends Component {
-  constructor(props) {
-    super(props);
-  }
-  renderScene(route, navigator) {
-    let Component = ROUTES[route.name];
-    return (
-      <Component
-      route={route}
-      navigator={navigator} />
-    );
-  }
   render() {
     return (
-      <Navigator initialRoute={{ name: 'mainView', index: 0 }}
-        style={ styles.container }
-        renderScene={ this.renderScene.bind(this) }
-        configureScene={ () => {return Navigator.SceneConfigs.FloatFromRight} } />
+      <Provider store={store}>
+        <App store={store}/>
+      </Provider>
     );
   }
 }

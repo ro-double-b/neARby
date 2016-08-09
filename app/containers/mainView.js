@@ -1,44 +1,47 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  Text,
   View,
-  WebView,
-  Image
+  WebView
 } from 'react-native';
-
-import Camera from 'react-native-camera';
-
-// this loads the three.js DeviceOrientationControls library
 import html from '../webview/html';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as Actions from '../actions/index';
+import Camera from 'react-native-camera';
 import GeolocationExample from './geoLocation';
+// this loads the three.js DeviceOrientationControls library
+import DeviceOrientationControls from '../lib/DeviceOrientationControls';
+// import RenderScene from '../../webView/RenderScene';
 
+
+Actions.fetchPlaces();
 class mainView extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
   }
 
   componentDidMount() {
-
+    this.props.action.fetchPlaces();
   }
 
   render() {
     return (
       <View style={{flex: 1}}>
-        <Camera
-          ref={(cam) => {
-          this.camera = cam;
-          }}
-          style={styles.preview}
-          aspect={Camera.constants.Aspect.fill}>
+      <Camera
+        ref={(cam) => {
+        this.camera = cam;
+        }}
+        style={styles.preview}
+        aspect={Camera.constants.Aspect.fill}>
           <WebView
             source={{html}}
             style={{backgroundColor: 'transparent'}}
           />
-        </Camera>
         <View>
           <GeolocationExample/>
         </View>
+      </Camera>
       </View>
     );
   }
@@ -54,4 +57,14 @@ const styles = StyleSheet.create({
   }
 });
 
-export { mainView };
+const mapStateToProps = function(state) {
+  return {
+    places: state.places.collection
+  };
+};
+
+const mapDispatchToProps = function(dispatch) {
+  return { action: bindActionCreators(Actions, dispatch) };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(mainView);
