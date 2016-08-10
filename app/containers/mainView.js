@@ -62,17 +62,22 @@ const calculateDistance = (coords1, coords2, callback, loggerCallback) => {
   //deltaZ is change in north to south position, north is positive, south is negative
   let deltaX = (coords2.longitude - coords1.longitude) / 360 * earthCircumference;
   let deltaZ = (coords2.latitude - coords1.latitude) / 360 * earthCircumference;
-  console.log('deltaX, deltaZ', deltaX, deltaZ);
+  let distance = Math.sqrt(deltaX * deltaX + deltaZ * deltaZ);
 
   //this callback is pass all the way down from initGeolocation;
-  callback({ type: 'cameraPosition', deltaX: deltaX, deltaZ: deltaZ });
+  if (callback) {
+    callback({ type: 'cameraPosition', deltaX: deltaX, deltaZ: deltaZ });
+  }
 
   //this is only for debugging purposes to show deltaX, deltaZ on screen, should remove later
-  loggerCallback(deltaX, deltaZ);
+  if (loggerCallback) {
+    loggerCallback(deltaX, deltaZ, distance);
+  }
 
   return {
     deltaX: deltaX,
-    deltaZ: deltaZ
+    deltaZ: deltaZ,
+    distance: distance
   };
 };
 
@@ -85,6 +90,8 @@ class mainView extends Component {
       initialHeadingString: 'unknown',
       initialPositionString: 'unknown',
       currentPositionString: 'unknown',
+      lastRequestPositionString: 'unknown',
+      lastRequestPosition: null,
       initialHeading: null,
       initialPosition: null,
       currentPosition: null,
@@ -153,7 +160,7 @@ class mainView extends Component {
   watchGeolocation(callback) {
     //Location.requestAlwaysAuthorization must be called before Location.startUpdatingLocation, both are functions from react-native-location
     Location.setDesiredAccuracy(1);
-    Location.setDistanceFilter(2);
+    Location.setDistanceFilter(0.5);
     Location.startUpdatingLocation();
 
     //this will listen to geolocation changes and update it in state
