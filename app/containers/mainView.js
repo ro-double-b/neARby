@@ -15,6 +15,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as Actions from '../actions/index';
 
+Actions.fetchPlaces();
+
 //this script will be injected into WebViewBridge to communicate
 const injectScript = `
   (function () {

@@ -37,7 +37,22 @@ let collection = fetch('http://localhost:3000/location', {
     threejsLat: 0,
     threejsLon: 0
   })
-}).then((data) => console.log('DATA: ', data)).catch((err) => console.log('ERROR: ', err));
+// }).then((data) => console.log('DATA: ', data)).catch((err) => console.log('ERROR: ', err));
+})
+.then(function(response) {
+  if (response.status === 200) {
+    return response.json();
+  } else  {
+    console.log('error');
+  }
+})
+.then(function(response) {
+  console.log('this is the data!', response);
+})
+.catch(function(error) {
+  console.error(error);
+});
+
 console.log(collection, 'collection');
 
   return {

@@ -35,43 +35,45 @@ function findYDistance(hypotenuse, xDistance) {
 }
 
 function getPlaces(req, res) {
-  console.log('getPlaces');
-  console.log(req, ' - REQUEST');
   // check to see if it is the initial location
   if (req.body.threejsLat === 0 && req.body.threejsLon === 0) {
     // if so recored the initial position
     initLat = req.body.latitude;
     initLon = req.body.longitude;
   }
-
   // call to google API to get locations around
-  var radius = 100;
-  var apiKey = 'AIzaSyB10Fe32kWefZ8SNREvTOcYyrJXZ2Qtnu8';
-  var link = `https://maps.googleapis.com/maps/api/place/search/json?location=${req.body.actualLon},${req.body.actualLat}&radius=${radius}&key=${apiKey}`;
-  request(link, function(error, response, body) {
-    if (!error && response.statusCode === 200) {
-      var placesObj = [];
-      // iterate over the get request to extract data we want
-      body.forEach(function(result) {
-        // calculate each of the distances in meters
-        var lat = findXDistance(initLat, result.geometry.latitude);
-        var distanceFromInit = hypotenuseDistance(initLat, initLon, result.geometry.lat, result.geometry.lon);
-        var distance = hypotenuseDistance(req.body.latitude, req.body.longitude, result.geometry.lat, result.geometry.lon);
-        var lon = findYDistance(distanceFromInit, lat);
-        // populate an object with all necessary information
-        var place = {
-        name: result.name,
-        lat,
-        lon,
-        distance,
-        img: result.icon,
-        };
-        placesObj.push(place);
-      });
-      // send back data to client side
-      res.send(placesObj);
-    }
+  var radius = 250;
+  var apiKey = 'AIzaSyDXk9vLjijFncKwQ-EeTW0tyiKpn7RRABU';
+  var link = `https://maps.googleapis.com/maps/api/place/search/json?location=${req.body.latitude},${req.body.longitude}&radius=${radius}&key=${apiKey}`;
+  return new Promise((resolve, reject) => {
+    request(link, function(error, response, body) {
+      if (!error && response.statusCode === 200) {
+        var placesObj = [];
+        var googleResults = JSON.parse(body);
+        // iterate over the get request to extract data we want
+        googleResults.results.forEach(function(result) {
+          // calculate each of the distances in meters
+          var googleLat = findXDistance(initLat, result.geometry.location.lat);
+          var distanceFromInit = hypotenuseDistance(initLat, initLon, result.geometry.location.lat, result.geometry.location.lng);
+          var googleDistance = hypotenuseDistance(req.body.latitude, req.body.longitude, result.geometry.location.lat, result.geometry.location.lng);
+          var googleLon = findYDistance(distanceFromInit, googleLat);
+          // populate an object with all necessary information
+          var place = {
+          name: result.name,
+          lat: googleLat,
+          lon: googleLon,
+          distance: googleDistance,
+          img: result.icon,
+          };
+          placesObj.push(place);
+        });
+        // send back data to client side
+        resolve(res.send(placesObj));
+      }
+    });
   });
 }
 
-module.exports = { getPlaces };
+module.exports = {
+  getPlaces,
+};
