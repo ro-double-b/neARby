@@ -26,12 +26,15 @@ const RenderScene =
 
         scene = new THREE.Scene();
 
-        var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-        var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-        var cube = new THREE.Mesh( geometry, material );
-        cube.position.set(0,0,-5)
-        scene.add( cube );
 
+        var loader = new THREE.TextureLoader();
+        loader.load(base64, function(texture) {
+          var material = new THREE.SpriteMaterial( { map: texture } );
+          var sprite = new THREE.Sprite( material );
+          sprite.needsUpdate = true;
+          sprite.position.set(1, 0, 1);
+          scene.add( sprite );;
+        });
 
         renderer = new THREE.WebGLRenderer({alpha: true});
         renderer.setClearColor( 0x000000, 0 ); // the default

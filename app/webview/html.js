@@ -1,5 +1,6 @@
 import DeviceOrientationControls from '../lib/DeviceOrientationControls';
 import RenderScene from './RenderScene';
+import base64 from './base64';
 
 const html =
 `
@@ -44,6 +45,7 @@ const html =
 
       <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r79/three.min.js"></script>
       ${DeviceOrientationControls};
+      ${base64};
       ${RenderScene};
     </body>
   </html>
