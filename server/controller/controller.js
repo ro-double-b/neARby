@@ -74,4 +74,4 @@ function getPlaces(req, res) {
   });
 }
 
-module.exports = getPlaces;
+module.exports = { getPlaces };
