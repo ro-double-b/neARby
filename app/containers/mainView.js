@@ -29,24 +29,24 @@ const injectScript = `
         if (message.type === "cameraPosition") {
 
           //sets threejs camera position as gps location changes
-          camera.position.set( message.deltaX, 0, message.deltaZ );
-          WebViewBridge.send("in WebViewBridge, got cameraPosition: " + JSON.stringify(message) + " this is the camera" + JSON.stringify(camera));
+          // camera.position.set( message.deltaX, 0, message.deltaZ );
+          // WebViewBridge.send("in WebViewBridge, got cameraPosition: " + JSON.stringify(message) + " this is the camera" + JSON.stringify(camera));
         
         } else if (message.type === "heading") {
-
+          heading = message.heading;
           camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1100);
-          camera.position.z = 5;
+          camera.position.z = 7;
 
-          var angle = message.heading * (Math.PI / 180);
-          var vectorX = 10 * Math.cos(angle);
-          var vectorZ = 10 * Math.sin(angle);
-          var cameraTargetPt = new THREE.Vector3( vectorX, 0, vectorZ );
-          camera.lookAt(cameraTargetPt);
+          // var angle = message.heading * (Math.PI / 180);
+          // var vectorX = 10 * Math.cos(angle);
+          // var vectorZ = 10 * Math.sin(angle);
+          // var cameraTargetPt = new THREE.Vector3( vectorX, 0, vectorZ );
+          // camera.lookAt(cameraTargetPt);
 
           // camera.rotation.y = message.heading * (Math.PI / 180);
+          // WebViewBridge.send("in WebViewBridge, heading received: " + JSON.stringify(message) + " this is the camera" + JSON.stringify(camera));
           
           controls = new THREE.DeviceOrientationControls( camera, true );
-          // WebViewBridge.send("in WebViewBridge, heading received: " + JSON.stringify(message) + " this is the camera" + JSON.stringify(camera));
           animate();
           WebViewBridge.send("heading received");
         }

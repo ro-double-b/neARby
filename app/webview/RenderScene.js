@@ -1,7 +1,7 @@
 const RenderScene =
 `
   <script>
-    var camera, controls, animate;
+    var camera, controls, animate, heading;
 
     (function() {
       "use strict";
@@ -13,7 +13,8 @@ const RenderScene =
 
           window.requestAnimationFrame( animate );
 
-          controls.update();
+          // controls.update();
+          controls.updateAlphaOffsetAngle( (360 - heading) * (Math.PI / 180));
           renderer.render(scene, camera);
 
         };
