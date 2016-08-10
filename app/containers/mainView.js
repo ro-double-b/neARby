@@ -28,9 +28,9 @@ const injectScript = `
 
           //sets threejs camera position as gps location changes
           camera.position.set( message.deltaX, 0, 0 - message.deltaZ );
-          WebViewBridge.send("in WebViewBridge, got cameraPosition: " + JSON.stringify(message) + " this is the camera" + JSON.stringify(camera));
+          WebViewBridge.send("in WebViewBridge, got cameraPosition: " + JSON.stringify(message));
         
-        } else if (message.type === "heading") {
+        } else if (message.type === "initialHeading") {
 
           //followings are global variables that allows html to render scene
           heading = message.heading;
@@ -47,6 +47,12 @@ const injectScript = `
           // }, 1000)
 
           WebViewBridge.send("heading received");
+
+        } else if (message.type === 'places') {
+          WebViewBridge.send("in WebViewBridge, got places")
+
+        } else if (message.type === 'currentHeading') {
+          WebViewBridge.send("in WebViewBridge, got currentHeading")
         }
       };
 
@@ -67,7 +73,7 @@ const calculateDistance = (coords1, coords2, cameraCallback, loggerCallback) => 
 
   //this callback is pass all the way down from initGeolocation;
   if (cameraCallback) {
-    cameraCallback({ type: 'cameraPosition', deltaX: deltaX, deltaZ: deltaZ, distance: distance });
+    cameraCallback({ type: 'cameraPosition', deltaX: deltaX, deltaZ: deltaZ});
   }
 
   //this is only for debugging purposes to show deltaX, deltaZ on screen, should remove later
@@ -109,11 +115,13 @@ class mainView extends Component {
   componentWillUnmount() {
     //this will stop the location update
     Location.stopUpdatingLocation();
+    Location.stopUpdatingHeading();
   }
 
   startDeviceLocationUpdate() {
-    Location.requestAlwaysAuthorization();
+    Location.requestWhenInUseAuthorization();
     Location.setDesiredAccuracy(1);
+    Location.setDistanceFilter(1);
   }
 
   //grabs the initial orientation of device
@@ -129,15 +137,15 @@ class mainView extends Component {
           initialHeading: data.heading
         });
 
-        callback({type: 'heading', heading: data.heading});
+        callback(data.heading);
       }
     );
   }
 
   //initGeolocation gets the initial geolocation and set it to initialPosition state
   initGeolocation(cameraCallback, placesCallback) {
-    //this will listen to geolocation changes and update it in state
     Location.startUpdatingLocation();
+    //this will listen to geolocation changes and update it in state
     this.getInitialLocation = DeviceEventEmitter.addListener(
       'locationUpdated',
       (location) => {
@@ -159,22 +167,23 @@ class mainView extends Component {
 
   //watchGeolocation will subsequenly track the geolocation changes and update it in lastPosition state
   watchGeolocation(cameraCallback, placesCallback) {
-    //Location.requestAlwaysAuthorization must be called before Location.startUpdatingLocation, both are functions from react-native-location
-    Location.setDesiredAccuracy(1);
-    Location.setDistanceFilter(1);
     Location.startUpdatingLocation();
-
     //this will listen to geolocation changes and update it in state
     DeviceEventEmitter.addListener(
       'locationUpdated',
       (location) => {
-        console.log('location', location);
+        console.log('location updated');
+        //this displays the info on screen, only use for debugging
+        let loggerCallback = (deltaX, deltaZ, distance) => {
+          this.setState({deltaX: deltaX, deltaZ: deltaZ});
+        };
 
         if (!this.state.lastAPICallPosition) {
           this.setState({
             lastAPICallPositionString: JSON.stringify(location),
             lastAPICallPosition: location.coords
           });
+          placesCallback();
         }
 
         this.setState({
@@ -182,27 +191,20 @@ class mainView extends Component {
           currentPosition: location.coords
         });
 
-
         if (placesCallback) {
-          let distanceFromLastAPICallPosition = calculateDistance(this.state.lastAPICallPosition, location.coords);
-          if (distanceFromLastAPICallPosition > 10) {
-            //ajax call here to get new places around you
-            //dummy data for now, data will be send to webviewbridge
-            let places = {type: 'places', places: ['test']};
-            placesCallback(places);
+          let distanceFromLastAPICallPosition = calculateDistance(this.state.lastAPICallPosition, location.coords, null, (deltaX, deltaZ, distance) => {this.setState({distanceFromLastAPICallString: distance.toString()})} );
+          //set range threshold to 10 meters
+          if (distanceFromLastAPICallPosition.distance > 20) {
+            console.log('range reached');
+            placesCallback();
 
-            //also update the lastAPICallPosition to current position
+            //update the lastAPICallPosition to current position
             this.setState({
               lastAPICallPositionString: JSON.stringify(location),
               lastAPICallPosition: location.coords
             });
           }
         }
-
-        //this displays the info on screen, only use for debugging
-        let loggerCallback = (deltaX, deltaZ, distance) => {
-          this.setState({deltaX: deltaX, deltaZ: deltaZ, distanceFromLastAPICallString: distance.toString()});
-        };
 
         if (cameraCallback) {
           calculateDistance(this.state.initialPosition, location.coords, cameraCallback, loggerCallback);
@@ -219,8 +221,15 @@ class mainView extends Component {
       webviewbridge.sendToBridge(JSON.stringify(newCameraPosition));
     };
 
-    let updatePlaces = (places) => {
+    let updatePlaces = () => {
+      console.log('sending places to webview');
+      //call fetchplaces here to get places
+      let places = {type: 'places', places: ['test', 'test2']};
       webviewbridge.sendToBridge(JSON.stringify(places));
+    };
+
+    let updateCameraAngle = (heading) => {
+      webviewbridge.sendToBridge(JSON.stringify({type: 'currentHeading', heading: heading}));
     };
 
     //webview will send 'webview is loaded' back when the injectedScript is loaded
@@ -231,7 +240,7 @@ class mainView extends Component {
       this.initOrientation.call(this,
         (initialHeading) => {
           console.log('initialHeading', initialHeading);
-          webviewbridge.sendToBridge(JSON.stringify(initialHeading));
+          webviewbridge.sendToBridge(JSON.stringify({type: 'initialHeading', heading: initialHeading}));
           this.getInitialHeading.remove();
         });
 
@@ -239,7 +248,7 @@ class mainView extends Component {
       //once threejs camera is oriented, send the camera position to webview,
       //if distance exceed a certain treashold, updatePlaces will be called to fetch new locations
       this.initGeolocation.call(this, updateThreeJSCamera, updatePlaces);
-
+      // this.watchHeading.call(this);
     } else {
       console.log(message);
     }
