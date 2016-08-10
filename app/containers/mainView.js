@@ -21,33 +21,31 @@ Actions.fetchPlaces();
 const injectScript = `
   (function () {
     if (WebViewBridge) {
-
       WebViewBridge.onMessage = function (message) {
         var message = JSON.parse(message);
 
-        //set camera position
         if (message.type === "cameraPosition") {
 
           //sets threejs camera position as gps location changes
-          // camera.position.set( message.deltaX, 0, message.deltaZ );
-          // WebViewBridge.send("in WebViewBridge, got cameraPosition: " + JSON.stringify(message) + " this is the camera" + JSON.stringify(camera));
+          camera.position.set( message.deltaX, 0, 0 - message.deltaZ );
+          WebViewBridge.send("in WebViewBridge, got cameraPosition: " + JSON.stringify(message) + " this is the camera" + JSON.stringify(camera));
         
         } else if (message.type === "heading") {
+
+          //followings are global variables that allows html to render scene
           heading = message.heading;
           camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1100);
-          camera.position.z = 7;
-
-          // var angle = message.heading * (Math.PI / 180);
-          // var vectorX = 10 * Math.cos(angle);
-          // var vectorZ = 10 * Math.sin(angle);
-          // var cameraTargetPt = new THREE.Vector3( vectorX, 0, vectorZ );
-          // camera.lookAt(cameraTargetPt);
-
-          // camera.rotation.y = message.heading * (Math.PI / 180);
-          // WebViewBridge.send("in WebViewBridge, heading received: " + JSON.stringify(message) + " this is the camera" + JSON.stringify(camera));
-          
           controls = new THREE.DeviceOrientationControls( camera, true );
+
+          //animate function comes from html string
           animate();
+
+          // setInterval(function(){
+          //   displacementX += 0.1;
+          //   // displacementZ -= 1;
+          //   camera.position.set( displacementX, 0, 0 );
+          // }, 1000)
+
           WebViewBridge.send("heading received");
         }
       };
@@ -155,6 +153,7 @@ class mainView extends Component {
   watchGeolocation(callback) {
     //Location.requestAlwaysAuthorization must be called before Location.startUpdatingLocation, both are functions from react-native-location
     Location.setDesiredAccuracy(1);
+    Location.setDistanceFilter(2);
     Location.startUpdatingLocation();
 
     //this will listen to geolocation changes and update it in state

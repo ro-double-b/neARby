@@ -2,7 +2,8 @@ const RenderScene =
 `
   <script>
     var camera, controls, animate, heading;
-
+    var displacementX = 0;
+    var displacementZ = 0;
     (function() {
       "use strict";
 
@@ -28,6 +29,7 @@ const RenderScene =
         var geometry = new THREE.BoxGeometry( 1, 1, 1 );
         var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
         var cube = new THREE.Mesh( geometry, material );
+        cube.position.set(0,0,-10)
         scene.add( cube );
 
 
