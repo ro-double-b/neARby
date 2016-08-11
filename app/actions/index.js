@@ -21,8 +21,6 @@ export const fetchPlaces = function(position) {
   .catch(function(error) {
     console.error(error);
   });
-
-
   return {
     type: PLACES_COLLECTION,
     payload: collection
