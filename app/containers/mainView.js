@@ -19,6 +19,15 @@ import * as Actions from '../actions/index';
 //this script will be injected into WebViewBridge to communicate
 const injectScript = `
   (function () {
+
+    var renderPlace = function(threejsLat, threejsLon) {
+      var geometry = new THREE.BoxGeometry( 2, 2, 2 );
+      var material = new THREE.MeshBasicMaterial( { color: 0x00ff00, wireframe: true } );
+      var cube = new THREE.Mesh( geometry, material );
+      cube.position.set(threejsLat, 0, -1 * threejsLon);
+      scene.add( cube );
+    }
+
     if (WebViewBridge) {
       WebViewBridge.onMessage = function (message) {
         var message = JSON.parse(message);
@@ -49,12 +58,22 @@ const injectScript = `
           WebViewBridge.send("heading received");
 
         } else if (message.type === 'places') {
-          WebViewBridge.send("in WebViewBridge, got places")
+          var places = message.places;
+          WebViewBridge.send("in WebViewBridge, got places: " + JSON.stringify(places));
+          
+          places.forEach(function(place){
+            renderPlace(place.lat, place.lon);
+          })
 
         } else if (message.type === 'currentHeading') {
-          heading = message.heading;
-          controls.updateAlphaOffsetAngle( (360 - heading) * (Math.PI / 180));
-          // WebViewBridge.send("in WebViewBridge, got currentHeading")
+          // heading = message.heading;
+          // if (testInitialize === null) {
+          //   setInterval(function(){
+          //     heading += 5;
+          //   }, 1000)
+          //   testInitialize = true;
+          // }
+          WebViewBridge.send("in WebViewBridge, got currentHeading")
         }
       };
 
@@ -196,6 +215,10 @@ class mainView extends Component {
         let loggerCallback = (deltaX, deltaZ, distance) => {
           this.setState({deltaX: deltaX, deltaZ: deltaZ});
         };
+        this.setState({
+          currentPositionString: JSON.stringify(location),
+          currentPosition: location.coords
+        });
 
         if (!this.state.lastAPICallPosition) {
           this.setState({
@@ -205,23 +228,19 @@ class mainView extends Component {
           placesCallback();
         }
 
-        this.setState({
-          currentPositionString: JSON.stringify(location),
-          currentPosition: location.coords
-        });
 
         if (placesCallback) {
           let distanceFromLastAPICallPosition = calculateDistance(this.state.lastAPICallPosition, location.coords, null, (deltaX, deltaZ, distance) => {this.setState({distanceFromLastAPICallString: distance.toString()})} );
           //set range threshold to 10 meters
           if (distanceFromLastAPICallPosition.distance > 20) {
-            console.log('range reached');
-            placesCallback();
-
             //update the lastAPICallPosition to current position
             this.setState({
               lastAPICallPositionString: JSON.stringify(location),
               lastAPICallPosition: location.coords
             });
+            console.log('range reached');
+            placesCallback();
+
           }
         }
 
@@ -241,13 +260,21 @@ class mainView extends Component {
     };
 
     let updatePlaces = () => {
-      console.log('sending places to webview');
       //call fetchplaces here to get places
-      this.props.action.fetchPlaces(this.state.currentPosition)
-      .then(() => {console.log('fetch promise working: ', this.props.places)});
+      let positionObj = {
+        latitude: this.state.currentPosition.latitude,
+        longitude: this.state.currentPosition.longitude,
+        threejsLat: this.state.deltaX || 0,
+        threejsLon: this.state.deltaZ || 0
+      };
 
-      let places = {type: 'places', places: ['test', 'test2']};
-      webviewbridge.sendToBridge(JSON.stringify(places));
+      this.props.action.fetchPlaces(positionObj)
+      .then((results) => {
+        let places = {type: 'places', places: results.payload};
+        console.log('sending places to webview', places);
+        webviewbridge.sendToBridge(JSON.stringify(places));
+      });
+
     };
 
     let updateCameraAngle = (heading) => {

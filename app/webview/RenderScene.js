@@ -1,14 +1,14 @@
 const RenderScene =
 `
   <script>
-    var camera, controls, animate, heading;
+    var camera, controls, animate, heading, scene;
     var displacementX = 0;
     var displacementZ = 0;
     (function() {
       "use strict";
 
       window.addEventListener('load', function() {
-        var container, scene, renderer, geometry, mesh;
+        var container, renderer, geometry, mesh;
 
         animate = function(){
 
@@ -29,7 +29,7 @@ const RenderScene =
         var geometry = new THREE.BoxGeometry( 1, 1, 1 );
         var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
         var cube = new THREE.Mesh( geometry, material );
-        cube.position.set(0,0,-10)
+        cube.position.set(0,0,-5)
         scene.add( cube );
 
 
