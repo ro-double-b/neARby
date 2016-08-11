@@ -11,7 +11,7 @@ const RenderScene =
         var container, renderer, geometry, mesh;
 
         var divs = [];
-        var createPlace = function(name, distance) {
+        var createPlace = function(name, distance, offset) {
           var element = document.createElement('div')
           document.body.appendChild(element);
           element.innerHTML = '<h1>' + name + '</h1><h2>' + distance + '</h2>';
@@ -20,7 +20,7 @@ const RenderScene =
           var geo = new THREE.BoxGeometry(1, 1, 1);
           var mat = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
           var cube = new THREE.Mesh(geo, mat);
-          cube.position.set(0, 0, -5);
+          cube.position.set(offset, 0, -5);
           scene.add(cube);
           divs.push({div: element, cube: cube});
         }
@@ -30,7 +30,7 @@ const RenderScene =
           divs.forEach(function(element) {
             var div = element.div;
             var cube = element.cube;
-            var position = THREEx.ObjCoord.cssPosition(cube, camera, renderer);
+            var position = THREEx.ObCoord.cssPosition(cube, camera, renderer);
             div.style.left = (position.x - div.offsetWidth /2)+'px';
             div.style.top = (position.y - div.offsetHeight/2)+'px';
           })
@@ -55,7 +55,8 @@ const RenderScene =
         renderer.domElement.style.top = 0;
         container.appendChild(renderer.domElement);
 
-        createPlace('hello', '200m');
+        createPlace('hello', '200m', 0);
+        createPlace('yoyo', '300m', 3);
 
         window.addEventListener('resize', function() {
 
