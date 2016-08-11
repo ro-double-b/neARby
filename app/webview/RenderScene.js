@@ -10,7 +10,30 @@ const RenderScene =
       window.addEventListener('load', function() {
         var container, renderer, geometry, mesh;
 
+        var divs = [];
+        var createPlace = function(name, distance) {
+          var element = document.createElement('div')
+          document.body.appendChild(element);
+          element.innerHTML = '<h1>' + name + '</h1><h2>' + distance + '</h2>';
+          element.style.position  = 'absolute';
+
+          var geo = new THREE.BoxGeometry(1, 1, 1);
+          var mat = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
+          var cube = new THREE.Mesh(geo, mat);
+          cube.position.set(0, 0, -5);
+          scene.add(cube);
+          divs.push({div: element, cube: cube});
+        }
+
         animate = function(){
+
+          divs.forEach(function(element) {
+            var div = element.div;
+            var cube = element.cube;
+            var position = THREEx.ObjCoord.cssPosition(cube, camera, renderer);
+            div.style.left = (position.x - div.offsetWidth /2)+'px';
+            div.style.top = (position.y - div.offsetHeight/2)+'px';
+          })
 
           window.requestAnimationFrame( animate );
 
@@ -22,19 +45,7 @@ const RenderScene =
 
         container = document.getElementById( 'container' );
 
-
-
         scene = new THREE.Scene();
-
-
-        var loader = new THREE.TextureLoader();
-        loader.load(base64, function(texture) {
-          var material = new THREE.SpriteMaterial( { map: texture } );
-          var sprite = new THREE.Sprite( material );
-          sprite.needsUpdate = true;
-          sprite.position.set(1, 0, 1);
-          scene.add( sprite );;
-        });
 
         renderer = new THREE.WebGLRenderer({alpha: true});
         renderer.setClearColor( 0x000000, 0 ); // the default
@@ -44,14 +55,16 @@ const RenderScene =
         renderer.domElement.style.top = 0;
         container.appendChild(renderer.domElement);
 
+        createPlace('hello', '200m');
+
         window.addEventListener('resize', function() {
 
           camera.aspect = window.innerWidth / window.innerHeight;
           camera.updateProjectionMatrix();
           renderer.setSize( window.innerWidth, window.innerHeight );
 
-          }, false);
-          
+        }, false);
+
 
         }, false);
 
