@@ -22,7 +22,7 @@ function hypotenuseDistance(lat1, lon1, lat2, lon2) {
 
 // calculates the x distance
 function findXDistance(initLat, newLat) {
-  return (newLat - initLat) * 1852;
+  return (newLat - initLat) * 111230;
 }
 
 function square(number) {
@@ -42,7 +42,7 @@ function getPlaces(req, res) {
     initLon = req.body.longitude;
   }
   // call to google API to get locations around
-  var radius = 250;
+  var radius = 30;
   var apiKey = 'AIzaSyDXk9vLjijFncKwQ-EeTW0tyiKpn7RRABU';
   var link = `https://maps.googleapis.com/maps/api/place/search/json?location=${req.body.latitude},${req.body.longitude}&radius=${radius}&key=${apiKey}`;
   return new Promise((resolve, reject) => {
