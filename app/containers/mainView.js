@@ -15,7 +15,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as Actions from '../actions/index';
 
-Actions.fetchPlaces();
 
 //this script will be injected into WebViewBridge to communicate
 const injectScript = `
@@ -25,7 +24,7 @@ const injectScript = `
         var message = JSON.parse(message);
 
         if (message.type === "cameraPosition") {
-
+          WebViewBridge.send('camera.rotation: ' + JSON.stringify(camera.rotation));
           //sets threejs camera position as gps location changes
           camera.position.set( message.deltaX, 0, 0 - message.deltaZ );
           WebViewBridge.send("in WebViewBridge, got cameraPosition: " + JSON.stringify(message));
@@ -41,18 +40,21 @@ const injectScript = `
           animate();
 
           // setInterval(function(){
-          //   displacementX += 0.1;
+          //   displacementX += 2;
           //   // displacementZ -= 1;
-          //   camera.position.set( displacementX, 0, 0 );
-          // }, 1000)
+          //   // camera.position.set( displacementX, 0, 0 );
+          //   controls.dispose();
 
+          // }, 1000)
           WebViewBridge.send("heading received");
 
         } else if (message.type === 'places') {
           WebViewBridge.send("in WebViewBridge, got places")
 
         } else if (message.type === 'currentHeading') {
-          WebViewBridge.send("in WebViewBridge, got currentHeading")
+          heading = message.heading;
+          controls.updateAlphaOffsetAngle( (360 - heading) * (Math.PI / 180));
+          // WebViewBridge.send("in WebViewBridge, got currentHeading")
         }
       };
 
@@ -89,7 +91,6 @@ const calculateDistance = (coords1, coords2, cameraCallback, loggerCallback) => 
 };
 
 
-// Actions.fetchPlaces();
 class mainView extends Component {
   constructor(props) {
     super(props);
@@ -99,17 +100,19 @@ class mainView extends Component {
       currentPositionString: 'unknown',
       lastAPICallPositionString: 'unknown',
       distanceFromLastAPICallString: 'unknown',
+      currentHeadingString: 'unknown',
       lastAPICallPosition: null,
       initialHeading: null,
       initialPosition: null,
       currentPosition: null,
+      currentHeading: null,
       deltaX: null,
       deltaZ: null,
     };
   }
 
   componentDidMount() {
-    // this.props.action.fetchPlaces();
+    // this.props.action.fetchPlaces(this.state.currentPosition);
   }
 
   componentWillUnmount() {
@@ -131,10 +134,26 @@ class mainView extends Component {
     this.getInitialHeading = DeviceEventEmitter.addListener(
       'headingUpdated',
       (data) => {
-        console.log('got heading', data);
+        // console.log('got heading', data);
         this.setState({
           initialHeadingString: JSON.stringify(data),
           initialHeading: data.heading
+        });
+
+        callback(data.heading);
+      }
+    );
+  }
+
+  watchOrientation(callback) {
+    Location.startUpdatingHeading();
+    this.getInitialHeading = DeviceEventEmitter.addListener(
+      'headingUpdated',
+      (data) => {
+        // console.log('got heading', data);
+        this.setState({
+          currentHeadingString: JSON.stringify(data),
+          currentHeading: data.heading
         });
 
         callback(data.heading);
@@ -162,7 +181,7 @@ class mainView extends Component {
     setTimeout(() => {
       this.getInitialLocation.remove();
       this.watchGeolocation(cameraCallback, placesCallback);
-    }, 7000);
+    }, 2000);
   }
 
   //watchGeolocation will subsequenly track the geolocation changes and update it in lastPosition state
@@ -224,6 +243,9 @@ class mainView extends Component {
     let updatePlaces = () => {
       console.log('sending places to webview');
       //call fetchplaces here to get places
+      this.props.action.fetchPlaces(this.state.currentPosition)
+      .then(() => {console.log('fetch promise working: ', this.props.places)});
+
       let places = {type: 'places', places: ['test', 'test2']};
       webviewbridge.sendToBridge(JSON.stringify(places));
     };
@@ -248,7 +270,7 @@ class mainView extends Component {
       //once threejs camera is oriented, send the camera position to webview,
       //if distance exceed a certain treashold, updatePlaces will be called to fetch new locations
       this.initGeolocation.call(this, updateThreeJSCamera, updatePlaces);
-      // this.watchHeading.call(this);
+      this.watchOrientation.call(this, updateCameraAngle);
     } else {
       console.log(message);
     }
@@ -287,7 +309,7 @@ class mainView extends Component {
           </Text>
           <Text>
             <Text style={styles.title}>Current heading: </Text>
-            {this.state.initialHeading}
+            {this.state.currentHeading}
           </Text>
           <Text>
             <Text style={styles.title}>DeltaX from 0,0: </Text>
