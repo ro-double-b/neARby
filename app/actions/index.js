@@ -8,7 +8,6 @@ export const fetchPlaces = function(position) {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     },
-
     body: JSON.stringify(position)
   })
   .then(function(response) {
