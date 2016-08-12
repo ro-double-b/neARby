@@ -14,7 +14,6 @@ export const injectScript = `
         var message = JSON.parse(message);
 
         if (message.type === "cameraPosition") {
-          WebViewBridge.send('camera.rotation: ' + JSON.stringify(camera.rotation));
           //sets threejs camera position as gps location changes
           camera.position.set( message.deltaX, 0, 0 - message.deltaZ );
           WebViewBridge.send("in WebViewBridge, got cameraPosition: " + JSON.stringify(message));
@@ -28,33 +27,17 @@ export const injectScript = `
 
           //animate function comes from html string
           animate();
-
-          // setInterval(function(){
-          //   displacementX += 2;
-          //   // displacementZ -= 1;
-          //   // camera.position.set( displacementX, 0, 0 );
-          //   controls.dispose();
-
-          // }, 1000)
           WebViewBridge.send("heading received");
 
         } else if (message.type === 'places') {
           var places = message.places;
-          WebViewBridge.send("in WebViewBridge, got places: " + JSON.stringify(places));
+          WebViewBridge.send("in WebViewBridge, got places");
           
           places.forEach(function(place){
+            WebViewBridge.send("in WebViewBridge, got place" + JSON.stringify(place.name));
             renderPlace(place.lat, place.lon);
           })
 
-        } else if (message.type === 'currentHeading') {
-          // heading = message.heading;
-          // if (testInitialize === null) {
-          //   setInterval(function(){
-          //     heading += 5;
-          //   }, 1000)
-          //   testInitialize = true;
-          // }
-          WebViewBridge.send("in WebViewBridge, got currentHeading")
         }
       };
 

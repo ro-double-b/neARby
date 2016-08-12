@@ -13,7 +13,7 @@ export const fetchPlaces = function(position) {
   .then(function(response) {
     if (response.status === 200) {
       console.log(response);
-      response.json();
+      return response.json();
     } else  {
       console.log('error');
     }

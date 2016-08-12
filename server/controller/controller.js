@@ -30,11 +30,13 @@ function square(number) {
 }
 
 // calculates the y distance using Pythagorean Theorem
-function findYDistance(hypotenuse, xDistance) {
-  return Math.sqrt(square(hypotenuse) - square(xDistance));
+function findYDistance(hypotenuse, xDistance, initLon, newLon) {
+  var yDistance = Math.sqrt(square(hypotenuse) - square(xDistance));
+  return (newLon - initLon > 0) ? yDistance : -1 * yDistance;
 }
 
 function getPlaces(req, res) {
+  console.log('getPlaces');
   // check to see if it is the initial location
   if (req.body.threejsLat === 0 && req.body.threejsLon === 0) {
     // if so recored the initial position
@@ -56,7 +58,7 @@ function getPlaces(req, res) {
           var googleLat = findXDistance(initLat, result.geometry.location.lat);
           var distanceFromInit = hypotenuseDistance(initLat, initLon, result.geometry.location.lat, result.geometry.location.lng);
           var googleDistance = hypotenuseDistance(req.body.latitude, req.body.longitude, result.geometry.location.lat, result.geometry.location.lng);
-          var googleLon = findYDistance(distanceFromInit, googleLat);
+          var googleLon = findYDistance(distanceFromInit, googleLat, initLon, req.body.longitude);
           // populate an object with all necessary information
           var place = {
           name: result.name,
