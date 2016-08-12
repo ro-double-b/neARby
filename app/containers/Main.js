@@ -227,7 +227,7 @@ class Main extends Component {
   }
 
   handleSignout = () => {
-    this.props.navigator.resetTo({name: 'signinView'});
+    this.props.navigator.resetTo({name: 'Login'});
   }
 
   render() {
@@ -238,7 +238,7 @@ class Main extends Component {
         content={<View style={styles.panel}>
         <LoginButton
           publishPermissions={["publish_actions"]}
-          onLogoutFinished={() => alert('User logged out')}/>
+          onLogoutFinished={this.handleSignout.bind(this)}/>
         </View>}
         acceptPan={true}
         panOpenMask={0.5}

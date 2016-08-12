@@ -24,10 +24,6 @@ class Login extends Component {
   goToHomePage(accessToken) {
     this.props.navigator.replace({name: 'Main'});
   }
-  goToMain() {
-    console.log('calling');
-    this.props.navigator.push({name: 'Main'});
-  }
 
   render() {
     return (
