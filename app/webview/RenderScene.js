@@ -10,17 +10,38 @@ const RenderScene =
       window.addEventListener('load', function() {
         var container, renderer, geometry, mesh;
 
+        document.body.style.fontFamily = 'Helvetica, sans-serif';
+
         var divs = [];
-        var createPlace = function(name, distance, offset) {
+        window.createPlace = function(lat, long, name, distance) {
           var element = document.createElement('div')
+          element.className = 'place';
+          element.style.backgroundColor = 'rgba(0, 127, 127, 0.443137)';
+          element.style.border = '1px solid rgba(127,255,255,0.75)';
           document.body.appendChild(element);
-          element.innerHTML = '<h1>' + name + '</h1><h2>' + distance + '</h2>';
+
+          var nameHeading = document.createElement('h1');
+          nameHeading.innerText = name;
+          nameHeading.style.color = 'rgba(255,255,255,0.75)';
+          nameHeading.style.fontWeight = 'bold';
+          nameHeading.style.marginLeft = '10px';
+          nameHeading.style.marginRight = '10px';
+          element.appendChild(nameHeading);
+
+          var distanceHeading = document.createElement('h1');
+          distanceHeading.innerText = distance;
+          distanceHeading.style.color = 'rgba(127,255,255,0.75)';
+          distanceHeading.style.fontWeight = 'bold';
+          distanceHeading.style.fontSize = '8px';
+          distanceHeading.style.marginLeft = '8px';
+          element.appendChild(distanceHeading);
+
           element.style.position  = 'absolute';
 
           var geo = new THREE.BoxGeometry(1, 1, 1);
-          var mat = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
+          var mat = new THREE.MeshBasicMaterial({color: 0x00FF00, wireframe: true});
           var cube = new THREE.Mesh(geo, mat);
-          cube.position.set(offset, 0, -5);
+          cube.position.set(lat, 0, -1 * long);
           scene.add(cube);
           divs.push({div: element, cube: cube});
         }
@@ -30,7 +51,7 @@ const RenderScene =
           divs.forEach(function(element) {
             var div = element.div;
             var cube = element.cube;
-            var position = THREEx.ObCoord.cssPosition(cube, camera, renderer);
+            var position = THREEx.ObjCoord.cssPosition(cube, camera, renderer);
             div.style.left = (position.x - div.offsetWidth /2)+'px';
             div.style.top = (position.y - div.offsetHeight/2)+'px';
           })
@@ -54,9 +75,6 @@ const RenderScene =
         renderer.domElement.style.position = 'absolute';
         renderer.domElement.style.top = 0;
         container.appendChild(renderer.domElement);
-
-        createPlace('hello', '200m', 0);
-        createPlace('yoyo', '300m', 3);
 
         window.addEventListener('resize', function() {
 
