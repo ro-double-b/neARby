@@ -38,6 +38,15 @@ export const injectScript = `
             renderPlace(place.lat, place.lon);
           })
 
+        } else if (message.type === 'currentHeading') {
+          // heading = message.heading;
+          // if (testInitialize === null) {
+          //   setInterval(function(){
+          //     heading += 5;
+          //   }, 1000)
+          //   testInitialize = true;
+          // }
+          WebViewBridge.send("in WebViewBridge, got currentHeading")
         }
       };
 
