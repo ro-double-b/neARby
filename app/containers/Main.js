@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  Text,
   View,
   TouchableHighlight,
+  Text,
   DeviceEventEmitter //DeviceEventEmitter is imported for geolocation update
 } from 'react-native';
 
