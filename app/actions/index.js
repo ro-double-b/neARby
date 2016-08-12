@@ -2,7 +2,7 @@ export const PLACES_COLLECTION = 'PLACES_COLLECTION';
 export const SET_USER = 'SET_USER';
 
 export const fetchPlaces = function(position) {
-  let collection = fetch('http://10.6.24.48:3000/location', {
+  let collection = fetch('https://agile-peak-45133.herokuapp.com/location', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -13,7 +13,7 @@ export const fetchPlaces = function(position) {
   .then(function(response) {
     if (response.status === 200) {
       console.log(response);
-      response.json();
+      return response.json();
     } else  {
       console.log('error');
     }
