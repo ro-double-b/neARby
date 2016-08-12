@@ -14,16 +14,28 @@ const RenderScene =
 
         var divs = [];
         window.createPlace = function(lat, long, name, distance) {
+
+          var scaleDivSize = function(element, distance) {
+            var normalized = distance - 30;
+            var scale = normalized / 70;
+            if (scale > 4) {
+              scale = 4;
+            }
+            element.style.transform = 'scale(' + scale + ')';
+          }
+
           var element = document.createElement('div')
           element.className = 'place';
           element.style.backgroundColor = 'rgba(0, 127, 127, 0.443137)';
           element.style.border = '1px solid rgba(127,255,255,0.75)';
+          scaleDivSize(element, distance);
           document.body.appendChild(element);
 
           var nameHeading = document.createElement('h1');
           nameHeading.innerText = name;
           nameHeading.style.color = 'rgba(255,255,255,0.75)';
           nameHeading.style.fontWeight = 'bold';
+          nameHeading.style.fontSize = '15px';
           nameHeading.style.marginLeft = '10px';
           nameHeading.style.marginRight = '10px';
           element.appendChild(nameHeading);
@@ -42,6 +54,7 @@ const RenderScene =
           var mat = new THREE.MeshBasicMaterial({color: 0x00FF00, wireframe: true});
           var cube = new THREE.Mesh(geo, mat);
           cube.position.set(lat, 0, -1 * long);
+          cube.visible = false;
           scene.add(cube);
           divs.push({div: element, cube: cube});
         }
