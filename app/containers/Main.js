@@ -3,6 +3,7 @@ import {
   StyleSheet,
   View,
   TouchableHighlight,
+  Text,
   DeviceEventEmitter //DeviceEventEmitter is imported for geolocation update
 } from 'react-native';
 
