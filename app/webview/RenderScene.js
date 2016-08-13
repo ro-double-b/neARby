@@ -36,12 +36,14 @@ const RenderScene =
             }
             element.style.transform = 'scale(' + scale + ')';
           }
+
           var element = document.createElement('div')
           element.className = 'place';
           element.style.backgroundColor = 'rgba(0, 127, 127, 0.443137)';
           element.style.border = '1px solid rgba(127,255,255,0.75)';
           scaleDivSize(element, distance);
           document.body.appendChild(element);
+
           var nameHeading = document.createElement('h1');
           nameHeading.innerText = name;
           nameHeading.style.color = 'rgba(255,255,255,0.75)';
@@ -50,6 +52,7 @@ const RenderScene =
           nameHeading.style.marginLeft = '10px';
           nameHeading.style.marginRight = '10px';
           element.appendChild(nameHeading);
+
           var distanceHeading = document.createElement('h1');
           distanceHeading.innerText = distance;
           distanceHeading.style.color = 'rgba(127,255,255,0.75)';
@@ -57,7 +60,9 @@ const RenderScene =
           distanceHeading.style.fontSize = '8px';
           distanceHeading.style.marginLeft = '8px';
           element.appendChild(distanceHeading);
+
           element.style.position  = 'absolute';
+
           var geo = new THREE.BoxGeometry(1, 1, 1);
           var mat = new THREE.MeshBasicMaterial({color: 0x00FF00, wireframe: true});
           var cube = new THREE.Mesh(geo, mat);
@@ -72,11 +77,10 @@ const RenderScene =
             if (e.div === div) {
               return false;
             }
-            var rect2 = e.div.getBoundingClientRect();
-            return checkOverlap(rect1, rect2);
           });
         }
         animate = function(){
+
           divsInSight = checkFrustum();
           divsInSight.forEach(function(element) {
             var div = element.div;
