@@ -9,52 +9,83 @@ const RenderScene =
 
       window.addEventListener('load', function() {
         var container, renderer, geometry, mesh;
+        var frustum = new THREE.Frustum();
 
         document.body.style.fontFamily = 'Helvetica, sans-serif';
 
         var divs = [];
+
+        var checkFrustum = function() {
+          frustum.setFromMatrix( new THREE.Matrix4().multiplyMatrices( camera.projectionMatrix, camera.matrixWorldInverse ) );
+          return divs.filter(function(obj) {
+            var visible = frustum.intersectsObject(obj.cube);
+            if (!visible) {
+              obj.div.style.display = 'none';
+            }
+            return visible;
+          });
+        };
+
         window.createPlace = function(lat, long, name, distance) {
-          var element = document.createElement('div')
-          element.className = 'place';
-          element.style.backgroundColor = 'rgba(0, 127, 127, 0.443137)';
-          element.style.border = '1px solid rgba(127,255,255,0.75)';
-          document.body.appendChild(element);
 
-          var nameHeading = document.createElement('h1');
-          nameHeading.innerText = name;
-          nameHeading.style.color = 'rgba(255,255,255,0.75)';
-          nameHeading.style.fontWeight = 'bold';
-          nameHeading.style.marginLeft = '10px';
-          nameHeading.style.marginRight = '10px';
-          element.appendChild(nameHeading);
+          var scaleDivSize = function(element, distance) {
+            var normalized = distance - 30;
+            var scale = normalized / 70;
+            if (scale > 1) {
+              scale = 1;
+            }
+            element.style.transform = 'scale(' + scale + ')';
+          }
 
-          var distanceHeading = document.createElement('h1');
-          distanceHeading.innerText = distance;
-          distanceHeading.style.color = 'rgba(127,255,255,0.75)';
-          distanceHeading.style.fontWeight = 'bold';
-          distanceHeading.style.fontSize = '8px';
-          distanceHeading.style.marginLeft = '8px';
-          element.appendChild(distanceHeading);
+          if (distance < 1000) {
+            var element = document.createElement('div')
+            element.className = 'place';
+            element.style.backgroundColor = 'rgba(0, 127, 127, 0.443137)';
+            element.style.border = '1px solid rgba(127,255,255,0.75)';
+            scaleDivSize(element, distance);
+            document.body.appendChild(element);
 
-          element.style.position  = 'absolute';
+            var nameHeading = document.createElement('h1');
+            nameHeading.innerText = name;
+            nameHeading.style.color = 'rgba(255,255,255,0.75)';
+            nameHeading.style.fontWeight = 'bold';
+            nameHeading.style.fontSize = '15px';
+            nameHeading.style.marginLeft = '10px';
+            nameHeading.style.marginRight = '10px';
+            element.appendChild(nameHeading);
 
-          var geo = new THREE.BoxGeometry(1, 1, 1);
-          var mat = new THREE.MeshBasicMaterial({color: 0x00FF00, wireframe: true});
-          var cube = new THREE.Mesh(geo, mat);
-          cube.position.set(lat, 0, -1 * long);
-          scene.add(cube);
-          divs.push({div: element, cube: cube});
+            var distanceHeading = document.createElement('h1');
+            distanceHeading.innerText = distance;
+            distanceHeading.style.color = 'rgba(127,255,255,0.75)';
+            distanceHeading.style.fontWeight = 'bold';
+            distanceHeading.style.fontSize = '8px';
+            distanceHeading.style.marginLeft = '8px';
+            element.appendChild(distanceHeading);
+
+            element.style.position  = 'absolute';
+
+            var geo = new THREE.BoxGeometry(1, 1, 1);
+            var mat = new THREE.MeshBasicMaterial({color: 0x00FF00, wireframe: true});
+            var cube = new THREE.Mesh(geo, mat);
+            cube.position.set(lat, 0, -1 * long);
+            cube.visible = false;
+            scene.add(cube);
+            divs.push({div: element, cube: cube});
+          }
         }
 
         animate = function(){
 
-          divs.forEach(function(element) {
+          var divsInSight = checkFrustum();
+
+          divsInSight.forEach(function(element) {
             var div = element.div;
             var cube = element.cube;
+            div.style.display = '';
             var position = THREEx.ObjCoord.cssPosition(cube, camera, renderer);
             div.style.left = (position.x - div.offsetWidth /2)+'px';
             div.style.top = (position.y - div.offsetHeight/2)+'px';
-          })
+          });
 
           window.requestAnimationFrame( animate );
 
