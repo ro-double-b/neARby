@@ -71,17 +71,21 @@ const RenderScene =
           scene.add(cube);
           window.divs.push({div: element, cube: cube});
         }
+
         var checkCollision = function(div) {
           var rect1 = div.querySelector('h1').getBoundingClientRect();
           return divsInSight.some(function(e) {
             if (e.div === div) {
               return false;
             }
+            var rect2 = e.div.getBoundingClientRect();
+            return checkOverlap(rect1, rect2);
           });
         }
         animate = function(){
 
           divsInSight = checkFrustum();
+
           divsInSight.forEach(function(element) {
             var div = element.div;
             var cube = element.cube;
@@ -95,6 +99,8 @@ const RenderScene =
               div.style.top = top + inc + 'px';
             }
           });
+
+
           window.requestAnimationFrame( animate );
           // controls.update();
           controls.updateAlphaOffsetAngle( (360 - heading) * (Math.PI / 180));
