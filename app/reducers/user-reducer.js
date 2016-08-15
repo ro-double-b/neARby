@@ -1,7 +1,8 @@
 import SET_USER from '../actions/index';
 
 const initialState = {
-  collection: []
+  user: '',
+  picture: '' 
 };
 
 export default function(state = initialState, action) {
@@ -10,8 +11,9 @@ export default function(state = initialState, action) {
     case SET_USER:
     console.log('in user reducer');
     console.log(action.payload);
-      return { ...state,
-      collection: action.payload };
+      return { ...state, 
+      user: 'action.payload.user',
+      picture: 'action.payload.picture' };
     default:
       return state;
   }

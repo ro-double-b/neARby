@@ -40,11 +40,6 @@ const html =
 
       <div id="container"></div>
 
-      <div id="info">
-        <a href="http://threejs.org" target="_blank">three.js</a> - equirectangular panorama demo with DeviceOrientation controls.
-        photo by <a href="http://www.flickr.com/photos/jonragnarsson/2294472375/" target="_blank">Jón Ragnarsson</a>.
-      </div>
-
       <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r79/three.min.js"></script>
       ${DeviceOrientationControls};
       ${base64};
