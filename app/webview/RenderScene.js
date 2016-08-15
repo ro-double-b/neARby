@@ -78,7 +78,7 @@ const RenderScene =
             if (e.div === div) {
               return false;
             }
-            var rect2 = e.div.getBoundingClientRect();
+            var rect2 = e.div.querySelector('h1').getBoundingClientRect();
             return checkOverlap(rect1, rect2);
           });
         }
