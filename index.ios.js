@@ -15,7 +15,7 @@ import promise from 'redux-promise';
 
 const logger = createLogger();
 const store = createStore(reducers, applyMiddleware(thunk, promise, logger));
-
+console.log(store);
 class neARby extends Component {
   render() {
     return (

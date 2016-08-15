@@ -1,8 +1,9 @@
 import FBSDK, { LoginButton, AccessToken } from 'react-native-fbsdk';
 import React, { Component } from 'react';
 import {
-
-  View
+  Text,
+  View,
+  StyleSheet
 } from 'react-native';
 
 class Login extends Component {
@@ -12,14 +13,14 @@ class Login extends Component {
   }
 
   componentWillMount () {
-    console.log(AccessToken)
+    console.log(AccessToken);
     AccessToken.getCurrentAccessToken().then(
       (data) => {
-        if(data) {
-         this.goToHomePage(); 
+        if (data) {
+         this.goToHomePage();
         }
        }
-    )
+    );
   }
   goToHomePage(accessToken) {
     this.props.navigator.replace({name: 'Main'});
@@ -28,7 +29,13 @@ class Login extends Component {
   render() {
     return (
       <View style={styles.container}>
+      <View style={styles.textContainer}>
+      <Text style={styles.text}>ne</Text>
+      <Text style={styles.textAR}>ar</Text>
+      <Text style={styles.text}>by</Text>
+      </View>
        <LoginButton
+        style={styles.button}
         onLoginFinished={
           (error, result) => {
             if (error) {
@@ -40,7 +47,7 @@ class Login extends Component {
                 (data) => {
                   this.goToHomePage();
                 }
-              )
+              );
             }
           }
         }
@@ -50,17 +57,32 @@ class Login extends Component {
   }
 }
 
-const styles = {
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    paddingBottom: 250,
+    paddingTop: 250
   },
   button: {
-    padding: 25,
-    backgroundColor: '#3B5998'
+    width: 50,
+    height: 50,
+    backgroundColor: '#3B5998',
+  },
+  textContainer: {
+    flex: 1,
+    flexDirection: 'row'
+  },
+  text: {
+    fontSize: 60,
+    fontFamily: 'AvenirNext-UltraLight',
+  },
+  textAR: {
+    fontSize: 60,
+    fontFamily: 'AvenirNext-Medium'
   }
-};
+});
 
 export default Login;
