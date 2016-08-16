@@ -780,7 +780,11 @@ class Main extends Component {
         </View>
     } else {
       drawerItems = <View style={styles.panel}>
-      <Text style={styles.heading}>under construction</Text>
+      <Text style={styles.heading}>under constrooction
+             <LoginButton
+          publishPermissions={["publish_actions"]}
+          onLogoutFinished={this.handleSignout.bind(this)}/></Text>
+
       </View>
     }
 
