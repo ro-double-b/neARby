@@ -82,24 +82,27 @@ const RenderScene =
             return checkOverlap(rect1, rect2);
           });
         }
-        animate = function(){
+
+        animate = function(now){
 
           divsInSight = checkFrustum();
 
           divsInSight.forEach(function(element) {
             var div = element.div;
+            var pos = div.pos || 0;
             var cube = element.cube;
             div.style.display = '';
             var position = THREEx.ObjCoord.cssPosition(cube, camera, renderer);
             var left = (position.x - div.offsetWidth /2);
             div.style.left = left + 'px';
             var top = (position.y - div.offsetHeight/2);
-            div.style.top = top + 'px';
+            div.style.top = top + pos + 'px';
+
             for (var inc = 80; checkCollision(div); inc += 80) {
               div.style.top = top + inc + 'px';
+              div.pos = inc;
             }
           });
-
 
           window.requestAnimationFrame( animate );
           // controls.update();
