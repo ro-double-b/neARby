@@ -41,11 +41,11 @@ const html =
       <div id="container"></div>
 
       <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r79/three.min.js"></script>
-      ${DeviceOrientationControls};
-      ${base64};
-      ${Projector};
-      ${THREEx};
-      ${RenderScene};
+      ${DeviceOrientationControls}
+      ${base64}
+      ${Projector}
+      ${THREEx}
+      ${RenderScene}
     </body>
   </html>
 `;
