@@ -90,6 +90,7 @@ const RenderScene =
           divsInSight.forEach(function(element) {
             var div = element.div;
             var pos = div.pos || 0;
+            var direction = div.direction || [1, -1][Math.floor(Math.random() * 2)];
             var cube = element.cube;
             div.style.display = '';
             var position = THREEx.ObjCoord.cssPosition(cube, camera, renderer);
@@ -99,8 +100,9 @@ const RenderScene =
             div.style.top = top + pos + 'px';
 
             for (var inc = 80; checkCollision(div); inc += 80) {
-              div.style.top = top + inc + 'px';
-              div.pos = inc;
+              div.style.top = top + (inc * direction) + 'px';
+              div.pos = inc * direction;
+              div.direction = direction;
             }
           });
 
