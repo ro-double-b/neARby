@@ -1,5 +1,5 @@
-import DRAWER_TYPE from '../actions/index';
-
+import { DRAWER_TYPE } from '../actions/index';
+console.log(DRAWER_TYPE, 'DRAWER_TYPE');
 const initialState = {
   option: 'Search' 
 };
