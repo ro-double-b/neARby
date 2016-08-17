@@ -157,5 +157,79 @@ export const selectPlace = (data) => {
     payload: {
       selectedEvent: data
     }
+  }
+};
+// export const setUser = function(name, picture) {
+//   let user = {
+//     name: name,
+//     picture: picture
+//   };
+
+//   return {
+//     type: SET_USER,
+//     payload: user
+//   };
+// };
+
+//////////////////////////////
+////geolocation handlers
+//////////////////////////////
+export const INIT_POSITION_UPDATE = 'INIT_POSITION_UPDATE';
+export const CURRENT_POSITION_UPDATE = 'CURRENT_POSITION_UPDATE';
+export const CURRENT_HEADING = 'CURRENT_HEADING';
+export const API_CALL_POSITION_UPDATE = 'API_CALL_POSITION_UPDATE';
+export const LOADING_LOCATION = 'LOADING_LOCATION';
+
+export const updateInitLocation = (location) => {
+  console.log('updateInitLocation');
+  console.log('location',location);
+  return {
+    type: INIT_POSITION_UPDATE,
+    payload: {
+      initialPosition: location,
+    }
+  };
+};
+
+export const updateCurrentLocation = (location) => {
+  console.log('updateCurrentLocation');
+  return {
+    type: CURRENT_POSITION_UPDATE,
+    payload: {
+      currentPosition: location.currentPosition,
+      threeLat: location.threeLat,
+      threeLon: location.threeLon,
+      distance: location.distance
+    }
+  };
+};
+
+export const updateLastAPICallLocation = (location) => {
+  console.log('updateLastAPICallLocation');
+  return {
+    type: API_CALL_POSITION_UPDATE,
+    payload: {
+      lastAPICallPosition: location
+    }
+  };
+};
+
+export const updateHeading = (degree) => {
+  console.log('updateCurrentHeading');
+  return {
+    type: CURRENT_HEADING,
+    payload: {
+      currentHeading: degree
+    }
+  };
+};
+
+export const finishLoadingPosition = (boolean) => {
+  console.log('updateCurrentHeading');
+  return {
+    type: LOADING_LOCATION,
+    payload: {
+      loading: boolean
+    }
   };
 };

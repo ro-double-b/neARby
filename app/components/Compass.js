@@ -12,8 +12,8 @@ import Svg,{
 
 const calculateOffSet = (userLocation, placeLocation) => {
   let offset = {
-    xOffset: (userLocation.deltaX - placeLocation.lat) * 0.3,
-    zOffset: (placeLocation.lon - userLocation.deltaZ) * 0.3
+    xOffset: (userLocation.threeLat - placeLocation.lat) * 0.3,
+    zOffset: (placeLocation.lon - userLocation.threeLon) * 0.3
   };
   return offset;
 };

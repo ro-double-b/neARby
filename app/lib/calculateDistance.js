@@ -31,11 +31,10 @@ const findYDistance = (hypotenuse, xDistance, initLon, newLon) => {
   return (newLon - initLon > 0) ? yDistance : -1 * yDistance;
 };
 
-export const calculateDistance = (prevCoords, currentCoords, cameraCallback, loggerCallback) => {
+export const calculateDistance = (prevCoords, currentCoords) => {
   let distance = hypotenuseDistance(prevCoords.latitude, prevCoords.longitude, currentCoords.latitude, currentCoords.longitude);
   let deltaX = findXDistance(prevCoords.latitude, currentCoords.latitude);
   let deltaZ = findYDistance(distance, deltaX, prevCoords.longitude, currentCoords.longitude);
-
   return {
     deltaX: deltaX,
     deltaZ: deltaZ,
