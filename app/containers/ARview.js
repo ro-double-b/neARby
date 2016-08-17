@@ -23,12 +23,6 @@ import { injectScript } from '../webview/webviewBridgeScript';
 import Compass from '../components/Compass';
 
 //webviewbrige variables
-var resetCamera;
-var addCubeToLocation;
-var controlThreeJSCamera;
-var setHeadingToZero;
-var setHeading;
-var setCurrentHeading;
 var testHeading = 0;
 var sendNewHeading = false;
 
@@ -37,7 +31,6 @@ var sendNewHeading = false;
 class ARview extends Component {
   constructor(props) {
     super(props);
-    console.log(this, 'AR VIEW');
     this.state = {
       //strings are for debugging only
       initialHeadingString: 'unknown',
@@ -61,9 +54,6 @@ class ARview extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    console.log('nextProps.testState', this.props.testState);
-  }
 
   componentWillUnmount() {
     //this will stop the location update
@@ -101,7 +91,7 @@ class ARview extends Component {
   }
 
   //initGeolocation gets the initial geolocation and set it to initialPosition state
-  initGeolocation(initialCameraAngleCallback) {
+  initGeolocation(initialCameraAngleCallback, sendInitLocToMainView) {
     Location.startUpdatingLocation();
     //this will listen to geolocation changes and update it in state
     this.getInitialLocation = DeviceEventEmitter.addListener(
@@ -119,7 +109,7 @@ class ARview extends Component {
     setTimeout(() => {
       this.getInitialLocation.remove();
 
-      //initial call to server
+      //initial call to server to set initialPosition to 0,0
       let positionObj = {
         latitude: this.state.initialPosition.latitude,
         longitude: this.state.initialPosition.longitude,
@@ -128,33 +118,37 @@ class ARview extends Component {
       };
       this.props.action.fetchPlaces(positionObj);
 
+      if (sendInitLocToMainView) {
+        sendInitLocToMainView(sendInitLocToMainView);
+      }
+
       initialCameraAngleCallback();
     }, 2000);
   }
 
   //watchGeolocation will subsequenly track the geolocation changes and update it in lastPosition state
-  watchGeolocation(cameraCallback, placesCallback) {
+  watchGeolocation(cameraCallback, placesCallback, sendLocToMainView) {
     Location.startUpdatingLocation();
     //this will listen to geolocation changes and update it in state
     DeviceEventEmitter.addListener(
       'locationUpdated',
       (location) => {
         console.log('location updated');
-        //this displays the info on screen, only use for debugging
-        let loggerCallback = (deltaX, deltaZ, distance) => {
-          console.log('update deltaX, deltaZ', {deltaX: deltaX, deltaZ: deltaZ});
-          this.setState({deltaX: deltaX, deltaZ: deltaZ});
-        };
+        let threeJSPosition = calculateDistance(this.state.initialPosition, location.coords);
 
         this.setState({
           currentPositionString: JSON.stringify(location),
-          currentPosition: location.coords
+          currentPosition: location.coords,
+          deltaX: threeJSPosition.deltaX,
+          deltaY: threeJSPosition.deltaZ,
+          distance: threeJSPosition.distance
         });
 
         if (!this.state.lastAPICallPosition || placesCallback) {
           let distanceFromLastAPICallPosition = 0;
           if (this.state.lastAPICallPosition) {
-            distanceFromLastAPICallPosition = calculateDistance(this.state.lastAPICallPosition, location.coords, null, (deltaX, deltaZ, distance) => {this.setState({distanceFromLastAPICallString: distance.toString()})} );
+            distanceFromLastAPICallPosition = calculateDistance(this.state.lastAPICallPosition, location.coords);
+            this.setState({distanceFromLastAPICallString: distanceFromLastAPICallPosition.distance.toString()});
           }
 
           if (!this.state.lastAPICallPosition || distanceFromLastAPICallPosition.distance > 20) {
@@ -166,12 +160,22 @@ class ARview extends Component {
             });
 
             console.log('range reached');
-            placesCallback();
+            placesCallback(location.coords.latitude, location.coords.longitude, threeJSPosition.deltaX, threeJSPosition.deltaZ);
           }
         }
 
         if (cameraCallback) {
-          calculateDistance(this.state.initialPosition, location.coords, cameraCallback, loggerCallback);
+          cameraCallback(threeJSPosition);
+        }
+
+        //callback to send back location data to parent view
+        if (sendLocToMainView) {
+          sendLocToMainView({
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+            threeLat: threeJSPosition.deltaX,
+            threeLon: threeJSPosition.deltaY
+          });
         }
       }
     );
@@ -184,9 +188,8 @@ class ARview extends Component {
     //////////////////////////
     //react buttons handlers
     //////////////////////////
-    addCubeToLocation = (location) => {
+    this.addCubeToLocation = (location) => {
       let cubeLocation = calculateDistance(this.state.initialPosition, location);
-      // let cubeLocation = { deltaX: 5, deltaZ: 0 };
       cubeLocation.type = 'addTestCube';
       webviewbridge.sendToBridge(JSON.stringify(cubeLocation));
     };
@@ -195,12 +198,12 @@ class ARview extends Component {
     //test buttons handlers, for dev purpose only
     ///////////////////////////////////////////////
     //for dev purpose only, resets threejs camera back to 0,0
-    setHeading = (heading) => {
+    this.setHeading = (heading) => {
       webviewbridge.sendToBridge(JSON.stringify({type: 'currentHeading', heading: heading}));
     };
 
     //this is fired when direction buttons are click
-    controlThreeJSCamera = (x, z) => {
+    this.controlThreeJSCamera = (x, z) => {
       webviewbridge.sendToBridge(JSON.stringify({type: 'cameraPosition', deltaX: this.state.deltaX + x, deltaZ: this.state.deltaZ + z}));
       this.setState({
         deltaX: this.state.deltaX + x,
@@ -211,7 +214,7 @@ class ARview extends Component {
     //////////////////////////////////////
     //webviewBridge communication helpers
     //////////////////////////////////////
-    let setInitialCameraAngle = () => {
+    this.setInitialCameraAngle = () => {
       this.sendOrientation(
         (initialHeading) => {
           console.log('initialHeading', initialHeading);
@@ -221,7 +224,8 @@ class ARview extends Component {
       );
     };
 
-    let calibrateCameraAngle = (heading) => {
+    //this will sent current heading to threejs to correct
+    this.calibrateCameraAngle = (heading) => {
       // console.log('calibrate ThreeJSCamera');
       if (sendNewHeading) {
         webviewbridge.sendToBridge(JSON.stringify({type: 'currentHeading', heading: heading}));
@@ -229,28 +233,30 @@ class ARview extends Component {
       }
     };
 
-    let updateThreeJSCameraPosition = (newCameraPosition) => {
+    this.updateThreeJSCameraPosition = (newCameraPosition) => {
       webviewbridge.sendToBridge(JSON.stringify(newCameraPosition));
     };
 
-    let updatePlaces = () => {
+    this.sendPlacesToWebView = (places) => {
+      let placesMsg = {type: 'places', places: places};
+      console.log('sending places to webview', places);
+      webviewbridge.sendToBridge(JSON.stringify(placesMsg));
+      this.setState({places: places});
+    };
+
+    this.updatePlaces = (latitude, longitude, threejsLat, threejsLon) => {
       //call fetchplaces to fetch places from server
       let positionObj = {
-        latitude: this.state.currentPosition.latitude,
-        longitude: this.state.currentPosition.longitude,
-        threejsLat: this.state.deltaX || 0,
-        threejsLon: this.state.deltaZ || 0
+        latitude: latitude,
+        longitude: longitude,
+        threejsLat: threejsLat || 0,
+        threejsLon: threejsLon || 0
+        //more filters
       };
 
       this.props.action.fetchPlaces(positionObj)
       .then((results) => {
-        // var testPlace = {name: "Queen's Beauty House", lat: 575.9204482645928, lon: -292.71292376910134, distance: 2119, img: "https://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png"};
-        // let places = {type: 'places', places: [testPlace]};
-
-        let places = {type: 'places', places: results.payload.slice(0,10)};
-        console.log('sending places to webview', places);
-        webviewbridge.sendToBridge(JSON.stringify(places));
-        this.setState({places: results.payload});
+        this.sendPlacesToWebView(results.payload);
       })
       .catch((err) => {
         console.log(err);
@@ -262,40 +268,46 @@ class ARview extends Component {
     if (message === 'webview is loaded') {
       this.startDeviceLocationUpdate();
       //once bridge injectedScript is loaded, set 0,0, and send over heading to orient threejs camera
-      this.initGeolocation(setInitialCameraAngle);
+      this.initGeolocation(this.setInitialCameraAngle, this.props.mainViewGeoLocation);
     } else if (message === 'heading received') {
       // console.log('heading received');
       //at this point, the app is finish loading
       this.setState({initialize: false});
       //if distance exceed a certain treashold, updatePlaces will be called to fetch new locations
-      this.watchGeolocation(updateThreeJSCameraPosition, updatePlaces);
+      this.watchGeolocation(this.updateThreeJSCameraPosition, this.updatePlaces, this.props.mainViewSetLocation);
       //calibrate threejs camera according to north every 5 seconds
       setInterval(() => { sendNewHeading = true; }, 5000);
-      this.sendOrientation(calibrateCameraAngle);
+      this.sendOrientation(this.calibrateCameraAngle);
     } else {
       console.log(message);
     }
 
   }
 
+  componentDidMount() {
+    console.log('componentDidMount');
+  }
+
+  componentWillReceiveProps(nextProps) {
+    //listen to changes in search places;
+    if (this.sendPlacesToWebView && nextProps.places) {
+      this.sendPlacesToWebView(nextProps.places);
+    }
+  }
+
   renderDebug() {
     return (
       <View>
-        <TouchableHighlight onPress={resetCamera}>
-          <Text>reset to 0, 0</Text>
-        </TouchableHighlight>
         <Text>
           <Text style={styles.title}>Current position: </Text>
           {this.state.currentPositionString}
         </Text>
-        <TouchableHighlight onPress={() => { addCubeToLocation({latitude: this.state.currentPosition.latitude, longitude: this.state.currentPosition.longitude})} }>
+        <TouchableHighlight onPress={() => { this.addCubeToLocation({latitude: this.state.currentPosition.latitude, longitude: this.state.currentPosition.longitude})} }>
           <Text>add cube here</Text>
         </TouchableHighlight>
         <Text>
           <Text style={styles.title}>Current heading: </Text>
           {this.state.currentHeading}
-          <Text style={styles.title}>test heading: </Text>
-          {testHeading}
         </Text>
         <Text>
           <Text style={styles.title}>DeltaX from 0,0: </Text>
@@ -313,28 +325,25 @@ class ARview extends Component {
           <Text style={styles.title}>Total API calls: </Text>
           {this.state.totalAPICalls}
         </Text>
-        <TouchableHighlight onPress={() => {controlThreeJSCamera(0.2, 0)} }>
+        <TouchableHighlight onPress={() => {this.controlThreeJSCamera(0.2, 0)} }>
           <Text>go front</Text>
         </TouchableHighlight>
-        <TouchableHighlight onPress={() => {controlThreeJSCamera(-.2, 0)} }>
+        <TouchableHighlight onPress={() => {this.controlThreeJSCamera(-.2, 0)} }>
           <Text>go back</Text>
         </TouchableHighlight>
-        <TouchableHighlight onPress={() => {controlThreeJSCamera(0, -.2)} }>
+        <TouchableHighlight onPress={() => {this.controlThreeJSCamera(0, -.2)} }>
           <Text>go left</Text>
         </TouchableHighlight>
-        <TouchableHighlight onPress={() => {controlThreeJSCamera(0, .2)} }>
+        <TouchableHighlight onPress={() => {this.controlThreeJSCamera(0, .2)} }>
           <Text>go right</Text>
         </TouchableHighlight>
-        <TouchableHighlight onPress={() => {setHeadingToZero()}}>
-          <Text>set heading to 0</Text>
-        </TouchableHighlight>
-        <TouchableHighlight onPress={() => {setCurrentHeading()}}>
+        <TouchableHighlight onPress={() => {this.setCurrentHeading()}}>
           <Text>set heading to currentHeading</Text>
         </TouchableHighlight>
-        <TouchableHighlight onPress={() => {testHeading += 1; setHeading(testHeading)}}>
+        <TouchableHighlight onPress={() => {testHeading += 1; this.setHeading(testHeading)}}>
           <Text>add heading</Text>
         </TouchableHighlight>
-        <TouchableHighlight onPress={() => {testHeading -= 1; setHeading(testHeading)}}>
+        <TouchableHighlight onPress={() => {testHeading -= 1; this.setHeading(testHeading)}}>
           <Text>reduce heading</Text>
         </TouchableHighlight>
       </View>

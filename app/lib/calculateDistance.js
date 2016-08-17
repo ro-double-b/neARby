@@ -36,16 +36,6 @@ export const calculateDistance = (prevCoords, currentCoords, cameraCallback, log
   let deltaX = findXDistance(prevCoords.latitude, currentCoords.latitude);
   let deltaZ = findYDistance(distance, deltaX, prevCoords.longitude, currentCoords.longitude);
 
-  //this callback is pass all the way down from initGeolocation;
-  if (cameraCallback) {
-    cameraCallback({ type: 'cameraPosition', deltaX: deltaX, deltaZ: deltaZ});
-  }
-
-  //this is only for debugging purposes to show deltaX, deltaZ on screen, should remove later
-  if (loggerCallback) {
-    loggerCallback(deltaX, deltaZ, distance);
-  }
-
   return {
     deltaX: deltaX,
     deltaZ: deltaZ,
