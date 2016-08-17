@@ -1,4 +1,5 @@
-import TEST_ACTION from '../actions/index';
+import PLACES_COLLECTION from '../actions/index.js';
+console.log(PLACES_COLLECTION, 'PLACES_COLLECTION');
 
 const initialState = {
   testState: true

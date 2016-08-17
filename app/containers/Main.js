@@ -23,14 +23,6 @@ class Main extends Component {
       sampleSwitch: false,
       username: '',
       drawerItem: 'Search',
-<<<<<<< f9ba151a6fa7df9b41663c9ae3c771507cb66632
-=======
-      deltaX: 0,
-      deltaZ: 0,
-      totalAPICalls: 0,
-      intializing: true,
-      places: [],
->>>>>>> fix/meeerrrrgeeee connnffflliiicttts
       businessEvent: false,
       familyEvent: false,
       comedyEvent: false,
@@ -53,12 +45,35 @@ class Main extends Component {
       gasStationPlace: false,
       parkingPlace: false,
       parkPlace: false,
-<<<<<<< f9ba151a6fa7df9b41663c9ae3c771507cb66632
       placeSearch: '',
       placesEvents: []
-=======
-      placeSearch: ''
->>>>>>> fix/meeerrrrgeeee connnffflliiicttts
+      sendEvent: {
+        business: false,
+        family: false,
+        comedy: false,
+        festival: false,
+        sports: false,
+        music: false,
+        social: false,
+        film: false,
+        art: false,
+        sciTech: false,
+        eventDays: 1,
+        eventSearch: ''
+      },
+      sendPlace: {
+        food: false,
+        hotel: false,
+        cafes: false,
+        nightlife: false,
+        shopping: false,
+        publicTransit: false,
+        bank: false,
+        gasStation: false,
+        parking: false,
+        park: false,
+        placeSearch: ''
+      }
     };
   }
 
@@ -475,12 +490,11 @@ class Main extends Component {
         </View>;
     } else {
       drawerItems = <View style={styles.panel}>
-      <Text style={styles.heading}>under constrooction
-             <LoginButton
-          publishPermissions={['publish_actions']}
+      <Text style={styles.heading}>under construction</Text>
+             <Text style={{textAlign: 'center'}}><LoginButton
+          publishPermissions={["publish_actions"]}
           onLogoutFinished={this.handleSignout.bind(this)}/></Text>
-
-      </View>;
+      </View>
     }
 
     return (
