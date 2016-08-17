@@ -47,7 +47,8 @@ class Main extends Component {
       gasStationPlace: false,
       parkingPlace: false,
       parkPlace: false,
-      placeSearch: ''
+      placeSearch: '',
+      placesEvents: []
     };
   }
 
@@ -80,6 +81,7 @@ class Main extends Component {
   closeControlPanel = () => {
     this._drawer.close();
   }
+
   openControlPanel = () => {
     this._drawer.open();
   }
@@ -100,9 +102,13 @@ class Main extends Component {
       gasStation: this.state.gasStationPlace,
       parking: this.state.parkingPlace,
       park: this.state.parkPlace,
-      placeSearch: this.state.placeSearch
+      placeSearch: this.state.placeSearch,
+      latitude: 37.78375460769774,
+      longitude: -122.4091061298944,
+      threejsLat: 0,
+      threejsLon: 0,
     };
-  fetch('https://agile-peak-45133.herokuapp.com/places', {
+  fetch('http://10.6.23.239:3000/places', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -111,16 +117,17 @@ class Main extends Component {
     body: JSON.stringify(placeQuery)
   })
   .then(function(response) {
-    if (response.status === 200) {
-      console.log(response);
-      return response.json();
-    } else  {
-      console.log('error');
-    }
+    return response.json();
   })
-  .catch(function(error) {
-    console.error(error);
-  });
+  .then(function(data) {
+    this.setState({
+      placesEvents: data
+    });
+  }.bind(this));
+  // .catch(function(error) {
+  //   console.error(error);
+  // });
+  console.log(this.state.placesEvents);
     this._drawer.close();
     this.setState({
       foodPlace: false,
@@ -134,9 +141,29 @@ class Main extends Component {
       parkingPlace: false,
       parkPlace: false,
       placeSearchPlace: '',
-      drawerItem: 'Search'
+      drawerItem: 'Search',
     });
   }
+
+  getLocation = (obj) => {
+    this.setState({
+      latitude: obj.latitude,
+      longitude: obj.longitude,
+      threeLat: obj.threeLat,
+      threeLon: obj.threeLon,
+    });
+  }
+
+  getInitialLocation = (obj) => {
+    this.setState({
+      latitude: obj.latitude,
+      longitude: obj.longitude,
+      threeLan: obj.threeLat,
+      threeLon: obj.threeLon,
+    });
+    // need to go and fetch the data from the server and set the places state
+  }
+
 
   eventSearch = () => {
     console.log('calling eventsearch');
@@ -151,11 +178,15 @@ class Main extends Component {
       film: this.state.filmEvent,
       art: this.state.artEvent,
       sciTech: this.state.sciTechEvent,
-      eventDays: this.state.eventDays,
-      eventSearch: this.state.eventSearch
+      eventDays: this.state.sliderValue,
+      eventSearch: this.state.eventSearch,
+      latitude: 37.78375460769774,
+      longitude: -122.4091061298944,
+      threejsLat: 0,
+      threejsLon: 0,
     };
     console.log(eventQuery, 'QUERY');
-  fetch('https://agile-peak-45133.herokuapp.com/events', {
+  fetch('http://10.6.23.239:3000/events', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -164,16 +195,16 @@ class Main extends Component {
     body: JSON.stringify(eventQuery)
   })
   .then(function(response) {
-    if (response.status === 200) {
-      console.log(response);
-      return response.json();
-    } else  {
-      console.log('error');
-    }
+    return response.json();
   })
-  .catch(function(error) {
-    console.error(error);
-  });
+  .then(function(data) {
+    this.setState({
+      placesEvents: data
+    });
+  }.bind(this));
+  // .catch(function(error) {
+  //   console.error(error);
+  // });
     this._drawer.close();
     this.setState({
       businessEvent: false,
@@ -241,7 +272,7 @@ class Main extends Component {
     } else if (this.state.drawerItem === 'Events') {
       drawerItems = <View style={styles.panel}>
       <Text style={styles.heading}>events</Text>
-        <TextInput style={styles.textInput} placeholder='Search Events'></TextInput>
+        <TextInput style={styles.textInput} onChangeText={(text) => this.setState({eventSearch: text})} value={this.state.eventSearch} placeholder='Search Events'></TextInput>
         <Text style={styles.subheading}>I want events happening ...</Text>
         <Text style={styles.text}>{this.renderSliderValue()}</Text>
         <Slider
@@ -336,10 +367,23 @@ class Main extends Component {
           </TouchableHighlight>
         </View>
         </View>
+    } else if (this.state.drawerItem === 'List') {
+      var content = this.state.placesEvents.map(function(item, key) {
+        return (
+            <Text key={key}>{item.name}</Text>
+        );
+      });
+      drawerItems = <View style={styles.panel}>
+        <Text style={styles.heading}>Places</Text>
+            {content}
+        <TouchableHighlight style={styles.placeOrEventButton}>
+            <Text style={styles.buttonText}>More</Text>
+          </TouchableHighlight>
+        </View>
     } else if (this.state.drawerItem === 'Places') {
         drawerItems = <View style={styles.panel}>
       <Text style={styles.heading}>places</Text>
-        <TextInput style={styles.textInput} placeholder='Search Places'></TextInput>
+        <TextInput style={styles.textInput}  onChangeText={(text) => this.setState({placeSearch: text})} value={this.state.placeSearch} placeholder='Search Places'></TextInput>
         <Text style={styles.subheading}>Place Type</Text>
       <View style={styles.switchTable}>
         <View style={styles.switchColumn}>
@@ -448,6 +492,10 @@ class Main extends Component {
         <ARview
           pressProfile={() => {this.setState({drawerItem: 'Profile'}); this._drawer.open()}}
           pressSearch={() => {this.setState({drawerItem: 'Search'}); this._drawer.open()}}
+          pressList={() => {this.setState({drawerItem: 'List'}); this._drawer.open()}}
+          // mainViewGeoLocation={this.getInitialLocation.bind()}
+          // mainViewSetLocation={this.getLocation.bind()}
+          placesEvents={this.state.placesEvents}
         />
       </Drawer>
     );
