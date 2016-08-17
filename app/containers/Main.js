@@ -23,6 +23,14 @@ class Main extends Component {
       sampleSwitch: false,
       username: '',
       drawerItem: 'Search',
+<<<<<<< f9ba151a6fa7df9b41663c9ae3c771507cb66632
+=======
+      deltaX: 0,
+      deltaZ: 0,
+      totalAPICalls: 0,
+      intializing: true,
+      places: [],
+>>>>>>> fix/meeerrrrgeeee connnffflliiicttts
       businessEvent: false,
       familyEvent: false,
       comedyEvent: false,
@@ -45,8 +53,12 @@ class Main extends Component {
       gasStationPlace: false,
       parkingPlace: false,
       parkPlace: false,
+<<<<<<< f9ba151a6fa7df9b41663c9ae3c771507cb66632
       placeSearch: '',
       placesEvents: []
+=======
+      placeSearch: ''
+>>>>>>> fix/meeerrrrgeeee connnffflliiicttts
     };
   }
 
@@ -203,6 +215,109 @@ class Main extends Component {
   // .catch(function(error) {
   //   console.error(error);
   // });
+    this._drawer.close();
+    this.setState({
+      businessEvent: false,
+      familyEvent: false,
+      comedyEvent: false,
+      festivalEvent: false,
+      sportsEvent: false,
+      musicEvent: false,
+      socialEvent: false,
+      filmEvent: false,
+      artEvent: false,
+      sciTechEvent: false,
+      eventDays: 1,
+      eventSearch: ''
+    });
+  }
+
+  placeSearch = () => {
+    let placeQuery = {
+      food: this.state.foodPlace,
+      hotel: this.state.hotelPlace,
+      cafes: this.state.cafesPlace,
+      nightlife: this.state.nightlifePlace,
+      shopping: this.state.shoppingPlace,
+      publicTransit: this.state.publicTransitPlace,
+      bank: this.state.bankPlace,
+      gasStation: this.state.gasStationPlace,
+      parking: this.state.parkingPlace,
+      park: this.state.parkPlace,
+      placeSearch: this.state.placeSearch
+    };
+  fetch('https://agile-peak-45133.herokuapp.com/places', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(placeQuery)
+  })
+  .then(function(response) {
+    if (response.status === 200) {
+      console.log(response);
+      return response.json();
+    } else  {
+      console.log('error');
+    }
+  })
+  .catch(function(error) {
+    console.error(error);
+  });
+    this._drawer.close();
+    this.setState({
+      foodPlace: false,
+      hotelPlace: false,
+      cafesPlace: false,
+      nightlifePlace: false,
+      shoppingPlace: false,
+      publicTransitPlace: false,
+      bankPlace: false,
+      gasStationPlace: false,
+      parkingPlace: false,
+      parkPlace: false,
+      placeSearchPlace: '',
+      drawerItem: 'Search'
+    });
+  }
+
+  eventSearch = () => {
+    console.log('calling eventsearch');
+    let eventQuery = {
+      business: this.state.businessEvent,
+      family: this.state.familyEvent,
+      comedy: this.state.comedyEvent,
+      festival: this.state.festivalEvent,
+      sports: this.state.sportsEvent,
+      music: this.state.musicEvent,
+      social: this.state.socialEvent,
+      film: this.state.filmEvent,
+      art: this.state.artEvent,
+      sciTech: this.state.sciTechEvent,
+      eventDays: this.state.eventDays,
+      eventSearch: this.state.eventSearch
+    };
+    console.log(eventQuery, 'QUERY');
+  fetch('https://agile-peak-45133.herokuapp.com/events', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(eventQuery)
+  })
+  .then(function(response) {
+    if (response.status === 200) {
+      console.log(response);
+      return response.json();
+    } else  {
+      console.log('error');
+    }
+  })
+  .catch(function(error) {
+    console.error(error);
+  });
     this._drawer.close();
     this.setState({
       businessEvent: false,
@@ -385,7 +500,7 @@ class Main extends Component {
           // mainViewSetLocation={this.getLocation.bind()}
           placesEvents={this.state.placesEvents}
         />
-      </Drawer>
+       </Drawer>
     );
   }
 }
