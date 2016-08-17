@@ -371,6 +371,11 @@ class ARview extends Component {
                   <Image style={styles.search} source={require('../assets/profile.png')}/>
                 </View>
               </TouchableHighlight>
+              <TouchableHighlight style={styles.menu} onPress={this.props.pressList}>
+                <View style={styles.button}>
+                  <Image style={styles.search} source={require('../assets/link.png')}/>
+                </View>
+              </TouchableHighlight>
               <Compass style={styles.compass} rotation={this.state.currentHeading} places={this.state.places.slice(0,10)} currentLocation={{deltaX: this.state.deltaX, deltaZ: this.state.deltaZ}}/>
             </View>
           </WebViewBridge>
@@ -412,6 +417,7 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     justifyContent: 'flex-end',
+    left: 150,
   }
 });
 

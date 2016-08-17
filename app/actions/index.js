@@ -13,7 +13,8 @@ export const testAction = (testState) => {
 };
 
 export const fetchPlaces = (position) => {
-  let collection = fetch('https://agile-peak-45133.herokuapp.com/location', {
+  console.log('where amd i now')
+  let collection = fetch('http://10.6.23.239:3000/location', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
