@@ -67,7 +67,7 @@ const RenderScene =
           var mat = new THREE.MeshBasicMaterial({color: 0x00FF00, wireframe: true});
           var cube = new THREE.Mesh(geo, mat);
           cube.position.set(long, 0, -1 * lat);
-          cube.visible = false;
+          // cube.visible = false;
           scene.add(cube);
           window.divs.push({div: element, cube: cube});
         }

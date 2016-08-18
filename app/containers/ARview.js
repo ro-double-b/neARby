@@ -50,7 +50,7 @@ class ARview extends Component {
   }
 
   startDeviceLocationUpdate() {
-    Location.requestAlwaysAuthorization();
+    Location.requestWhenInUseAuthorization();
     Location.setDesiredAccuracy(1);
     Location.setDistanceFilter(1);
   }
@@ -305,6 +305,34 @@ class ARview extends Component {
     );
   }
 
+  renderButtons() {
+    return (
+      <View style={{flex: 1, flexDirection: 'column', justifyContent: 'flex-start'}}>
+        <TouchableHighlight style={styles.menu} onPress={this.props.pressSearch}>
+          <View style={styles.button}>
+            <Image style={styles.search} source={require('../assets/search.png')}/>
+          </View>
+        </TouchableHighlight>
+        <TouchableHighlight style={styles.menu} onPress={this.props.pressProfile}>
+          <View style={styles.button}>
+            <Image style={styles.userimg} source={{uri: this.props.user.picture}}/>
+          </View>
+        </TouchableHighlight>
+        <TouchableHighlight style={styles.menu} onPress={this.props.pressList}>
+          <View style={styles.button}>
+            <Image style={styles.search} source={require('../assets/link.png')}/>
+          </View>
+        </TouchableHighlight>
+        <TouchableHighlight style={styles.menu} onPress={this.props.pressCreate}>
+          <View style={styles.button}>
+            <Image style={styles.search} source={require('../assets/place.png')}/>
+          </View>
+        </TouchableHighlight>
+        <Compass style={styles.compass} rotation={this.state.currentHeading} places={this.props.places.slice(0,10)} currentLocation={{threeLat: this.props.threeLat, threeLon: this.props.threeLon}}/>
+      </View>
+    );
+  }
+
   render() {
     return (
       <View style={{flex: 1}}>
@@ -320,26 +348,7 @@ class ARview extends Component {
             injectedJavaScript={injectScript}
             source={{html}}
             style={{backgroundColor: 'transparent', flex: 1, flexDirection: 'row', alignItems: 'flex-start'}}>
-            <View style={{flex: 1, flexDirection: 'column', justifyContent: 'flex-start'}}>
-              <TouchableHighlight style={styles.menu} onPress={this.props.pressSearch}>
-                <View style={styles.button}>
-                  <Image style={styles.search} source={require('../assets/search.png')}/>
-                </View>
-              </TouchableHighlight>
-              <TouchableHighlight style={styles.menu} onPress={this.props.pressProfile}>
-                <View style={styles.button}>
-                  <Image style={styles.userimg} source={{uri: this.props.user.picture}}/>
-                </View>
-              </TouchableHighlight>
-              <TouchableHighlight style={styles.menu} onPress={this.props.pressList}>
-                <View style={styles.button}>
-                  <Image style={styles.search} source={require('../assets/link.png')}/>
-                </View>
-              </TouchableHighlight>
-            </View>
-            <View style={{flex: 1, marginTop: 150}}>
-              <Compass style={styles.compass} rotation={this.state.currentHeading} places={this.props.places.slice(0,10)} currentLocation={{threeLat: this.props.threeLat, threeLon: this.props.threeLon}}/>
-            </View>
+            {this.renderButtons()}
           </WebViewBridge>
         </Camera>
         {/* this.renderDebug() */}

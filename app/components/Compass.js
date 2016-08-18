@@ -1,7 +1,4 @@
-import React, { Component } from 'react';
-import {
-  StyleSheet
-} from 'react-native';
+import React from 'react';
 
 import Svg,{
     Circle,
@@ -18,20 +15,14 @@ const calculateOffSet = (userLocation, placeLocation) => {
   return offset;
 };
 
-class Compass extends Component {
-  constructor(props) {
-    super(props);
-  }
+const Compass = (props) => {
 
-  renderPlacesOnCompass(originX, originZ) {
-    return this.props.places.map((place, idx) => {
-      let offset = calculateOffSet(this.props.currentLocation, place);
+  let renderPlacesOnCompass = (originX, originZ) => {
+    return props.places.map((place, idx) => {
+      let offset = calculateOffSet(props.currentLocation, place);
       let theta = Math.atan2(offset.xOffset, offset.zOffset) * 180 / Math.PI;
       let hypontenus = Math.sqrt(offset.xOffset * offset.xOffset + offset.zOffset * offset.zOffset);
-
       if (Math.abs(Math.sin(90 - theta + 45 * Math.PI / 180) * hypontenus) < 42 && Math.abs(Math.cos(90 - theta + 45 * Math.PI / 180) * hypontenus) < 42) {
-        // console.log('sin', Math.sin(90 - theta + 45 * Math.PI / 180) * hypontenus);
-        // console.log('cos', Math.cos(90 - theta + 45 * Math.PI / 180) * hypontenus);
         return (
           <G x={`${originZ + offset.zOffset}`} y={`${originX + offset.xOffset}`} originX="1.5" originY="1.5" key={idx} >
             <Circle cx="0" cy="0" r="3" fill="rgba(0,0,255,1)"/>
@@ -44,11 +35,10 @@ class Compass extends Component {
           </G>
         );
       }
-
     });
-  }
+  };
 
-  renderArrow() {
+  let renderArrow = () => {
     return (
       <G id="arrow"
         rotate="-135"
@@ -66,69 +56,61 @@ class Compass extends Component {
 
       </G>
     );
-  }
-  render() {
-    return (
-      <Svg
-        width="600"
-        height="800">
+  };
 
-        {/*
-          <Rect
-            x="0"
-            y="0"
-            width="100%"
-            height="100%"
-            fill="rgba(255,0,0,.2)"/>
-          */}
+  return (
+    <Svg
+      width="600"
+      height="800">
+
+      {/*
+        <Rect
+          x="0"
+          y="0"
+          width="100%"
+          height="100%"
+          fill="rgba(255,0,0,.2)"/>
+        */}
+
+      <G
+        x="70"
+        y="455">
 
         <G
-          x="70"
-          y="455">
+          rotate={`${-1 * props.rotation}`}
+          origin="45, 45">
 
+          {/* this is the square with the north lable */}
           <G
-            rotate={`${-1 * this.props.rotation}`}
+            rotate={`${-45}`}
             origin="45, 45">
+            <Rect
+              width="90"
+              height="90"
+              fill="rgba(0,255,255,.2)"
+              strokeWidth="3"
+              stroke="rgba(0,255,255,.2)"/>
 
-            {/* this is the square with the north lable */}
             <G
-              rotate={`${-45}`}
-              origin="45, 45">
-              <Rect
-                width="90"
-                height="90"
-                fill="rgba(0,255,255,.2)"
-                strokeWidth="3"
-                stroke="rgba(0,255,255,.2)"/>
-
-              <G
-                rotate={45}
-                origin="78, 4">
-                <Text
-                  fill="cyan"
-                  fontSize="12"
-                  x="84"
-                  y="0"
-                  textAnchor="middle">
-                  N
-                </Text>
-              </G>
+              rotate={45}
+              origin="78, 4">
+              <Text
+                fill="cyan"
+                fontSize="12"
+                x="84"
+                y="0"
+                textAnchor="middle">
+                N
+              </Text>
             </G>
-
-            {this.renderPlacesOnCompass(45, 45)}
           </G>
-        </G>
-        {this.renderArrow()}
-      </Svg>
-    );
-  }
-}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'rgba(255,255,255,1)'
-  }
-});
+          {renderPlacesOnCompass(45, 45)}
+        </G>
+      </G>
+      {renderArrow()}
+    </Svg>
+  );
+};
 
 export default Compass;
