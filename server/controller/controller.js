@@ -7,7 +7,7 @@ function deg2rad(deg) {
 }
 
 // calculates the total distance
-function hypotenusedistance(lat1, lon1, lat2, lon2) {
+function hypotenuseDistance(lat1, lon1, lat2, lon2) {
   var R = 6371000; // Radius of the earth in m
   var dLat = deg2rad(lat2 - lat1);  // deg2rad below
   var dLon = deg2rad(lon2 - lon1);
@@ -15,7 +15,7 @@ function hypotenusedistance(lat1, lon1, lat2, lon2) {
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
     Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  var c = 2 * Math.asin(Math.min(1, Math.sqrt(a)));
   var d = R * c; // Distance in m
   return d;
 }
@@ -78,7 +78,7 @@ function getPlaces(req, res) {
 
 module.exports = {
   deg2rad: deg2rad,
-  hypotenusedistance: hypotenusedistance,
+  hypotenuseDistance: hypotenuseDistance,
   findXDistance: findXDistance,
   square: square,
   findYDistance: findYDistance,
