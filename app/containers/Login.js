@@ -39,9 +39,9 @@ class Login extends Component {
         onLoginFinished={
           (error, result) => {
             if (error) {
-              alert("login has error: " + result.error);
+              alert('login has error: ' + result.error);
             } else if (result.isCancelled) {
-              alert("login is cancelled.");
+              alert('login is cancelled.');
             } else {
               AccessToken.getCurrentAccessToken().then(
                 (data) => {
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   button: {
     width: 50,
     height: 50,
-    backgroundColor: '#3B5998',
+    backgroundColor: '#3B5998'
   },
   textContainer: {
     flex: 1,
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 60,
-    fontFamily: 'AvenirNext-UltraLight',
+    fontFamily: 'AvenirNext-UltraLight'
   },
   textAR: {
     fontSize: 60,

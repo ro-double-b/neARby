@@ -15,14 +15,14 @@ function hypotenuseDistance(lat1, lon1, lat2, lon2) {
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
     Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  var c = 2 * Math.asin(Math.min(1, Math.sqrt(a)));
   var d = R * c; // Distance in m
   return d;
 }
 
 // calculates the x distance
 function findXDistance(initLat, newLat) {
-  return (newLat - initLat) * 111230;
+  return (newLat - initLat) * 111230; // Distance of one latitude degree in meters
 }
 
 function square(number) {
@@ -61,11 +61,11 @@ function getPlaces(req, res) {
           var googleLon = findYDistance(distanceFromInit, googleLat, initLon, req.body.longitude);
           // populate an object with all necessary information
           var place = {
-          name: result.name,
-          lat: googleLat,
-          lon: googleLon,
-          distance: googleDistance,
-          img: result.icon,
+            name: result.name,
+            lat: googleLat,
+            lon: googleLon,
+            distance: googleDistance,
+            img: result.icon
           };
           placesObj.push(place);
         });
@@ -77,5 +77,10 @@ function getPlaces(req, res) {
 }
 
 module.exports = {
-  getPlaces,
+  deg2rad: deg2rad,
+  hypotenuseDistance: hypotenuseDistance,
+  findXDistance: findXDistance,
+  square: square,
+  findYDistance: findYDistance,
+  getPlaces: getPlaces
 };
