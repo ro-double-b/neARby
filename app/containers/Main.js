@@ -4,13 +4,11 @@ import {
   View,
   TextInput,
   TouchableHighlight,
-  Image,
   Switch,
   Slider,
   Text,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import FBSDK, { LoginButton, AccessToken, GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
+import { LoginButton, GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
 import Drawer from 'react-native-drawer';
 import ARview from './ARview';
 import { connect } from 'react-redux';
@@ -141,7 +139,7 @@ class Main extends Component {
       parkingPlace: false,
       parkPlace: false,
       placeSearchPlace: '',
-      drawerItem: 'Search',
+      drawerItem: 'Search'
     });
   }
 
@@ -150,7 +148,7 @@ class Main extends Component {
       latitude: obj.latitude,
       longitude: obj.longitude,
       threeLat: obj.threeLat,
-      threeLon: obj.threeLon,
+      threeLon: obj.threeLon
     });
   }
 
@@ -159,7 +157,7 @@ class Main extends Component {
       latitude: obj.latitude,
       longitude: obj.longitude,
       threeLan: obj.threeLat,
-      threeLon: obj.threeLon,
+      threeLon: obj.threeLon
     });
     // need to go and fetch the data from the server and set the places state
   }
@@ -183,7 +181,7 @@ class Main extends Component {
       latitude: 37.78375460769774,
       longitude: -122.4091061298944,
       threejsLat: 0,
-      threejsLon: 0,
+      threejsLon: 0
     };
     console.log(eventQuery, 'QUERY');
   fetch('http://10.6.23.239:3000/events', {
@@ -227,6 +225,16 @@ class Main extends Component {
     this.props.action.drawerState('Places');
   }
 
+  createSwitch = (event, text) => {
+    return <View style={styles.switch}>
+      <Switch
+          onTintColor="#009D9D"
+          onValueChange={(value) => this.setState({[event]: value})}
+          value={this.state[event]} />
+      <Text style={styles.switchText}>{text}</Text>
+    </View>;
+  }
+
   renderSliderValue = () => {
     // if slidervalue is one return today
     const weekdays = {
@@ -268,11 +276,11 @@ class Main extends Component {
             <Text style={styles.buttonText}>events</Text>
           </TouchableHighlight>
           </View>
-        </View>
+        </View>;
     } else if (this.state.drawerItem === 'Events') {
       drawerItems = <View style={styles.panel}>
       <Text style={styles.heading}>events</Text>
-        <TextInput style={styles.textInput} onChangeText={(text) => this.setState({eventSearch: text})} value={this.state.eventSearch} placeholder='Search Events'></TextInput>
+        <TextInput style={styles.textInput} onChangeText={(text) => this.setState({eventSearch: text})} value={this.state.eventSearch} placeholder="Search Events" />
         <Text style={styles.subheading}>I want events happening ...</Text>
         <Text style={styles.text}>{this.renderSliderValue()}</Text>
         <Slider
@@ -284,89 +292,29 @@ class Main extends Component {
         <Text style={styles.subheading}>Event Type</Text>
       <View style={styles.switchTable}>
         <View style={styles.switchColumn}>
-          <View style={styles.switch}>
-            <Switch
-            onTintColor='#009D9D'
-            onValueChange={(value) => this.setState({businessEvent: value})}
-            value={this.state.businessEvent} />
-            <Text style={styles.switchText}>Business</Text>
-            </View>
-          <View style={styles.switch}>
-            <Switch
-            onTintColor='#009D9D'
-            onValueChange={(value) => this.setState({familyEvent: value})}
-            value={this.state.familyEvent} />
-            <Text style={styles.switchText}>Family</Text>
-          </View>
-          <View style={styles.switch}>
-            <Switch
-            onTintColor='#009D9D'
-            onValueChange={(value) => this.setState({comedyEvent: value})}
-            value={this.state.comedyEvent} />
-            <Text style={styles.switchText}>Comedy</Text>
-            </View>
-          <View style={styles.switch}>
-            <Switch
-            onTintColor='#009D9D'
-            onValueChange={(value) => this.setState({festivalEvent: value})}
-            value={this.state.festivalEvent} />
-            <Text style={styles.switchText}>Festivals</Text>
-          </View>
-          <View style={styles.switch}>
-            <Switch
-            onTintColor='#009D9D'
-            onValueChange={(value) => this.setState({sportsEvent: value})}
-            value={this.state.sportsEvent} />
-            <Text style={styles.switchText}>Sports</Text>
-          </View>
+          {this.createSwitch('businessEvent', 'Business')}
+          {this.createSwitch('familyEvent', 'Family')}
+          {this.createSwitch('comedyEvent', 'Comedy')}
+          {this.createSwitch('festivalEvent', 'Festivals')}
+          {this.createSwitch('sportsEvent', 'Sports')}
         </View>
         <View style={styles.switchColumn}>
-          <View style={styles.switch}>
-            <Switch
-            onTintColor='#009D9D'
-            onValueChange={(value) => this.setState({musicEvent: value})}
-            value={this.state.musicEvent} />
-            <Text style={styles.switchText}>Music</Text>
-            </View>
-          <View style={styles.switch}>
-            <Switch
-            onTintColor='#009D9D'
-            onValueChange={(value) => this.setState({socialEvent: value})}
-            value={this.state.socialEvent} />
-            <Text style={styles.switchText}>Social</Text>
-          </View>
-          <View style={styles.switch}>
-            <Switch
-            onTintColor='#009D9D'
-            onValueChange={(value) => this.setState({filmEvent: value})}
-            value={this.state.filmEvent} />
-            <Text style={styles.switchText}>Film</Text>
-            </View>
-          <View style={styles.switch}>
-            <Switch
-            onTintColor='#009D9D'
-            onValueChange={(value) => this.setState({artEvent: value})}
-            value={this.state.artEvent} />
-            <Text style={styles.switchText}>Art</Text>
-          </View>
-          <View style={styles.switch}>
-            <Switch
-            onTintColor='#009D9D'
-            onValueChange={(value) => this.setState({sciTechEvent: value})}
-            value={this.state.sciTechEvent} />
-            <Text style={styles.switchText}>Sci/Tech</Text>
-          </View>
+          {this.createSwitch('musicEvent', 'Music')}
+          {this.createSwitch('socialEvent', 'Social')}
+          {this.createSwitch('filmEvent', 'Film')}
+          {this.createSwitch('artEvent', 'Art')}
+          {this.createSwitch('sciTechEvent', 'Sci/Tech')}
         </View>
         </View>
         <View style={styles.buttonContainer}>
           <TouchableHighlight style={styles.placeOrEventButton} onPress={() => { this.setState({drawerItem: 'Search'}); }}>
             <Text style={styles.buttonText}>go back</Text>
           </TouchableHighlight>
-          <TouchableHighlight style={styles.placeOrEventButton} onPress={() => { this.eventSearch() }}>
+          <TouchableHighlight style={styles.placeOrEventButton} onPress={() => { this.eventSearch(); }}>
             <Text style={styles.buttonText}>submit</Text>
           </TouchableHighlight>
         </View>
-        </View>
+        </View>;
     } else if (this.state.drawerItem === 'List') {
       var content = this.state.placesEvents.map(function(item, key) {
         return (
@@ -379,86 +327,26 @@ class Main extends Component {
         <TouchableHighlight style={styles.placeOrEventButton}>
             <Text style={styles.buttonText}>More</Text>
           </TouchableHighlight>
-        </View>
+        </View>;
     } else if (this.state.drawerItem === 'Places') {
         drawerItems = <View style={styles.panel}>
       <Text style={styles.heading}>places</Text>
-        <TextInput style={styles.textInput}  onChangeText={(text) => this.setState({placeSearch: text})} value={this.state.placeSearch} placeholder='Search Places'></TextInput>
+        <TextInput style={styles.textInput}  onChangeText={(text) => this.setState({placeSearch: text})} value={this.state.placeSearch} placeholder="Search Places" />
         <Text style={styles.subheading}>Place Type</Text>
       <View style={styles.switchTable}>
         <View style={styles.switchColumn}>
-          <View style={styles.switch}>
-            <Switch
-            onTintColor='#009D9D'
-            onValueChange={(value) => this.setState({foodPlace: value})}
-            value={this.state.foodPlace} />
-            <Text style={styles.switchText}>Food</Text>
-            </View>
-          <View style={styles.switch}>
-            <Switch
-            onTintColor='#009D9D'
-            onValueChange={(value) => this.setState({hotelPlace: value})}
-            value={this.state.hotelPlace} />
-            <Text style={styles.switchText}>Hotels</Text>
-          </View>
-          <View style={styles.switch}>
-            <Switch
-            onTintColor='#009D9D'
-            onValueChange={(value) => this.setState({cafesPlace: value})}
-            value={this.state.cafesPlace} />
-            <Text style={styles.switchText}>Cafes</Text>
-            </View>
-          <View style={styles.switch}>
-            <Switch
-            onTintColor='#009D9D'
-            onValueChange={(value) => this.setState({nightlifePlace: value})}
-            value={this.state.nightlifePlace} />
-            <Text style={styles.switchText}>Nightlife</Text>
-          </View>
-          <View style={styles.switch}>
-            <Switch
-            onTintColor='#009D9D'
-            onValueChange={(value) => this.setState({shoppingPlace: value})}
-            value={this.state.shoppingPlace} />
-            <Text style={styles.switchText}>Shopping</Text>
-          </View>
+          {this.createSwitch('foodPlace', 'Food')}
+          {this.createSwitch('hotelPlace', 'Hotels')}
+          {this.createSwitch('cafesPlace', 'Cafes')}
+          {this.createSwitch('nightlifePlace', 'Nightlife')}
+          {this.createSwitch('shoppingPlace', 'Shopping')}
         </View>
         <View style={styles.switchColumn}>
-          <View style={styles.switch}>
-            <Switch
-            onTintColor='#009D9D'
-            onValueChange={(value) => this.setState({publicTransit: value})}
-            value={this.state.publicTransit} />
-            <Text style={styles.switchText}>Public Transit</Text>
-            </View>
-          <View style={styles.switch}>
-            <Switch
-            onTintColor='#009D9D'
-            onValueChange={(value) => this.setState({bankPlace: value})}
-            value={this.state.bankPlace} />
-            <Text style={styles.switchText}>Bank/ATM</Text>
-          </View>
-          <View style={styles.switch}>
-            <Switch
-            onTintColor='#009D9D'
-            onValueChange={(value) => this.setState({gasStationPlace: value})}
-            value={this.state.gasStationPlace} />
-            <Text style={styles.switchText}>Gas Stations</Text>
-            </View>
-          <View style={styles.switch}>
-            <Switch
-            onTintColor='#009D9D'
-            onValueChange={(value) => this.setState({parkingPlace: value})}
-            value={this.state.parkingPlace} />
-            <Text style={styles.switchText}>Parking</Text>
-          </View>
-          <View style={styles.switch}>
-            <Switch
-            onTintColor='#009D9D'
-            onValueChange={(value) => this.setState({parkPlace: value})}
-            value={this.state.parkPlace} />
-            <Text style={styles.switchText}>Parks</Text>
-          </View>
+          {this.createSwitch('publicTransit', 'Public Transit')}
+          {this.createSwitch('bankPlace', 'Bank/ATM')}
+          {this.createSwitch('gasStationPlace', 'Gas Stations')}
+          {this.createSwitch('parkingPlace', 'Parking')}
+          {this.createSwitch('parkPlace', 'Parks')}
         </View>
         </View>
         <View style={styles.buttonContainer}>
@@ -469,30 +357,30 @@ class Main extends Component {
             <Text style={styles.buttonText}>submit</Text>
           </TouchableHighlight>
         </View>
-        </View>
+        </View>;
     } else {
       drawerItems = <View style={styles.panel}>
       <Text style={styles.heading}>under constrooction
              <LoginButton
-          publishPermissions={["publish_actions"]}
+          publishPermissions={['publish_actions']}
           onLogoutFinished={this.handleSignout.bind(this)}/></Text>
 
-      </View>
+      </View>;
     }
 
     return (
       <Drawer
         type="overlay"
         side="right"
-        ref={(ref) => this._drawer = ref}
+        ref={(ref) => {this._drawer = ref;}}
         content={drawerItems}
         panOpenMask={0.5}
         panCloseMask={0.2}
-        tweenHandler={(ratio) => ({main: { opacity:(3-ratio)/3 }})}>
+        tweenHandler={(ratio) => ({main: { opacity:(3 - ratio) / 3 }})}>
         <ARview
-          pressProfile={() => {this.setState({drawerItem: 'Profile'}); this._drawer.open()}}
-          pressSearch={() => {this.setState({drawerItem: 'Search'}); this._drawer.open()}}
-          pressList={() => {this.setState({drawerItem: 'List'}); this._drawer.open()}}
+          pressProfile={() => {this.setState({drawerItem: 'Profile'}); this._drawer.open();}}
+          pressSearch={() => {this.setState({drawerItem: 'Search'}); this._drawer.open();}}
+          pressList={() => {this.setState({drawerItem: 'List'}); this._drawer.open();}}
           // mainViewGeoLocation={this.getInitialLocation.bind()}
           // mainViewSetLocation={this.getLocation.bind()}
           placesEvents={this.state.placesEvents}
