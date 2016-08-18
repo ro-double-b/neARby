@@ -22,7 +22,7 @@ function hypotenuseDistance(lat1, lon1, lat2, lon2) {
 
 // calculates the x distance
 function findXDistance(initLat, newLat) {
-  return (newLat - initLat) * 111230;
+  return (newLat - initLat) * 111230; // Distance of one latitude degree in meters
 }
 
 function square(number) {
@@ -61,11 +61,11 @@ function getPlaces(req, res) {
           var googleLon = findYDistance(distanceFromInit, googleLat, initLon, req.body.longitude);
           // populate an object with all necessary information
           var place = {
-          name: result.name,
-          lat: googleLat,
-          lon: googleLon,
-          distance: googleDistance,
-          img: result.icon,
+            name: result.name,
+            lat: googleLat,
+            lon: googleLon,
+            distance: googleDistance,
+            img: result.icon
           };
           placesObj.push(place);
         });
