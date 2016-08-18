@@ -48,7 +48,9 @@ class Main extends Component {
       parkingPlace: false,
       parkPlace: false,
       placeSearch: '',
-      placesEvents: []
+      placesEvents: [],
+      selectedEvent: {},
+      imageTest: 'http://facebook.github.io/react/img/logo_og.png'
     };
   }
 
@@ -367,19 +369,61 @@ class Main extends Component {
           </TouchableHighlight>
         </View>
         </View>
+
+
+
+
+
+
     } else if (this.state.drawerItem === 'List') {
       var content = this.state.placesEvents.map(function(item, key) {
         return (
-            <Text key={key}>{item.name}</Text>
-        );
-      });
-      drawerItems = <View style={styles.panel}>
-        <Text style={styles.heading}>Places</Text>
-            {content}
-        <TouchableHighlight style={styles.placeOrEventButton}>
-            <Text style={styles.buttonText}>More</Text>
+          <TouchableHighlight key={key} onPress={() => { this.setState({drawerItem: 'Detail', selectedEvent: item}); }}>
+            <View style={styles.lists}>
+              <Text style={styles.listText} >{item.name}</Text>
+              <Text style={styles.listText} >{item.venue} at {item.address}</Text>
+              <Text style={styles.listText} >{item.distance} Feet Away</Text>
+              <Text style={styles.listText} >Starts in: {item.startTime}</Text>
+            </View>
           </TouchableHighlight>
+        );
+      }.bind(this));
+
+      drawerItems =
+        <View style={styles.panel}>
+          <Text style={styles.heading}>Events</Text>
+            {content}
         </View>
+    
+
+
+
+
+
+    } else if (this.state.drawerItem === 'Detail') {
+      drawerItems =
+        <View style={styles.panel}>
+          <Text text={styles.listText}>{this.state.selectedEvent.name}</Text>
+        <Image
+          source={{uri: this.state.imageTest}}
+        />
+          <Text style={styles.listText}>{this.state.selectedEvent.venue}</Text>
+          <Text style={styles.listText}>{this.state.selectedEvent.address}</Text>
+          <Text style={styles.listText}>{this.state.selectedEvent.distance} Feet Away</Text>
+
+          <View style={styles.buttonContainer}>
+            <TouchableHighlight style={styles.placeOrEventButton}>
+              <Text style={styles.buttonText}>Buy Tix</Text>
+            </TouchableHighlight>
+            <TouchableHighlight style={styles.placeOrEventButton}>
+              <Text style={styles.buttonText}>Get Direc</Text>
+            </TouchableHighlight>
+          </View>
+
+        </View>
+
+
+
     } else if (this.state.drawerItem === 'Places') {
         drawerItems = <View style={styles.panel}>
       <Text style={styles.heading}>places</Text>
@@ -620,6 +664,17 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center'
+  },
+  words: {
+    fontSize: 25
+  },
+  lists: {
+    padding: 15,
+    backgroundColor: '#00FFFF',
+  },
+  listText: {
+    fontSize: 16,
+    fontFamily: 'AvenirNext-Regular',
   }
 });
 
