@@ -8,6 +8,7 @@ import {
   DeviceEventEmitter //DeviceEventEmitter is imported for geolocation update
 } from 'react-native';
 
+import styles from '../styles/style';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as Actions from '../actions/index';
@@ -20,7 +21,6 @@ import html from '../webview/html';
 //this script will be injected into WebViewBridge to communicate
 import { injectScript } from '../webview/webviewBridgeScript';
 import Compass from '../components/Compass';
-console.log('Location', Location);
 
 //webviewbrige variables
 var resetCamera;
@@ -37,6 +37,7 @@ var sendNewHeading = false;
 class ARview extends Component {
   constructor(props) {
     super(props);
+    console.log(this, 'AR VIEW');
     this.state = {
       //strings are for debugging only
       initialHeadingString: 'unknown',
@@ -359,8 +360,8 @@ class ARview extends Component {
             onBridgeMessage={this.onBridgeMessage.bind(this)}
             injectedJavaScript={injectScript}
             source={{html}}
-            style={{backgroundColor: 'transparent'}}>
-            <View style={{flex: 1, flexDirection: 'row'}}>
+            style={{backgroundColor: 'transparent', flex: 1, flexDirection: 'row', alignItems: 'flex-start'}}>
+            <View style={{flex: 1, flexDirection: 'column', justifyContent: 'flex-start'}}>
               <TouchableHighlight style={styles.menu} onPress={this.props.pressSearch}>
                 <View style={styles.button}>
                   <Image style={styles.search} source={require('../assets/search.png')}/>
@@ -368,7 +369,7 @@ class ARview extends Component {
               </TouchableHighlight>
               <TouchableHighlight style={styles.menu} onPress={this.props.pressProfile}>
                 <View style={styles.button}>
-                  <Image style={styles.search} source={require('../assets/profile.png')}/>
+                  <Image style={styles.userimg} source={{uri: this.props.user.picture}}/>
                 </View>
               </TouchableHighlight>
               <TouchableHighlight style={styles.menu} onPress={this.props.pressList}>
@@ -376,6 +377,8 @@ class ARview extends Component {
                   <Image style={styles.search} source={require('../assets/link.png')}/>
                 </View>
               </TouchableHighlight>
+            </View>
+            <View style={{flex: 1, marginTop: 150}}>
               <Compass style={styles.compass} rotation={this.state.currentHeading} places={this.state.places.slice(0,10)} currentLocation={{deltaX: this.state.deltaX, deltaZ: this.state.deltaZ}}/>
             </View>
           </WebViewBridge>
@@ -386,51 +389,55 @@ class ARview extends Component {
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'rgba(255,255,255,1)'
-  },
-  preview: {
-    flex: 1,
-    alignItems: 'flex-end',
-    justifyContent: 'flex-end'
-  },
-  menu: {
-    padding: 10
-  },
-  button: {
-    backgroundColor: 'rgba(0,0,0,0)',
-    borderColor: '#FFF',
-    borderWidth: 2,
-    borderRadius: 30,
-    height: 60,
-    width: 60,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  search: {
-    height: 25,
-    width: 25
-  },
-  compass: {
-    width: 150,
-    height: 150,
-    justifyContent: 'flex-end',
-    left: 150,
-  }
-});
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: 'rgba(255,255,255,1)'
+//   },
+//   preview: {
+//     flex: 1,
+//     alignItems: 'flex-end',
+//     justifyContent: 'flex-end'
+//   },
+//   menu: {
+//     padding: 10
+//   },
+//   button: {
+//     backgroundColor: 'rgba(0,0,0,0)',
+//     borderColor: '#FFF',
+//     borderWidth: 2,
+//     borderRadius: 30,
+//     height: 60,
+//     width: 60,
+//     alignItems: 'center',
+//     justifyContent: 'center'
+//   },
+//   search: {
+//     height: 25,
+//     width: 25
+//   },
+//   userimg: {
+//     height: 57,
+//     width: 57,
+//     borderRadius: 30
+//   },
+//   compass: {
+//     width: 150,
+//     height: 150,
+//     justifyContent: 'flex-end',
+//     left: 150,
+//   }
+// });
 
 const mapStateToProps = function(state) {
-  console.log('map state to props is called, this is state: ', state);
   return {
     places: state.places,
-    testState: state.testState
+    drawer: state.drawer,
+    user: state.user
   };
 };
 
 const mapDispatchToProps = function(dispatch) {
-  console.log('map dispatch to props is called');
   return { action: bindActionCreators(Actions, dispatch) };
 };
 

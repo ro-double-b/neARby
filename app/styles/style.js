@@ -10,11 +10,16 @@ const styles = StyleSheet.create({
   },
   preview: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center'
+    // alignItems: 'center',
+    // justifyContent: 'center',
   },
   menu: {
     padding: 10
+  },
+  userimg: {
+    height: 57,
+    width: 57,
+    borderRadius: 30
   },
   button: {
     backgroundColor: 'rgba(0,0,0,0)',
@@ -116,6 +121,8 @@ const styles = StyleSheet.create({
   compass: {
     width: 150,
     height: 150,
+    justifyContent: 'flex-end',
+    left: 150
   },
   buttonContainer: {
     flex: 1,
