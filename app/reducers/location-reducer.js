@@ -1,14 +1,11 @@
 import {INIT_POSITION_UPDATE} from '../actions/index';
 import {CURRENT_POSITION_UPDATE} from '../actions/index';
-// import {CURRENT_HEADING} from '../actions/index';
-import {API_CALL_POSITION_UPDATE} from '../actions/index';
 import {LOADING_LOCATION} from '../actions/index';
 
 
 const initialState = {
   initialPosition: null,
   currentPosition: null,
-  // currentHeading: null,
   LastAPICallPosition: null,
   threeLat: 0,
   threeLon: 0,
@@ -17,7 +14,6 @@ const initialState = {
 };
 
 export default function(state = initialState, action) {
-  console.log(action);
   switch (action.type) {
 
     case INIT_POSITION_UPDATE:
@@ -34,19 +30,10 @@ export default function(state = initialState, action) {
         distance: action.payload.distance,
       };
 
-    // case CURRENT_HEADING:
-    //   return { ...state,
-    //     currentHeading: action.payload.currentHeading };
-
-    case API_CALL_POSITION_UPDATE:
-      return { ...state,
-        lastAPICallPosition: action.payload.lastAPICallPosition,
-        totalAPICalls: action.payload.totalAPICalls
-       };
-
     case LOADING_LOCATION:
       return { ...state,
-        loading: action.payload.loading };
+        loading: action.payload.loading 
+      };
 
     default:
       return state;

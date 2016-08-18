@@ -9,7 +9,8 @@ export const DETAIL_SELECTED = 'DETAIL_SELECTED';
 export const SEARCH_PHOTOS = 'SEARCH_PHOTOS';
 
 export const fetchPlaces = (position) => {
-  let collection = fetch('https://agile-peak-45133.herokuapp.com/location', {
+  // 'https://agile-peak-45133.herokuapp.com/location
+  let collection = fetch('http://10.6.23.239:3000/location', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -67,7 +68,7 @@ export const placeQuery = (query) => {
 
 export const eventQuery = (query) => {
   // post request
-  let search = fetch('https://agile-peak-45133.herokuapp.com/events', {
+  let search = fetch('http://10.6.23.239:3000/events', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
