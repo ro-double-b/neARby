@@ -1,10 +1,6 @@
-var chai = require('chai');
-var chaiAsPromised = require('chai-as-promised');
+var expect = require('chai').expect;
 var controller = require('../server/controller/controller');
 var request = require('request');
-
-chai.use(chaiAsPromised);
-var expect = chai.expect;
 
 describe('deg2rad', function() {
   it('should convert degrees to radians', function() {
