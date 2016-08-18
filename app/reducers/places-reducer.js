@@ -1,15 +1,26 @@
-import PLACES_COLLECTION from '../actions/index.js';
+import { PLACES_COLLECTION } from '../actions/index';
 console.log(PLACES_COLLECTION, 'PLACES_COLLECTION');
 
 const initialState = {
-  testState: true
+  places: [],
+  placeQuery: {
+    food: false,
+    hotel: false,
+    cafes: false,
+    nightlife: false,
+    shopping: false,
+    publicTransit: false,
+    bank: false,
+    gasStation: false,
+    parking: false,
+    park: false,
+    placeSearch: ''
+  }
 };
 
 export default function(state = initialState, action) {
-  console.log(action);
   switch (action.type) {
-    case TEST_ACTION:
-      console.log('TEST_ACTION reducer fired');
+    case PLACES_COLLECTION:
       return {
         ...state,
         testState: action.payload

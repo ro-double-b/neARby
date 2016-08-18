@@ -4,7 +4,7 @@ import user from './user-reducer';
 import drawer from './drawer-reducer';
 
 const rootReducer = combineReducers({
-  // places: places,
+  places: places,
   // user: user,
   drawer: drawer
 });
