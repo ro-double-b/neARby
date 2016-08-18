@@ -1,11 +1,5 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet,
-  View,
-  TextInput,
-  TouchableHighlight,
-  Switch,
-  Slider,
   Text,
 } from 'react-native';
 import styles from '../styles/style';
@@ -24,6 +18,7 @@ import * as Actions from '../actions/index';
 class Main extends Component {
   constructor(props) {
     super(props);
+    console.log(this);
   }
 
   componentWillMount() {
@@ -40,11 +35,6 @@ class Main extends Component {
     new GraphRequestManager().addRequest(infoRequest).start();
   }
 
-  componentDidMount() {
-    this.props.action.drawerState('Places');
-    // console.log(this.props.places, ' PLACES');
-  }
-
   getUserInfo(err, data) {
     if (err) {
       console.log('ERR ', err);
@@ -54,185 +44,6 @@ class Main extends Component {
       console.log('DATA - ', data.name + ' ' + data.picture.data.url);
     }
   }
-
-  placeSearch = () => {
-    let placeQuery = {
-      food: this.state.foodPlace,
-      hotel: this.state.hotelPlace,
-      cafes: this.state.cafesPlace,
-      nightlife: this.state.nightlifePlace,
-      shopping: this.state.shoppingPlace,
-      publicTransit: this.state.publicTransitPlace,
-      bank: this.state.bankPlace,
-      gasStation: this.state.gasStationPlace,
-      parking: this.state.parkingPlace,
-      park: this.state.parkPlace,
-      placeSearch: this.state.placeSearch,
-      latitude: 37.78375460769774,
-      longitude: -122.4091061298944,
-      threejsLat: 0,
-      threejsLon: 0,
-    };
-  fetch('http://10.6.23.239:3000/places', {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(placeQuery)
-  })
-  .then(function(response) {
-    return response.json();
-  })
-  .then(function(data) {
-    this.setState({
-      placesEvents: data
-    });
-  }.bind(this));
-    this._drawer.close();
-    this.setState({
-      foodPlace: false,
-      hotelPlace: false,
-      cafesPlace: false,
-      nightlifePlace: false,
-      shoppingPlace: false,
-      publicTransitPlace: false,
-      bankPlace: false,
-      gasStationPlace: false,
-      parkingPlace: false,
-      parkPlace: false,
-      placeSearchPlace: '',
-      drawerItem: 'Search'
-    });
-  }
-
-  getLocation = (obj) => {
-    this.setState({
-      latitude: obj.latitude,
-      longitude: obj.longitude,
-      threeLat: obj.threeLat,
-      threeLon: obj.threeLon
-    });
-  }
-
-  getInitialLocation = (obj) => {
-    this.setState({
-      latitude: obj.latitude,
-      longitude: obj.longitude,
-      threeLan: obj.threeLat,
-      threeLon: obj.threeLon
-    });
-    // need to go and fetch the data from the server and set the places state
-  }
-
-
-  eventSearch = () => {
-    let eventQuery = {
-      business: this.state.businessEvent,
-      family: this.state.familyEvent,
-      comedy: this.state.comedyEvent,
-      festival: this.state.festivalEvent,
-      sports: this.state.sportsEvent,
-      music: this.state.musicEvent,
-      social: this.state.socialEvent,
-      film: this.state.filmEvent,
-      art: this.state.artEvent,
-      sciTech: this.state.sciTechEvent,
-      eventDays: this.state.sliderValue,
-      eventSearch: this.state.eventSearch,
-      latitude: 37.78375460769774,
-      longitude: -122.4091061298944,
-      threejsLat: 0,
-      threejsLon: 0
-    };
-    console.log(eventQuery, 'QUERY');
-  fetch('http://10.6.23.239:3000/events', {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(eventQuery)
-  })
-  .then(function(response) {
-    return response.json();
-  })
-  .then(function(data) {
-    this.setState({
-      placesEvents: data
-    });
-  }.bind(this));
-  // .catch(function(error) {
-  //   console.error(error);
-  // });
-    this._drawer.close();
-    this.setState({
-      businessEvent: false,
-      familyEvent: false,
-      comedyEvent: false,
-      festivalEvent: false,
-      sportsEvent: false,
-      musicEvent: false,
-      socialEvent: false,
-      filmEvent: false,
-      artEvent: false,
-      sciTechEvent: false,
-      eventDays: 1,
-      eventSearch: ''
-    });
-  }
-
-  placeSearch = () => {
-    let placeQuery = {
-      food: this.state.foodPlace,
-      hotel: this.state.hotelPlace,
-      cafes: this.state.cafesPlace,
-      nightlife: this.state.nightlifePlace,
-      shopping: this.state.shoppingPlace,
-      publicTransit: this.state.publicTransitPlace,
-      bank: this.state.bankPlace,
-      gasStation: this.state.gasStationPlace,
-      parking: this.state.parkingPlace,
-      park: this.state.parkPlace,
-      placeSearch: this.state.placeSearch
-    };
-  fetch('https://agile-peak-45133.herokuapp.com/places', {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(placeQuery)
-  })
-  .then(function(response) {
-    if (response.status === 200) {
-      console.log(response);
-      return response.json();
-    } else  {
-      console.log('error');
-    }
-  })
-  .catch(function(error) {
-    console.error(error);
-  });
-    this._drawer.close();
-    this.setState({
-      foodPlace: false,
-      hotelPlace: false,
-      cafesPlace: false,
-      nightlifePlace: false,
-      shoppingPlace: false,
-      publicTransitPlace: false,
-      bankPlace: false,
-      gasStationPlace: false,
-      parkingPlace: false,
-      parkPlace: false,
-      placeSearchPlace: '',
-      drawerItem: 'Search'
-    });
-  }
-
-
 
   render() {
     let drawerItems;
@@ -246,13 +57,14 @@ class Main extends Component {
       drawerItems = <UserPanel close={() => {this._drawer.close()}} open={() => {this._drawer.open()}}/>
     } else if (this.props.drawer === 'User'){
       <Text style={styles.heading}>under construction</Text>
-        drawerItems = <UserPanel close={() => {this._drawer.close()}} open={() => {this._drawer.open()}}/>
+        drawerItems = <UserPanel navigator={this.props.navigator} close={() => {this._drawer.close()}} open={() => {this._drawer.open()}}/>
     } else {
       drawerItems = <SearchPanel close={() => {this._drawer.close()}} open={() => {this._drawer.open()}}/>
     }
 
     return (
       <Drawer
+        navigator={this.props.navigator}
         type="overlay"
         side="right"
         ref={(ref) => {this._drawer = ref;}}
@@ -261,7 +73,7 @@ class Main extends Component {
         panCloseMask={0.2}
         tweenHandler={(ratio) => ({main: { opacity:(3 - ratio) / 3 }})}>
         <ARview
-          pressProfile={() => {this.props.action.drawerState('User'); console.log(this, 'THIS'); this._drawer.open();}}
+          pressProfile={() => {this.props.action.drawerState('User'); this._drawer.open();}}
           pressSearch={() => {this.props.action.drawerState('Search'); this._drawer.open();}}
           pressList={() => {this.props.action.drawerState('List'); this._drawer.open();}}
           // mainViewGeoLocation={this.getInitialLocation.bind()}

@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import {
   View,
-  Text
+  Text,
+  Image,
+  MapView,
+  ListView
 } from 'react-native';
 import FBSDK, { LoginButton } from 'react-native-fbsdk';
 import styles from '../styles/style';
@@ -22,24 +25,31 @@ class UserPanel extends Component {
   render() {
     return (
       <View style={styles.panel}>
-      <Text style={styles.heading}>under construction</Text>
-      <Text style={{textAlign: 'center'}}><LoginButton
+      <Text style={styles.subheading}>{this.props.user.username}</Text>
+      <Image source={{ uri: '"' + this.props.user.picture + '"'}}/>
+      <MapView
+        style={{flex: 1}}
+        showsUserLocation={true}
+        followUserLocation={true}
+        />
+      <Text style={{textAlign: 'center'}}>
+      <LoginButton
         publishPermissions={["publish_actions"]}
-        onLogoutFinished={this.handleSignout.bind(this)}/></Text>
+        onLogoutFinished={this.handleSignout.bind(this)}/>
+      </Text>
       </View>
     );
   }
 }
 
 const mapStateToProps = function(state) {
-  console.log('map state to props is called, this is state: ', state);
   return {
-    user: state.user
+    user: state.user,
+    drawer: state.drawer
   };
 };
 
 const mapDispatchToProps = function(dispatch) {
-  console.log('map dispatch to props is called');
   return {
     action: bindActionCreators({ drawerState }, dispatch)
   };
