@@ -19,7 +19,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as Actions from '../actions/index';
 
-import Create from '../components/Create';
+import CreatePanel from '../components/CreatePanel';
 
 class Main extends Component {
   constructor(props) {
@@ -54,8 +54,8 @@ class Main extends Component {
         drawerItems = <UserPanel navigator={this.props.navigator} close={() => {this._drawer.close()}} open={() => {this._drawer.open()}}/>
     } else if (this.props.drawer === 'Detail') {
       drawerItems = <DetailPanel close={() => {this._drawer.close()}} open={() => {this._drawer.open()}}/>
-    } else if (this.state.drawerItem === 'Create') {
-      drawerItems = <Create/>;
+    } else if (this.props.drawer === 'Create') {
+      drawerItems = <CreatePanel/>;
     } else {
       drawerItems = <SearchPanel close={() => {this._drawer.close()}} open={() => {this._drawer.open()}}/>
     }
@@ -77,7 +77,7 @@ class Main extends Component {
           pressSearch={() => {this.props.action.drawerState('Search'); this._drawer.open();}}
           pressList={() => {this.props.action.drawerState('List'); this._drawer.open();}}
           pressCreate={() => {this.props.action.drawerState('Create'); this._drawer.open()}}
-          placesEvents={this.state.placesEvents}
+          // placesEvents={this.state.placesEvents}
         />
       </Drawer>
     );

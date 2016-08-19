@@ -103,7 +103,11 @@ class ARview extends Component {
         threejsLon: 0
       };
       console.log('fetchPlaces, fetchPlaces');
-      this.props.action.fetchPlaces(positionObj);
+      this.props.action.fetchPlaces(positionObj)
+      .catch((err) => {
+        //implement error message
+        setTimeout(() => {this.props.action.fetchPlaces(positionObj)}, 5000);
+      });
 
       if (sendInitLocToMainView) {
         sendInitLocToMainView(sendInitLocToMainView);
@@ -227,7 +231,10 @@ class ARview extends Component {
         //more filters
       };
 
-      this.props.action.fetchPlaces(positionObj);
+      this.props.action.fetchPlaces(positionObj)
+      .catch((err) => {
+        setTimeout(() => this.props.action.fetchPlaces(positionObj), 5);
+      });
     };
 
     message = JSON.parse(message);

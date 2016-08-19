@@ -177,8 +177,6 @@ export const selectPlace = (data) => {
 //////////////////////////////
 export const INIT_POSITION_UPDATE = 'INIT_POSITION_UPDATE';
 export const CURRENT_POSITION_UPDATE = 'CURRENT_POSITION_UPDATE';
-export const CURRENT_HEADING = 'CURRENT_HEADING';
-export const API_CALL_POSITION_UPDATE = 'API_CALL_POSITION_UPDATE';
 export const LOADING_LOCATION = 'LOADING_LOCATION';
 
 export const updateInitLocation = (location) => {
@@ -201,26 +199,6 @@ export const updateCurrentLocation = (location) => {
       threeLat: location.threeLat,
       threeLon: location.threeLon,
       distance: location.distance
-    }
-  };
-};
-
-export const updateLastAPICallLocation = (location) => {
-  console.log('updateLastAPICallLocation');
-  return {
-    type: API_CALL_POSITION_UPDATE,
-    payload: {
-      lastAPICallPosition: location
-    }
-  };
-};
-
-export const updateHeading = (degree) => {
-  console.log('updateCurrentHeading');
-  return {
-    type: CURRENT_HEADING,
-    payload: {
-      currentHeading: degree
     }
   };
 };
