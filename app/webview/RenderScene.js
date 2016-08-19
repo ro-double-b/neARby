@@ -11,12 +11,16 @@ const RenderScene =
         document.body.style.fontFamily = 'Helvetica, sans-serif';
         window.divs = [];
         var divsInSight = [];
+
+        // Check overlap of two rectangle-objects
         var checkOverlap = function(rect1, rect2) {
           return !(rect1.right < rect2.left ||
                  rect1.left > rect2.right ||
                  rect1.bottom < rect2.top ||
                  rect1.top > rect2.bottom);
         }
+
+        // Returns array of divs that are visible on the screen
         var checkFrustum = function() {
           frustum.setFromMatrix( new THREE.Matrix4().multiplyMatrices( camera.projectionMatrix, camera.matrixWorldInverse ) );
           return window.divs.filter(function(obj) {
@@ -36,7 +40,12 @@ const RenderScene =
             }
             element.style.transform = 'scale(' + scale + ')';
           }
+          element.style.transform = 'scale(' + scale + ')';
+        }
 
+        window.createPlace = function(lat, long, name, distance) {
+
+          // Create surrounding div
           var element = document.createElement('div')
           element.className = 'place';
           element.style.backgroundColor = 'rgba(0, 127, 127, 0.443137)';
@@ -57,6 +66,7 @@ const RenderScene =
           nameHeading.style.marginRight = '10px';
           element.appendChild(nameHeading);
 
+          // Create distance heading
           var distanceHeading = document.createElement('h1');
           distanceHeading.innerText = distance;
           distanceHeading.style.color = 'rgba(127,255,255,0.75)';
@@ -67,6 +77,7 @@ const RenderScene =
 
           element.style.position  = 'absolute';
 
+          // Create invisible threejs cube that will be used for calculating AR
           var geo = new THREE.BoxGeometry(1, 1, 1);
           var mat = new THREE.MeshBasicMaterial({color: 0x00FF00, wireframe: true});
           var cube = new THREE.Mesh(geo, mat);
@@ -74,8 +85,9 @@ const RenderScene =
           cube.visible = false;
           scene.add(cube);
           window.divs.push({div: element, cube: cube});
-        }
+        };
 
+        // Check collision between argument div and all visible divs
         var checkCollision = function(div) {
           var rect1 = div.querySelector('h1').getBoundingClientRect();
           return divsInSight.some(function(e) {
@@ -92,16 +104,31 @@ const RenderScene =
 
           divsInSight.forEach(function(element) {
             var div = element.div;
+
+            // Position denotes the height of the div
             var pos = div.pos || 0;
+
+            // Direction describes whether the div avoids collisions by moving up or down
             var direction = div.direction || [1, -1][Math.floor(Math.random() * 2)];
-            var cube = element.cube;
+
+
+            // Show the div since it is currently visible
             div.style.display = '';
+
+            var cube = element.cube;
+
+            // Library that finds visible threejs objects and maps them to css coordinates.
+            // Note that there is a bug in the library which results in two divs for every
+            // threejs cube 180 degrees from one another. The problem is solved by checking
+            // the frustum for cubes that are actually visible.
             var position = THREEx.ObjCoord.cssPosition(cube, camera, renderer);
+
             var left = (position.x - div.offsetWidth /2);
             div.style.left = left + 'px';
             var top = (position.y - div.offsetHeight/2);
             div.style.top = top + pos + 'px';
 
+            // Move div up or down until it is no longer colliding
             for (var inc = 7; checkCollision(div); inc += 7) {
               div.style.top = top + (inc * direction) + 'px';
               div.pos = inc * direction;
