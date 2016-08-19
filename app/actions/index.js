@@ -10,7 +10,8 @@ export const SEARCH_PHOTOS = 'SEARCH_PHOTOS';
 
 export const fetchPlaces = (position) => {
   // 'https://agile-peak-45133.herokuapp.com/location
-  let collection = fetch('http://10.6.23.239:3000/location', {
+  //http://10.6.23.239:3000
+  let collection = fetch('https://agile-peak-45133.herokuapp.com/location', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -68,7 +69,7 @@ export const placeQuery = (query) => {
 
 export const eventQuery = (query) => {
   // post request
-  let search = fetch('http://10.6.23.239:3000/events', {
+  let search = fetch('https://agile-peak-45133.herokuapp.com/events', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -210,5 +211,27 @@ export const finishLoadingPosition = (boolean) => {
     payload: {
       loading: boolean
     }
+  };
+};
+
+//////////////////////////////
+////user creation handlers
+//////////////////////////////
+export const USER_PLACES = 'USER_PLACES';
+export const USER_EVENTS = 'USER_EVENTS';
+
+export const addPlace = (place) => {
+  console.log('addPlace');
+  return {
+    type: USER_PLACES,
+    payload: place
+  };
+};
+
+export const addEvent = (event) => {
+  console.log('addEvent');
+  return {
+    type: USER_EVENTS,
+    payload: event
   };
 };

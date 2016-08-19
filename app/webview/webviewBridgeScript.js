@@ -37,9 +37,9 @@ export const injectScript = `
     }
 
     //add cube in arbitraury location
-    var addCubeHere = function(threejsLat, threejsLon) {
+    var addCubeHere = function(threejsLat, threejsLon, color) {
       var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-      var material = new THREE.MeshBasicMaterial( { color: "rgb(255, 0, 0)", wireframe: true } );
+      var material = new THREE.MeshBasicMaterial( { color: color, wireframe: true } );
       var cube = new THREE.Mesh( geometry, material );
       cube.position.set(threejsLon, 0, -1 * threejsLat);
       window.scene.add( cube );
@@ -81,8 +81,14 @@ export const injectScript = `
             }
           });
           window.divs = [];
-          places.forEach(function(place){
-            window.createPlace(place.lat, place.lon, place.name, place.distance);
+          places.forEach(function(place) {
+            if (place.type && (place.type === 'userPlace')) {
+              addCubeHere(place.lat, place.lon, "rgb(255, 0, 0)");
+            } else if (place.type && (place.type === 'userEvent')) {
+              addCubeHere(place.lat, place.lon, "rgb(255, 255, 0)");
+            } else {
+              window.createPlace(place.lat, place.lon, place.name, place.distance);
+            }
           })
 
         } else if (message.type === 'currentHeading') {
@@ -90,9 +96,6 @@ export const injectScript = `
           headingUpdate = true;
           // WebViewBridge.send(JSON.stringify("in WebViewBridge, got currentHeading"));
 
-        } else if (message.type === 'addTestCube') {
-          addCubeHere(message.deltaX, message.deltaZ);
-          WebViewBridge.send(JSON.stringify("in WebViewBridge, add cube here"));
         }
       };
 

@@ -1,5 +1,7 @@
 import { PLACES_COLLECTION } from '../actions/index';
 import { SEARCH_PLACES } from '../actions/index';
+import { USER_PLACES } from '../actions/index';
+import { USER_EVENTS } from '../actions/index';
 
 const initialState = {
   places: [],
@@ -15,7 +17,9 @@ const initialState = {
     parking: false,
     park: false,
     placeSearch: ''
-  }
+  },
+  userPlacesUpdate: false,
+  userEventsUpdate: false
 };
 
 export default function(state = initialState, action) {
@@ -30,6 +34,18 @@ export default function(state = initialState, action) {
       return {
         ...state,
         placeQuery: action.payload
+      };
+    case USER_PLACES:
+      return {
+        ...state,
+        places: state.places.concat([action.payload]),
+        userPlacesUpdate: true
+      };
+    case USER_EVENTS:
+      return {
+        ...state,
+        places: state.places.concat([action.payload]),
+        userEventsUpdate: true
       };
     default:
       return state;

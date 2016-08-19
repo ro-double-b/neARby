@@ -9,6 +9,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import FBSDK, { GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
 import Drawer from 'react-native-drawer';
 import ARview from './ARview';
+// import ARview from './ARview';
 import SearchPanel from '../components/SearchPanel';
 import EventPanel from '../components/EventPanel';
 import PlacePanel from '../components/PlacePanel';

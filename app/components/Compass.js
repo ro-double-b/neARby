@@ -22,16 +22,32 @@ const Compass = (props) => {
       let offset = calculateOffSet(props.currentLocation, place);
       let theta = Math.atan2(offset.xOffset, offset.zOffset) * 180 / Math.PI;
       let hypontenus = Math.sqrt(offset.xOffset * offset.xOffset + offset.zOffset * offset.zOffset);
+     
+      //dots color are different base on their type, blue is default
+      let colorSolid = 'rgba(0,0,255,1)';
+      let colorFade = 'rgba(0,0,255,.2)';
+      let size = '3';
+      if (place.type && (place.type === 'userPlace')) {
+        colorSolid = 'rgba(255,0,0,1)';
+        colorFade = 'rgba(255,0,0,.2)';
+        size =  '4';
+      } else if (place.type && (place.type === 'userEvent')) {
+        colorSolid = 'rgba(255,255,0,1)';
+        colorFade = 'rgba(255,255,0,.2)';
+        size =  '4';
+      }
+
       if (Math.abs(Math.sin(90 - theta + 45 * Math.PI / 180) * hypontenus) < 42 && Math.abs(Math.cos(90 - theta + 45 * Math.PI / 180) * hypontenus) < 42) {
+    
         return (
           <G x={`${originZ + offset.zOffset}`} y={`${originX + offset.xOffset}`} originX="1.5" originY="1.5" key={idx} >
-            <Circle cx="0" cy="0" r="3" fill="rgba(0,0,255,1)"/>
+            <Circle cx="0" cy="0" r={size} fill={colorSolid}/>
           </G>
         );
       } else {
         return (
           <G x={`${originZ + offset.zOffset}`} y={`${originX + offset.xOffset}`} originX="1.5" originY="1.5" key={idx}>
-            <Circle cx="0" cy="0" r="3" fill="rgba(0,0,255,.2)"/>
+            <Circle cx="0" cy="0" r={size} fill={colorFade}/>
           </G>
         );
       }
@@ -72,6 +88,7 @@ const Compass = (props) => {
           fill="rgba(255,0,0,.2)"/>
         */}
 
+      {renderArrow()}
       <G
         x="70"
         y="455">
@@ -108,7 +125,6 @@ const Compass = (props) => {
           {renderPlacesOnCompass(45, 45)}
         </G>
       </G>
-      {renderArrow()}
     </Svg>
   );
 };

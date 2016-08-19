@@ -27,12 +27,12 @@ export default function(state = initialState, action) {
         currentPosition: action.payload.currentPosition,
         threeLat: action.payload.threeLat,
         threeLon: action.payload.threeLon,
-        distance: action.payload.distance,
+        distance: action.payload.distance
       };
 
     case LOADING_LOCATION:
       return { ...state,
-        loading: action.payload.loading 
+        loading: action.payload.loading
       };
 
     default:

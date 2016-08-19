@@ -28,7 +28,7 @@ var sendNewHeading = false;
 
 //deltaX is change in latidue, north (+), south (-)
 //deltaZ is change im latidue, east(+), west (-)
-class ARview extends Component {
+class ARcomponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -47,8 +47,9 @@ class ARview extends Component {
 
   componentWillReceiveProps(nextProps) {
     //listen to changes in search places;
+    console.log('nextProps', nextProps);
     if (this.sendPlacesToWebView && nextProps.places) {
-      this.sendPlacesToWebView(nextProps.places.slice(0,10));
+      this.sendPlacesToWebView(nextProps.places);
     }
   }
 
@@ -167,8 +168,15 @@ class ARview extends Component {
     //////////////////////////
     this.addCubeToLocation = (location) => {
       let cubeLocation = calculateDistance(this.props.initialPosition, location);
-      cubeLocation.type = 'addTestCube';
+      cubeLocation.type = 'addUserObj';
       webviewbridge.sendToBridge(JSON.stringify(cubeLocation));
+    };
+
+    this.addObjToLocation = (userObj) => {
+      let location = {latitude: userObj.latitude, longitude: userObj.longitude};
+      let cubeLocation = calculateDistance(this.props.initialPosition, location);
+      Object.assign(userObj, cubeLocation);
+      webviewbridge.sendToBridge(JSON.stringify(userObj));
     };
 
     ///////////////////////////////////////////////
@@ -217,7 +225,7 @@ class ARview extends Component {
 
     this.sendPlacesToWebView = (places) => {
       let placesMsg = {type: 'places', places: places};
-      console.log('sending places to webview', places);
+      // console.log('sending places to webview', places);
       webviewbridge.sendToBridge(JSON.stringify(placesMsg));
     };
 
@@ -337,7 +345,7 @@ class ARview extends Component {
             <Image style={styles.search} source={require('../assets/place.png')}/>
           </View>
         </TouchableHighlight>
-        <Compass style={styles.compass} rotation={this.state.currentHeading} places={this.props.places.slice(0,10)} currentLocation={{threeLat: this.props.threeLat, threeLon: this.props.threeLon}}/>
+        <Compass style={styles.compass} rotation={this.state.currentHeading} places={this.props.places} currentLocation={{threeLat: this.props.threeLat, threeLon: this.props.threeLon}}/>
       </View>
     );
   }
@@ -413,6 +421,9 @@ const mapStateToProps = function(state) {
     LastAPICallPosition: state.Geolocation.lastAPICallPosition,
     totalAPICalls: state.Geolocation.totalAPICalls,
     places: state.places.places,
+    userPlacesUpdate: state.places.userPlacesUpdate,
+    userEventsUpdate: state.places.userEventsUpdate,
+
     initialPosition: state.Geolocation.initialPosition,
     currentPosition: state.Geolocation.currentPosition,
     threeLat: state.Geolocation.threeLat,
@@ -424,4 +435,6 @@ const mapDispatchToProps = function(dispatch) {
   return { action: bindActionCreators(Actions, dispatch) };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ARview);
+// export const ARview = connect(mapStateToProps, mapDispatchToProps)(ARcomponent);
+// export let addToScene = addObjToLocation;
+export default connect(mapStateToProps, mapDispatchToProps)(ARcomponent);

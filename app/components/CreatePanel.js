@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet,
   View,
   Text,
   TouchableOpacity,
@@ -14,37 +13,11 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as Actions from '../actions/index';
 
-const createSpot = (type, obj) => {
-  let uri = 'http://10.6.23.239:3000/';
-  let endPoint;
-
-  if (type === 'createPlace') {
-    console.log('creating place: ', obj);
-    endPoint = 'createPlace';
-  } else if (type === 'createEvent') {
-    console.log('creating event: ', obj);
-    endPoint = 'createEvent';
-  }
-
-  fetch(uri + endPoint, {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(obj)
-  })
-  .then(function(response) {
-    if (response.status === 200) {
-      return response.json();
-    } else  {
-      console.log('error');
-    }
-  })
-  .catch(function(error) {
-    console.error(error);
-  });
-};
+//TODOs:
+//add color selector for geometry and a color state, fix timestamp on ev  ent request obj
+//implement rating on detail view for user generated content, every time a rating is made, will send post request to server
+//implement edit view, which let user remove the obj
+//show countdown on obj
 
 class CreatePanel extends Component {
   constructor(props) {
@@ -60,15 +33,34 @@ class CreatePanel extends Component {
     };
   }
 
+  resetState() {
+    this.setState({
+      createType: 'place',
+      placeName: '',
+      placeDescription: '',
+      eventName: '',
+      eventDescription: '',
+      startTime: '',
+      duration: '',
+    });
+  }
+
   handleSubmitPlace() {
     let obj = {
       name: this.state.placeName,
       description: this.state.placeDescription,
       latitude: this.props.currentPosition.latitude,
       longitude: this.props.currentPosition.longitude,
-      username: this.props.username
+      lat: this.props.threeLat,
+      lon: this.props.threeLon,
+      distance: this.props.distance,
+      username: this.props.username,
+      type: 'userPlace'
     };
-    createSpot('createPlace', obj);
+
+    // sendSpotToServer('createPlace', obj);
+    this.props.action.addPlace(obj);
+    this.resetState();
     this.props.close();
   }
 
@@ -79,9 +71,16 @@ class CreatePanel extends Component {
       latitude: this.props.currentPosition.latitude,
       longitude: this.props.currentPosition.longitude,
       startTime: this.props.startTime,
-      username: this.props.username
+      username: this.props.username,
+      lat: this.props.threeLat,
+      lon: this.props.threeLon,
+      distance: this.props.distance,
+      type: 'userEvent'
     };
-    createSpot('createEvent', obj);
+
+    // sendSpotToServer('createEvent', obj);
+    this.props.action.addEvent(obj);
+    this.resetState();
     this.props.close();
   }
 
@@ -167,12 +166,47 @@ class CreatePanel extends Component {
   }
 };
 
+const sendSpotToServer = (type, obj) => {
+  // let uri = 'http://10.6.23.239:3000/';
+  let uri = 'https://agile-peak-45133.herokuapp.com';
+  let endPoint;
+
+  if (type === 'createPlace') {
+    console.log('creating place: ', obj);
+    endPoint = 'createPlace';
+  } else if (type === 'createEvent') {
+    console.log('creating event: ', obj);
+    endPoint = 'createEvent';
+  }
+
+  fetch(uri + endPoint, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(obj)
+  })
+  .then(function(response) {
+    if (response.status === 200) {
+      return response.json();
+    } else  {
+      console.log('error');
+    }
+  })
+  .catch(function(error) {
+    console.error(error);
+  });
+};
+
 const mapStateToProps = function(state) {
   return {
     username: state.user.username,
+    initialPosition: state.Geolocation.initialPosition,
     currentPosition: state.Geolocation.currentPosition,
     threeLat: state.Geolocation.threeLat,
-    threeLon: state.Geolocation.threeLon
+    threeLon: state.Geolocation.threeLon,
+    distance: state.Geolocation.distance
   };
 };
 
