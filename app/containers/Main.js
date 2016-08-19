@@ -77,7 +77,7 @@ class Main extends Component {
           pressProfile={() => {this.props.action.drawerState('User'); this._drawer.open();}}
           pressSearch={() => {this.props.action.drawerState('Search'); this._drawer.open();}}
           pressList={() => {this.props.action.drawerState('List'); this._drawer.open();}}
-          pressCreate={() => {this.props.action.drawerState('Create'); this._drawer.open()}}
+          pressCreate={() => {this.props.action.drawerState('Create'); this._drawer.open();}}
           // placesEvents={this.state.placesEvents}
         />
       </Drawer>

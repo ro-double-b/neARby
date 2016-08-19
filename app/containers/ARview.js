@@ -172,13 +172,6 @@ class ARcomponent extends Component {
       webviewbridge.sendToBridge(JSON.stringify(cubeLocation));
     };
 
-    this.addObjToLocation = (userObj) => {
-      let location = {latitude: userObj.latitude, longitude: userObj.longitude};
-      let cubeLocation = calculateDistance(this.props.initialPosition, location);
-      Object.assign(userObj, cubeLocation);
-      webviewbridge.sendToBridge(JSON.stringify(userObj));
-    };
-
     ///////////////////////////////////////////////
     //test buttons handlers, for dev purpose only
     ///////////////////////////////////////////////
@@ -330,11 +323,6 @@ class ARcomponent extends Component {
             <Image style={styles.search} source={require('../assets/search.png')}/>
           </View>
         </TouchableHighlight>
-        <TouchableHighlight style={styles.menu} onPress={this.props.pressProfile}>
-          <View style={styles.button}>
-            <Image style={styles.userimg} source={{uri: this.props.user.picture}}/>
-          </View>
-        </TouchableHighlight>
         <TouchableHighlight style={styles.menu} onPress={this.props.pressList}>
           <View style={styles.button}>
             <Image style={styles.search} source={require('../assets/link.png')}/>
@@ -345,7 +333,11 @@ class ARcomponent extends Component {
             <Image style={styles.search} source={require('../assets/place.png')}/>
           </View>
         </TouchableHighlight>
-        <Compass style={styles.compass} rotation={this.state.currentHeading} places={this.props.places} currentLocation={{threeLat: this.props.threeLat, threeLon: this.props.threeLon}}/>
+        <TouchableHighlight style={styles.menu} onPress={this.props.pressProfile}>
+          <View style={styles.button}>
+            <Image style={styles.userimg} source={{uri: this.props.user.picture}}/>
+          </View>
+        </TouchableHighlight>
       </View>
     );
   }
@@ -366,6 +358,7 @@ class ARcomponent extends Component {
             source={{html}}
             style={{backgroundColor: 'transparent', flex: 1, flexDirection: 'row', alignItems: 'flex-start'}}>
             {this.renderButtons()}
+            <Compass style={styles.compass} rotation={this.state.currentHeading} places={this.props.places} currentLocation={{threeLat: this.props.threeLat, threeLon: this.props.threeLon}}/>
           </WebViewBridge>
         </Camera>
         {/* this.renderDebug() */}
@@ -417,7 +410,7 @@ class ARcomponent extends Component {
 const mapStateToProps = function(state) {
   return {
     drawer: state.drawer,
-    user: state.user.username,
+    user: state.user,
     LastAPICallPosition: state.Geolocation.lastAPICallPosition,
     totalAPICalls: state.Geolocation.totalAPICalls,
     places: state.places.places,
