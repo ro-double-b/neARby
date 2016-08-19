@@ -10,11 +10,45 @@ import {
   Slider
 } from 'react-native';
 import styles from '../styles/style';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as Actions from '../actions/index';
+
+const createSpot = (type, obj) => {
+  let uri = 'http://10.6.23.239:3000/';
+  let endPoint;
+
+  if (type === 'createPlace') {
+    console.log('creating place: ', obj);
+    endPoint = 'createPlace';
+  } else if (type === 'createEvent') {
+    console.log('creating event: ', obj);
+    endPoint = 'createEvent';
+  }
+
+  fetch(uri + endPoint, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(obj)
+  })
+  .then(function(response) {
+    if (response.status === 200) {
+      return response.json();
+    } else  {
+      console.log('error');
+    }
+  })
+  .catch(function(error) {
+    console.error(error);
+  });
+};
 
 class CreatePanel extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       createType: 'place',
       placeName: '',
@@ -27,13 +61,28 @@ class CreatePanel extends Component {
   }
 
   handleSubmitPlace() {
-    //make post request to register cube
-    // this.props.close();
+    let obj = {
+      name: this.state.placeName,
+      description: this.state.placeDescription,
+      latitude: this.props.currentPosition.latitude,
+      longitude: this.props.currentPosition.longitude,
+      username: this.props.username
+    };
+    createSpot('createPlace', obj);
+    this.props.close();
   }
 
   handleSubmitEvent() {
-    //make post request to register cube
-    // this.props.close();
+    let obj = {
+      name: this.state.eventName,
+      description: this.state.eventDescription,
+      latitude: this.props.currentPosition.latitude,
+      longitude: this.props.currentPosition.longitude,
+      startTime: this.props.startTime,
+      username: this.props.username
+    };
+    createSpot('createEvent', obj);
+    this.props.close();
   }
 
   startTimeSlider(value) {
@@ -45,7 +94,7 @@ class CreatePanel extends Component {
     let eventStartHr = Math.floor(eventStartTime);
     let eventStartMinute = Math.floor((eventStartTime % 1) * 60);
     if (eventStartMinute === 0) {
-      eventStartMinute = '00'
+      eventStartMinute = '00';
     }
     this.setState({
       startTime: eventStartHr + ':' + eventStartMinute + suffix
@@ -85,7 +134,7 @@ class CreatePanel extends Component {
             minimumValue={0}
             maximumValue={5}
             step={1} />
-          <Text style={styles.inputLable}>upload picture placeHolder</Text>
+          <Text style={styles.inputLable2}>upload picture placeHolder</Text>
           <TouchableHighlight style={styles.createButton} onPress={() => { this.handleSubmitEvent(); }}>
             <Text style={styles.buttonText}>add spots</Text>
           </TouchableHighlight>
@@ -118,5 +167,17 @@ class CreatePanel extends Component {
   }
 };
 
+const mapStateToProps = function(state) {
+  return {
+    username: state.user.username,
+    currentPosition: state.Geolocation.currentPosition,
+    threeLat: state.Geolocation.threeLat,
+    threeLon: state.Geolocation.threeLon
+  };
+};
 
-export default CreatePanel;
+const mapDispatchToProps = function(dispatch) {
+  return { action: bindActionCreators(Actions, dispatch) };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreatePanel);

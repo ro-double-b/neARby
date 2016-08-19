@@ -55,7 +55,7 @@ class Main extends Component {
     } else if (this.props.drawer === 'Detail') {
       drawerItems = <DetailPanel close={() => {this._drawer.close()}} open={() => {this._drawer.open()}}/>
     } else if (this.props.drawer === 'Create') {
-      drawerItems = <CreatePanel/>;
+      drawerItems = <CreatePanel close={() => {this._drawer.close()}} open={() => {this._drawer.open()}}/>;
     } else {
       drawerItems = <SearchPanel close={() => {this._drawer.close()}} open={() => {this._drawer.open()}}/>
     }

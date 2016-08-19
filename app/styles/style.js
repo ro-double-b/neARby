@@ -197,6 +197,13 @@ const styles = StyleSheet.create({
   },
   geometryButton: {
     height: 50
+  },
+  inputLable2: {
+    fontSize: 15,
+    fontFamily: 'AvenirNext-Medium',
+    textAlign: 'center',
+    padding: 5,
+    paddingBottom: 50
   }
 });
 
