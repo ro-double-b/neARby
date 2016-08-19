@@ -11,6 +11,8 @@ import SearchPanel from '../components/SearchPanel';
 import EventPanel from '../components/EventPanel';
 import PlacePanel from '../components/PlacePanel';
 import UserPanel from '../components/UserPanel';
+import DetailPanel from '../components/DetailPanel';
+import ListPanel from '../components/ListPanel';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as Actions from '../actions/index';
@@ -54,10 +56,12 @@ class Main extends Component {
     } else if (this.props.drawer === 'Places') {
       drawerItems = <PlacePanel close={() => {this._drawer.close()}} open={() => {this._drawer.open()}}/>
     } else if (this.props.drawer === 'List') {
-      drawerItems = <UserPanel close={() => {this._drawer.close()}} open={() => {this._drawer.open()}}/>
+      drawerItems = <ListPanel close={() => {this._drawer.close()}} open={() => {this._drawer.open()}}/>
     } else if (this.props.drawer === 'User'){
       <Text style={styles.heading}>under construction</Text>
         drawerItems = <UserPanel navigator={this.props.navigator} close={() => {this._drawer.close()}} open={() => {this._drawer.open()}}/>
+    } else if (this.props.drawer === 'Detail') {
+      drawerItems = <DetailPanel close={() => {this._drawer.close()}} open={() => {this._drawer.open()}}/>
     } else {
       drawerItems = <SearchPanel close={() => {this._drawer.close()}} open={() => {this._drawer.open()}}/>
     }

@@ -128,6 +128,11 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center'
+  },
+  listText: {
+  fontSize: 20,
+  flexDirection: 'row',
+  justifyContent: 'center'
   }
 });
 
