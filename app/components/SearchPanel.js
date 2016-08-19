@@ -12,6 +12,7 @@ import { bindActionCreators } from 'redux';
 class SearchPanel extends Component {
   constructor(props) {
     super(props);
+    console.log(this, 'search')
   }
 
   render() {
@@ -32,14 +33,12 @@ class SearchPanel extends Component {
 }
 
 const mapStateToProps = function(state) {
-  console.log('map state to props is called, this is state: ', state);
   return {
     user: state.user
   };
 };
 
 const mapDispatchToProps = function(dispatch) {
-  console.log('map dispatch to props is called');
   return {
     action: bindActionCreators({ drawerState }, dispatch)
   };
