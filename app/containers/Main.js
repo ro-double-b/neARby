@@ -21,6 +21,7 @@ import { bindActionCreators } from 'redux';
 import * as Actions from '../actions/index';
 
 import CreatePanel from '../components/CreatePanel';
+import SmallDetailView from '../components/SmallDetailView';
 
 class Main extends Component {
   constructor(props) {
@@ -40,6 +41,15 @@ class Main extends Component {
     new GraphRequestManager().addRequest(infoRequest).start();
   }
 
+  renderPreview() {
+    if (this.props.preview) {
+      return (
+        <SmallDetailView closePanel={() => {this.props.action.closePreview();}} place={this.props.places[this.props.focalPlace]}/>
+      );
+    }
+    return;
+  }
+
   render() {
     let drawerItems;
     if (this.props.drawer === 'Search') {
@@ -51,8 +61,7 @@ class Main extends Component {
     } else if (this.props.drawer === 'List') {
       drawerItems = <ListPanel close={() => {this._drawer.close()}} open={() => {this._drawer.open()}}/>
     } else if (this.props.drawer === 'User'){
-      <Text style={styles.heading}>under construction</Text>
-        drawerItems = <UserPanel navigator={this.props.navigator} close={() => {this._drawer.close()}} open={() => {this._drawer.open()}}/>
+      drawerItems = <UserPanel navigator={this.props.navigator} close={() => {this._drawer.close()}} open={() => {this._drawer.open()}}/>
     } else if (this.props.drawer === 'Detail') {
       drawerItems = <DetailPanel close={() => {this._drawer.close()}} open={() => {this._drawer.open()}}/>
     } else if (this.props.drawer === 'Create') {
@@ -78,8 +87,8 @@ class Main extends Component {
           pressSearch={() => {this.props.action.drawerState('Search'); this._drawer.open();}}
           pressList={() => {this.props.action.drawerState('List'); this._drawer.open();}}
           pressCreate={() => {this.props.action.drawerState('Create'); this._drawer.open();}}
-          // placesEvents={this.state.placesEvents}
         />
+        {this.renderPreview()}
       </Drawer>
     );
   }
@@ -87,9 +96,11 @@ class Main extends Component {
 
 const mapStateToProps = function(state) {
   return {
-    places: state.places,
+    places: state.places.places,
     // user: state.user
-    drawer: state.drawer.option
+    drawer: state.drawer.option,
+    preview: state.detail.preview,
+    focalPlace: state.detail.focalPlace
   };
 };
 

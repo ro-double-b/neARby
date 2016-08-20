@@ -81,13 +81,13 @@ export const injectScript = `
             }
           });
           window.divs = [];
-          places.forEach(function(place) {
+          places.forEach(function(place, key) {
             if (place.type && (place.type === 'userPlace')) {
               addCubeHere(place.lat, place.lon, "rgb(255, 0, 0)");
             } else if (place.type && (place.type === 'userEvent')) {
               addCubeHere(place.lat, place.lon, "rgb(255, 255, 0)");
             } else {
-              window.createPlace(place.lat, place.lon, place.name, place.distance);
+              window.createPlace(place.lat, place.lon, place.name, place.distance, key);
             }
           })
 

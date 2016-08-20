@@ -204,6 +204,57 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     padding: 5,
     paddingBottom: 50
+  },
+
+  // for detail preview
+  detailPreview: {
+    backgroundColor: 'white',
+    height: 170,
+    zIndex: 1,
+  },
+  detailPreview_description: {
+    width: 300,
+  },
+  detailPreview_container: {
+    flex:1,
+    flexDirection: 'row',
+    alignItems:'flex-start'
+  },
+  detailPreview_content: {
+    alignItems:'flex-start',
+    paddingLeft:10
+  },
+  detailPreview_image: {
+    resizeMode: 'cover',
+    height: 110,
+  },
+  detailPreview_iconColumn: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'flex-end'
+  },
+  detailPreview_heading: {
+    fontFamily: 'AvenirNext-Medium',
+    fontSize: 17,
+    paddingLeft: 10,
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
+
+  detailPreview_icon: {
+    resizeMode: 'cover',
+    width: 30,
+    height: 30,
+  },
+  detailPreview_closeBtn: {
+    resizeMode: 'cover',
+    width: 45,
+    height: 45,
+  },
+  detailPreview_Btn: {
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingRight: 20
   }
 });
 

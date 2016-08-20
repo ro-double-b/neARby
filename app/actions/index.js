@@ -159,7 +159,7 @@ export const selectPlace = (data) => {
     payload: {
       selectedEvent: data
     }
-  }
+  };
 };
 // export const setUser = function(name, picture) {
 //   let user = {
@@ -172,6 +172,15 @@ export const selectPlace = (data) => {
 //     payload: user
 //   };
 // };
+
+export const RESET_PLACES_UPDATE = 'RESET_PLACES_UPDATE';
+
+export const resetPlaceUpdate = () => {
+  return {
+    type: RESET_PLACES_UPDATE,
+    payload: false
+  };
+};
 
 //////////////////////////////
 ////geolocation handlers
@@ -235,3 +244,34 @@ export const addEvent = (event) => {
     payload: event
   };
 };
+
+//////////////////////////////
+////preview handlers
+//////////////////////////////
+export const PREVIEW_PANEL_OPEN = 'PREVIEW_PANEL_OPEN';
+export const PREVIEW_PANEL_CLOSE = 'PREVIEW_PANEL_CLOSE';
+
+export const openPreview = (key) => {
+  console.log('openPreview');
+  return {
+    type: PREVIEW_PANEL_OPEN,
+    payload: {
+      preview: true,
+      focalPlace: key
+    }
+  };
+};
+
+export const closePreview = () => {
+  console.log('closePreview');
+  return {
+    type: PREVIEW_PANEL_CLOSE,
+    payload: {
+      preview: false
+    }
+  };
+};
+
+
+
+

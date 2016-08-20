@@ -47,9 +47,9 @@ class ARcomponent extends Component {
 
   componentWillReceiveProps(nextProps) {
     //listen to changes in search places;
-    console.log('nextProps', nextProps);
-    if (this.sendPlacesToWebView && nextProps.places) {
+    if (this.sendPlacesToWebView && nextProps.placeUpdate) {
       this.sendPlacesToWebView(nextProps.places);
+      this.props.action.resetPlaceUpdate();
     }
   }
 
@@ -86,8 +86,6 @@ class ARcomponent extends Component {
     this.getInitialLocation = DeviceEventEmitter.addListener(
       'locationUpdated',
       (location) => {
-        console.log('initGeolocation', location.coords);
-
         this.props.action.updateInitLocation(location.coords);
       }
     );
@@ -103,7 +101,6 @@ class ARcomponent extends Component {
         threejsLat: 0,
         threejsLon: 0
       };
-      console.log('fetchPlaces, fetchPlaces');
       this.props.action.fetchPlaces(positionObj)
       .catch((err) => {
         //implement error message
@@ -196,7 +193,6 @@ class ARcomponent extends Component {
     this.setInitialCameraAngle = () => {
       this.sendOrientation(
         (initialHeading) => {
-          console.log('initialHeading', initialHeading);
           webviewbridge.sendToBridge(JSON.stringify({type: 'initialHeading', heading: initialHeading}));
           this.getHeading.remove();
         }, true
@@ -205,7 +201,6 @@ class ARcomponent extends Component {
 
     //this will sent current heading to threejs to correct
     this.calibrateCameraAngle = (heading) => {
-      // console.log('calibrate ThreeJSCamera');
       if (sendNewHeading) {
         webviewbridge.sendToBridge(JSON.stringify({type: 'currentHeading', heading: heading}));
         sendNewHeading = false;
@@ -218,7 +213,6 @@ class ARcomponent extends Component {
 
     this.sendPlacesToWebView = (places) => {
       let placesMsg = {type: 'places', places: places};
-      // console.log('sending places to webview', places);
       webviewbridge.sendToBridge(JSON.stringify(placesMsg));
     };
 
@@ -245,7 +239,6 @@ class ARcomponent extends Component {
       //once bridge injectedScript is loaded, set 0,0, and send over heading to orient threejs camera
       this.initGeolocation(this.setInitialCameraAngle);
     } else if (message === 'heading received') {
-      // console.log('heading received');
       //at this point, the app is finish loading
       this.props.action.finishLoadingPosition(false);
       //if distance exceed a certain treashold, updatePlaces will be called to fetch new locations
@@ -253,9 +246,9 @@ class ARcomponent extends Component {
       //calibrate threejs camera according to north every 5 seconds
       setInterval(() => { sendNewHeading = true; }, 5000);
       this.sendOrientation(this.calibrateCameraAngle);
-    } else if (message === 'clicked') {
-      //sending obj back to activate another view
-      // this.props.threejsOnClick(message.place);
+    } else if (message.type === 'click') {
+      this.props.action.openPreview([message.key]);
+      console.log('threeJS click', message.key, this.props.places[message.key]);
     } else {
       console.log(message);
     }
@@ -411,9 +404,8 @@ const mapStateToProps = function(state) {
   return {
     drawer: state.drawer,
     user: state.user,
-    LastAPICallPosition: state.Geolocation.lastAPICallPosition,
-    totalAPICalls: state.Geolocation.totalAPICalls,
     places: state.places.places,
+    placeUpdate: state.places.placeUpdate,
     userPlacesUpdate: state.places.userPlacesUpdate,
     userEventsUpdate: state.places.userEventsUpdate,
 

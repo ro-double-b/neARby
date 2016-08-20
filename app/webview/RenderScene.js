@@ -27,7 +27,7 @@ const RenderScene =
             return visible;
           });
         };
-        window.createPlace = function(lat, long, name, distance) {
+        window.createPlace = function(lat, long, name, distance, key) {
           var scaleDivSize = function(element, distance) {
             var normalized = distance - 30;
             var scale = 1 / (normalized / 2000) * 0.3;
@@ -43,6 +43,10 @@ const RenderScene =
           element.style.border = '1px solid rgba(127,255,255,0.75)';
           scaleDivSize(element, distance);
           document.body.appendChild(element);
+
+          element.addEventListener("click", function(){
+            WebViewBridge.send(JSON.stringify({type: 'click', key: key}));
+          }, false);
 
           var nameHeading = document.createElement('h1');
           nameHeading.innerText = name;
