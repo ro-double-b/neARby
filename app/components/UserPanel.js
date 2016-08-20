@@ -15,7 +15,29 @@ import { bindActionCreators } from 'redux';
 class UserPanel extends Component {
   constructor(props) {
     super(props);
-    console.log(this, 'USER');
+    this.state = {
+      mapItems: []
+    };
+  }
+
+  componentDidMount() {
+    this.plotItems();
+  }
+
+  plotItems() {
+    if (this.props.places.places !== []) {
+      let items = [];
+      for (var i = 0; i < this.props.places.places.length; i++) {
+        let spot = {
+          latitude: this.props.places.places[i].lat,
+          longitude: this.props.places.places[i].lon,
+          title: this.props.places.places[i].name,
+          subtitle: 'distance: ' + this.props.places.places[i].distance
+        };
+        items.push(spot);
+      }
+      this.setState({mapItems: items});
+    }
   }
 
   handleSignout = () => {
@@ -24,19 +46,18 @@ class UserPanel extends Component {
 
   render() {
     return (
-      <View style={styles.panel}>
+      <View style={{flex: 1}}>
       <Text style={styles.subheading}>{this.props.user.username}</Text>
-      <Image source={{ uri: '"' + this.props.user.picture + '"'}}/>
       <MapView
-        style={{flex: 1}}
+        style={{flex: 2}}
         showsUserLocation={true}
-        followUserLocation={true}
+        annotations={this.state.mapItems}
         />
-      <Text style={{textAlign: 'center'}}>
+      <View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>
       <LoginButton
         publishPermissions={["publish_actions"]}
         onLogoutFinished={this.handleSignout.bind(this)}/>
-      </Text>
+      </View>
       </View>
     );
   }
@@ -45,7 +66,8 @@ class UserPanel extends Component {
 const mapStateToProps = function(state) {
   return {
     user: state.user,
-    drawer: state.drawer
+    drawer: state.drawer,
+    places: state.places
   };
 };
 

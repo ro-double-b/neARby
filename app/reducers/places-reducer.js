@@ -26,6 +26,7 @@ export default function(state = initialState, action) {
         places: action.payload
       };
     case SEARCH_PLACES:
+    console.log(action.payload, 'place query');
       return {
         ...state,
         placeQuery: action.payload

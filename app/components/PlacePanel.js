@@ -70,7 +70,7 @@ class PlacePanel extends Component {
 
   render() {
     return (
-      <View style={styles.panel}>
+      <View>
         <Text style={styles.heading}>places</Text>
         <TextInput style={styles.textInput}  onChangeText={(text) => this.setState({placeSearch: text})} value={this.state.placeSearch} placeholder="Search Places" />
         <Text style={styles.subheading}>Place Type</Text>
