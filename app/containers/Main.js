@@ -41,10 +41,24 @@ class Main extends Component {
     new GraphRequestManager().addRequest(infoRequest).start();
   }
 
+  submitVote(vote) {
+    console.log('submitVote');
+    let focalPlace = this.props.places[this.props.focalPlace];
+    let username = this.props.user.username;
+    let voteObj = {
+      name: focalPlace.name,
+      latitude: focalPlace.latitude,
+      longitude: focalPlace.longitude,
+      username: username,
+      vote: vote
+    };
+    // this.props.action.sendVote(voteObj);
+  }
+
   renderPreview() {
     if (this.props.preview) {
       return (
-        <SmallDetailView closePanel={() => {this.props.action.closePreview();}} place={this.props.places[this.props.focalPlace]}/>
+        <SmallDetailView closePanel={() => {this.props.action.closePreview();}} place={this.props.places[this.props.focalPlace]} submitVote={this.submitVote.bind(this)}/>
       );
     }
     return;
@@ -97,7 +111,7 @@ class Main extends Component {
 const mapStateToProps = function(state) {
   return {
     places: state.places.places,
-    // user: state.user
+    user: state.user,
     drawer: state.drawer.option,
     preview: state.detail.preview,
     focalPlace: state.detail.focalPlace

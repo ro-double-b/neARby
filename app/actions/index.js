@@ -272,6 +272,36 @@ export const closePreview = () => {
   };
 };
 
+//////////////////////////////
+////place ratings
+//////////////////////////////
+export const sendVote = (place) => {
+  console.log('votePlace');
+  let collection = fetch('https://agile-peak-45133.herokuapp.com/vote', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(place)
+  })
+  .then(function(response) {
+    if (response.status === 200) {
+      console.log(response);
+      return response.json();
+    } else  {
+      console.log('error');
+    }
+  })
+  .catch(function(error) {
+    console.error(error);
+  });
+
+  return {
+    type: PLACES_COLLECTION,
+    payload: collection
+  };
+};
 
 
 

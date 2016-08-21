@@ -55,7 +55,10 @@ class CreatePanel extends Component {
       lon: this.props.threeLon,
       distance: this.props.distance,
       username: this.props.username,
-      type: 'userPlace'
+      type: 'userPlace',
+      upvotes: 0,
+      downvotes: 0,
+      voted: false
     };
 
     // sendSpotToServer('createPlace', obj);
@@ -75,7 +78,10 @@ class CreatePanel extends Component {
       lat: this.props.threeLat,
       lon: this.props.threeLon,
       distance: this.props.distance,
-      type: 'userEvent'
+      type: 'userEvent',
+      upvotes: 0,
+      downvotes: 0,
+      voted: false
     };
 
     // sendSpotToServer('createEvent', obj);

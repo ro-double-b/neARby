@@ -268,7 +268,7 @@ class ARcomponent extends Component {
         </TouchableHighlight>
         <Text>
           <Text style={styles.title}>Current heading: </Text>
-          {this.props.currentHeading}
+          {this.state.currentHeading}
         </Text>
         <Text>
           <Text style={styles.title}>threeLat from 0,0: </Text>
@@ -360,46 +360,6 @@ class ARcomponent extends Component {
   }
 }
 
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: 'rgba(255,255,255,1)'
-//   },
-//   preview: {
-//     flex: 1,
-//     alignItems: 'flex-end',
-//     justifyContent: 'flex-end'
-//   },
-//   menu: {
-//     padding: 10
-//   },
-//   button: {
-//     backgroundColor: 'rgba(0,0,0,0)',
-//     borderColor: '#FFF',
-//     borderWidth: 2,
-//     borderRadius: 30,
-//     height: 60,
-//     width: 60,
-//     alignItems: 'center',
-//     justifyContent: 'center'
-//   },
-//   search: {
-//     height: 25,
-//     width: 25
-//   },
-//   userimg: {
-//     height: 57,
-//     width: 57,
-//     borderRadius: 30
-//   },
-//   compass: {
-//     width: 150,
-//     height: 150,
-//     justifyContent: 'flex-end',
-//     left: 150,
-//   }
-// });
-
 const mapStateToProps = function(state) {
   return {
     drawer: state.drawer,
@@ -420,6 +380,4 @@ const mapDispatchToProps = function(dispatch) {
   return { action: bindActionCreators(Actions, dispatch) };
 };
 
-// export const ARview = connect(mapStateToProps, mapDispatchToProps)(ARcomponent);
-// export let addToScene = addObjToLocation;
 export default connect(mapStateToProps, mapDispatchToProps)(ARcomponent);
