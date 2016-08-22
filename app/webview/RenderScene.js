@@ -96,6 +96,15 @@ const RenderScene =
           });
         }
 
+        var clearScene = function() {
+          window.divs.forEach(function(obj) {
+            if (obj.cube) {
+              obj.div.remove();
+              scene.remove(obj.cube);
+            }
+          });
+        };
+
         animate = function(now){
           divsInSight = checkFrustum();
 
