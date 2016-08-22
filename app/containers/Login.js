@@ -29,42 +29,72 @@ let html = `
       </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r79/three.min.js"></script>
     <script>
+    var line;
+    var MAX_POINTS = 500;
+    var drawCount;
+    var value = 1;
+    var delta = -0.01;
+
+
+    function changeFaceColors() {
+      if (value <= 0) {
+        delta = 0.01;
+      }
+      else if(value >= 1) {
+        delta = -0.01;
+      }
+      red.r = green.g = blue.b = value += delta;
+      geometry.colorsNeedUpdate = true;
+    }
       var scene = new THREE.Scene();
-      var cubes = [];
       var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
       renderer = new THREE.WebGLRenderer({
-        antialias: true,
-        alpha: true
+        // antialias: true,
+        // alpha: true
       });
-      renderer.setClearColor(0xffffff, 0);
+      // renderer.setClearColor(0xffffff, 0);
       renderer.setSize( window.innerWidth, window.innerHeight );
       document.body.appendChild( renderer.domElement );
 
 
-      var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-      var material = function() {
-        var newColor = 256 * Math.random();
-        new THREE.MeshNormalMaterial( { color: 'rgba(' + newColor + ',' + newColor + ',' + newColor + ', .5)', wireframe: true, transparent: true, opacity: 0.5 } );
-      }
-      var radius = 20;
-      for (var i = 0; i < 25; i++) {
-        var cube = new THREE.Mesh( geometry, material() );
-        scene.add( cube );
-        cube.position.set(radius/2 - radius * Math.random(),
-          radius/2 - radius * Math.random(), 0.0);
-        cubes.push(cube);
-        
-      }
+
+  // material
+  var material = new THREE.MeshBasicMaterial({
+    color: 0x007979,
+    vertexColors: THREE.FaceColors,
+    wireframe: true
+  });
+
+  // geometry
+  geometry = new THREE.BoxGeometry(2, 2, 2);
+
+  // colors
+  var randomColor = Math.floor(Math.random()*256);
+  red = new THREE.Color(Math.floor(Math.random()*256), Math.floor(Math.random()*256), Math.floor(Math.random()*256));
+  green = new THREE.Color(randomColor, randomColor, randomColor);
+  blue = new THREE.Color(randomColor, randomColor, randomColor);
+  var colors = [red, green, blue];
+  
+  for (var i = 0; i < 3; i++) {
+    geometry.faces[4 * i].color = colors[i];
+    geometry.faces[4 * i + 1].color = colors[i];
+    geometry.faces[4 * i + 2].color = colors[i];
+    geometry.faces[4 * i + 3].color = colors[i];
+  }
+
+  // mesh
+  box = new THREE.Mesh(geometry, material);
+  scene.add(box);
 
       camera.position.z = 15;
+      camera.position.y = -2;
 
       function render() {
         requestAnimationFrame( render );
-        for (var i = 0; i < cubes.length; i++) {
-          cubes[i].rotation.x += 0.05 * Math.random();
-          cubes[i].rotation.y += 0.05 * Math.random();
-        }
+          changeFaceColors();
+          box.rotation.x += 0.05;
+          box.rotation.y += 0.05;
 
         renderer.render( scene, camera );
       }
@@ -138,7 +168,7 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingBottom: 320,
+    paddingBottom: 100,
     paddingTop: 250,
     backgroundColor: 'rgba(255,255,255,0.1)'
   },
