@@ -75,7 +75,9 @@ class ARcomponent extends Component {
         // this.setState({currentHeading: data.heading});
         // callback(data.heading);
 
-        let smoothingValue = 12;
+        //following is an implementation of low pass filter to smooth out changes in heading
+        //greater the smoothingValue, better the smoothing, but less accurate is the result
+        let smoothingValue = 128;
         let previousHeading = this.state.currentHeading;
         let currentHeading = data.heading;
 
