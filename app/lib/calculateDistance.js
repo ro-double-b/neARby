@@ -31,21 +31,10 @@ const findYDistance = (hypotenuse, xDistance, initLon, newLon) => {
   return (newLon - initLon > 0) ? yDistance : -1 * yDistance;
 };
 
-export const calculateDistance = (prevCoords, currentCoords, cameraCallback, loggerCallback) => {
+export const calculateDistance = (prevCoords, currentCoords) => {
   let distance = hypotenuseDistance(prevCoords.latitude, prevCoords.longitude, currentCoords.latitude, currentCoords.longitude);
   let deltaX = findXDistance(prevCoords.latitude, currentCoords.latitude);
   let deltaZ = findYDistance(distance, deltaX, prevCoords.longitude, currentCoords.longitude);
-
-  //this callback is pass all the way down from initGeolocation;
-  if (cameraCallback) {
-    cameraCallback({ type: 'cameraPosition', deltaX: deltaX, deltaZ: deltaZ});
-  }
-
-  //this is only for debugging purposes to show deltaX, deltaZ on screen, should remove later
-  if (loggerCallback) {
-    loggerCallback(deltaX, deltaZ, distance);
-  }
-
   return {
     deltaX: deltaX,
     deltaZ: deltaZ,

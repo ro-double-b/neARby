@@ -9,6 +9,8 @@ export const DETAIL_SELECTED = 'DETAIL_SELECTED';
 export const SEARCH_PHOTOS = 'SEARCH_PHOTOS';
 
 export const fetchPlaces = (position) => {
+  // 'https://agile-peak-45133.herokuapp.com/location
+  //http://10.6.23.239:3000
   let collection = fetch('https://agile-peak-45133.herokuapp.com/location', {
     method: 'POST',
     headers: {
@@ -159,3 +161,147 @@ export const selectPlace = (data) => {
     }
   };
 };
+// export const setUser = function(name, picture) {
+//   let user = {
+//     name: name,
+//     picture: picture
+//   };
+
+//   return {
+//     type: SET_USER,
+//     payload: user
+//   };
+// };
+
+export const RESET_PLACES_UPDATE = 'RESET_PLACES_UPDATE';
+
+export const resetPlaceUpdate = () => {
+  return {
+    type: RESET_PLACES_UPDATE,
+    payload: false
+  };
+};
+
+//////////////////////////////
+////geolocation handlers
+//////////////////////////////
+export const INIT_POSITION_UPDATE = 'INIT_POSITION_UPDATE';
+export const CURRENT_POSITION_UPDATE = 'CURRENT_POSITION_UPDATE';
+export const LOADING_LOCATION = 'LOADING_LOCATION';
+
+export const updateInitLocation = (location) => {
+  console.log('updateInitLocation');
+  console.log('location',location);
+  return {
+    type: INIT_POSITION_UPDATE,
+    payload: {
+      initialPosition: location,
+    }
+  };
+};
+
+export const updateCurrentLocation = (location) => {
+  console.log('updateCurrentLocation');
+  return {
+    type: CURRENT_POSITION_UPDATE,
+    payload: {
+      currentPosition: location.currentPosition,
+      threeLat: location.threeLat,
+      threeLon: location.threeLon,
+      distance: location.distance
+    }
+  };
+};
+
+export const finishLoadingPosition = (boolean) => {
+  console.log('updateCurrentHeading');
+  return {
+    type: LOADING_LOCATION,
+    payload: {
+      loading: boolean
+    }
+  };
+};
+
+//////////////////////////////
+////user creation handlers
+//////////////////////////////
+export const USER_PLACES = 'USER_PLACES';
+export const USER_EVENTS = 'USER_EVENTS';
+
+export const addPlace = (place) => {
+  console.log('addPlace');
+  return {
+    type: USER_PLACES,
+    payload: place
+  };
+};
+
+export const addEvent = (event) => {
+  console.log('addEvent');
+  return {
+    type: USER_EVENTS,
+    payload: event
+  };
+};
+
+//////////////////////////////
+////preview handlers
+//////////////////////////////
+export const PREVIEW_PANEL_OPEN = 'PREVIEW_PANEL_OPEN';
+export const PREVIEW_PANEL_CLOSE = 'PREVIEW_PANEL_CLOSE';
+
+export const openPreview = (key) => {
+  console.log('openPreview');
+  return {
+    type: PREVIEW_PANEL_OPEN,
+    payload: {
+      preview: true,
+      focalPlace: key
+    }
+  };
+};
+
+export const closePreview = () => {
+  console.log('closePreview');
+  return {
+    type: PREVIEW_PANEL_CLOSE,
+    payload: {
+      preview: false
+    }
+  };
+};
+
+//////////////////////////////
+////place ratings
+//////////////////////////////
+export const sendVote = (place) => {
+  console.log('votePlace');
+  let collection = fetch('https://agile-peak-45133.herokuapp.com/vote', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(place)
+  })
+  .then(function(response) {
+    if (response.status === 200) {
+      console.log(response);
+      return response.json();
+    } else  {
+      console.log('error');
+    }
+  })
+  .catch(function(error) {
+    console.error(error);
+  });
+
+  return {
+    type: PLACES_COLLECTION,
+    payload: collection
+  };
+};
+
+
+

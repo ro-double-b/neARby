@@ -138,9 +138,123 @@ const styles = StyleSheet.create({
     // justifyContent: 'center'
   },
   listText: {
-  fontSize: 20,
-  flexDirection: 'row',
-  justifyContent: 'center'
+    fontSize: 20,
+    flexDirection: 'row',
+    justifyContent: 'center'
+  },
+  icons: {
+    width: 100,
+    height: 100,
+  },
+  row: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  headingSmall: {
+    fontSize: 25,
+    fontFamily: 'AvenirNext-Medium',
+    textAlign: 'center',
+    padding: 10,
+    paddingBottom: 15
+  },
+  inputLable: {
+    fontSize: 15,
+    fontFamily: 'AvenirNext-Medium',
+    textAlign: 'center',
+    padding: 5,
+    paddingBottom: 5
+  },
+  iconRow: {
+    borderRightWidth: 1,
+    borderRightColor: 'rgba(0,0,0,.5)',
+    paddingLeft: 20,
+    paddingRight: 20,
+    opacity: 0.3,
+  },
+  iconRowEnd: {
+    paddingLeft: 20,
+    opacity: 0.3,
+  },
+  textCenter: {
+    textAlign: 'center'
+  },
+  smallbutton: {
+    color: '#FFF',
+    fontSize: 20,
+    fontFamily: 'AvenirNext-Regular',
+    textAlign: 'center'
+  },
+  createButton: {
+    backgroundColor: '#009D9D',
+    padding: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 3,
+    borderColor: '#000',
+    height: 60,
+    width: 150,
+    margin: 10
+  },
+  geometryButton: {
+    height: 50
+  },
+  inputLable2: {
+    fontSize: 15,
+    fontFamily: 'AvenirNext-Medium',
+    textAlign: 'center',
+    padding: 5,
+    paddingBottom: 50
+  },
+
+  // for detail preview
+  detailPreview: {
+    backgroundColor: 'white',
+    height: 170,
+    zIndex: 1,
+  },
+  detailPreview_description: {
+    width: 300,
+  },
+  detailPreview_container: {
+    flex:1,
+    flexDirection: 'row',
+    alignItems:'flex-start'
+  },
+  detailPreview_content: {
+    alignItems:'flex-start',
+    paddingLeft:10
+  },
+  detailPreview_image: {
+    resizeMode: 'cover',
+    height: 110,
+  },
+  detailPreview_iconColumn: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'flex-end'
+  },
+  detailPreview_heading: {
+    fontFamily: 'AvenirNext-Medium',
+    fontSize: 17,
+    paddingLeft: 10,
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
+
+  detailPreview_icon: {
+    resizeMode: 'cover',
+    width: 30,
+    height: 30,
+  },
+  detailPreview_closeBtn: {
+    resizeMode: 'cover',
+    width: 45,
+    height: 45,
+  },
+  detailPreview_Btn: {
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingRight: 20
   }
 });
 

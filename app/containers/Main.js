@@ -9,6 +9,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import FBSDK, { GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
 import Drawer from 'react-native-drawer';
 import ARview from './ARview';
+// import ARview from './ARview';
 import SearchPanel from '../components/SearchPanel';
 import EventPanel from '../components/EventPanel';
 import PlacePanel from '../components/PlacePanel';
@@ -18,6 +19,9 @@ import ListPanel from '../components/ListPanel';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as Actions from '../actions/index';
+
+import CreatePanel from '../components/CreatePanel';
+import SmallDetailView from '../components/SmallDetailView';
 
 class Main extends Component {
   constructor(props) {
@@ -37,6 +41,29 @@ class Main extends Component {
     new GraphRequestManager().addRequest(infoRequest).start();
   }
 
+  submitVote(vote) {
+    console.log('submitVote');
+    let focalPlace = this.props.places[this.props.focalPlace];
+    let username = this.props.user.username;
+    let voteObj = {
+      name: focalPlace.name,
+      latitude: focalPlace.latitude,
+      longitude: focalPlace.longitude,
+      username: username,
+      vote: vote
+    };
+    // this.props.action.sendVote(voteObj);
+  }
+
+  renderPreview() {
+    if (this.props.preview) {
+      return (
+        <SmallDetailView closePanel={() => {this.props.action.closePreview();}} place={this.props.places[this.props.focalPlace]} submitVote={this.submitVote.bind(this)}/>
+      );
+    }
+    return;
+  }
+
   render() {
     let drawerItems;
     if (this.props.drawer === 'Search') {
@@ -48,10 +75,11 @@ class Main extends Component {
     } else if (this.props.drawer === 'List') {
       drawerItems = <ListPanel close={() => {this._drawer.close()}} open={() => {this._drawer.open()}}/>
     } else if (this.props.drawer === 'User'){
-      <Text style={styles.heading}>under construction</Text>
-        drawerItems = <UserPanel navigator={this.props.navigator} close={() => {this._drawer.close()}} open={() => {this._drawer.open()}}/>
+      drawerItems = <UserPanel navigator={this.props.navigator} close={() => {this._drawer.close()}} open={() => {this._drawer.open()}}/>
     } else if (this.props.drawer === 'Detail') {
       drawerItems = <DetailPanel close={() => {this._drawer.close()}} open={() => {this._drawer.open()}}/>
+    } else if (this.props.drawer === 'Create') {
+      drawerItems = <CreatePanel close={() => {this._drawer.close()}} open={() => {this._drawer.open()}}/>;
     } else {
       drawerItems = <SearchPanel close={() => {this._drawer.close()}} open={() => {this._drawer.open()}}/>
     }
@@ -72,20 +100,21 @@ class Main extends Component {
           pressProfile={() => {this.props.action.drawerState('User'); this._drawer.open();}}
           pressSearch={() => {this.props.action.drawerState('Search'); this._drawer.open();}}
           pressList={() => {this.props.action.drawerState('List'); this._drawer.open();}}
-          // mainViewGeoLocation={this.getInitialLocation.bind()}
-          // mainViewSetLocation={this.getLocation.bind()}
-          // placesEvents={this.state.placesEvents}
+          pressCreate={() => {this.props.action.drawerState('Create'); this._drawer.open();}}
         />
-       </Drawer>
+        {this.renderPreview()}
+      </Drawer>
     );
   }
 }
 
 const mapStateToProps = function(state) {
   return {
-    places: state.places,
-    // user: state.user
-    drawer: state.drawer.option
+    places: state.places.places,
+    user: state.user,
+    drawer: state.drawer.option,
+    preview: state.detail.preview,
+    focalPlace: state.detail.focalPlace
   };
 };
 
