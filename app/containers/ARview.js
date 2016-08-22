@@ -72,9 +72,17 @@ class ARcomponent extends Component {
       'headingUpdated',
       (data) => {
 
-        // this.props.action.updateHeading(data.heading);
-        this.setState({currentHeading: data.heading});
-        callback(data.heading);
+        // this.setState({currentHeading: data.heading});
+        // callback(data.heading);
+
+        let smoothingValue = 12;
+        let previousHeading = this.state.currentHeading;
+        let currentHeading = data.heading;
+
+        let newHeading = previousHeading + (currentHeading - previousHeading) / smoothingValue;
+        this.setState({currentHeading: currentHeading});
+       
+        callback(newHeading);
       }
     );
   }
@@ -201,10 +209,10 @@ class ARcomponent extends Component {
 
     //this will sent current heading to threejs to correct
     this.calibrateCameraAngle = (heading) => {
-      if (sendNewHeading) {
+      // if (sendNewHeading) {
         webviewbridge.sendToBridge(JSON.stringify({type: 'currentHeading', heading: heading}));
-        sendNewHeading = false;
-      }
+        // sendNewHeading = false;
+      // }
     };
 
     this.updateThreeJSCameraPosition = (newCameraPosition) => {
@@ -244,7 +252,7 @@ class ARcomponent extends Component {
       //if distance exceed a certain treashold, updatePlaces will be called to fetch new locations
       this.watchGeolocation(this.updateThreeJSCameraPosition, this.updatePlaces);
       //calibrate threejs camera according to north every 5 seconds
-      setInterval(() => { sendNewHeading = true; }, 5000);
+      // setInterval(() => { sendNewHeading = true; }, 5000);
       this.sendOrientation(this.calibrateCameraAngle);
     } else if (message.type === 'click') {
       this.props.action.openPreview([message.key]);
