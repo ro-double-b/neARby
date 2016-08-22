@@ -31,19 +31,16 @@ const RenderScene =
             return visible;
           });
         };
-        window.createPlace = function(lat, long, name, distance, key) {
-          var scaleDivSize = function(element, distance) {
-            var normalized = distance - 30;
-            var scale = 1 / (normalized / 2000) * 0.3;
-            if (scale > 1.4) {
-              scale = 1.4;
-            }
-            element.style.transform = 'scale(' + scale + ')';
+        var scaleDivSize = function(element, distance) {
+          var normalized = distance - 30;
+          var scale = 1 / (normalized / 2000) * 0.3;
+          if (scale > 1.4) {
+            scale = 1.4;
           }
           element.style.transform = 'scale(' + scale + ')';
         }
 
-        window.createPlace = function(lat, long, name, distance) {
+        window.createPlace = function(lat, long, name, distance, key) {
 
           // Create surrounding div
           var element = document.createElement('div')
