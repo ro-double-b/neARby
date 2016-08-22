@@ -17,7 +17,7 @@ class SearchPanel extends Component {
 
   render() {
     return (
-      <View style={styles.panel}>
+      <View>
         <Text style={styles.heading}>search</Text>
         <View style={{alignItems: 'center'}}>
           <TouchableHighlight style={styles.placeOrEventButton} onPress={() => { this.props.action.drawerState('Places'); }}>

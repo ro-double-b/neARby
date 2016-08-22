@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   },
   panel: {
     backgroundColor: 'rgba(255,255,255,.9)',
-    justifyContent: 'center',
+    // justifyContent: 'center',
     margin: 20,
     padding: 20,
     flex: 1
@@ -89,6 +89,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     padding: 5
   },
+  exit: {
+    fontFamily: 'Arial',
+    fontWeight: 'bold',
+    fontSize: 20,
+    textAlign: 'right'
+  },
   switch: {
     flex: 1,
     flexDirection: 'row',
@@ -101,7 +107,8 @@ const styles = StyleSheet.create({
   },
   switchColumn: {
     flex: 1,
-    flexDirection: 'column'
+    flexDirection: 'column',
+    height: 200
   },
   switchTable: {
     flex: 1,
@@ -126,8 +133,9 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flex: 1,
+    alignItems: 'flex-end',
     flexDirection: 'row',
-    justifyContent: 'center'
+    // justifyContent: 'center'
   },
   listText: {
   fontSize: 20,

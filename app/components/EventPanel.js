@@ -74,7 +74,7 @@ class EventPanel extends Component {
   }
 
   handleSubmit() {
-    this.props.action.placeSearch(this.state);
+    this.props.action.eventQuery(this.state);
     this.setState({
       food: false,
       hotel: false,
@@ -101,7 +101,7 @@ class EventPanel extends Component {
 
   render() {
       return (
-        <View style={styles.panel}>
+        <View>
           <Text style={styles.heading}>events</Text>
           <TextInput style={styles.textInput} onChangeText={(text) => this.setState({eventSearch: text})} value={this.state.eventSearch} placeholder="Search Events" />
           <Text style={styles.subheading}>I want events happening ...</Text>
@@ -133,7 +133,7 @@ class EventPanel extends Component {
           <TouchableHighlight style={styles.placeOrEventButton} onPress={() => { this.props.action.drawerState('Search', false); }}>
             <Text style={styles.buttonText}>go back</Text>
           </TouchableHighlight>
-          <TouchableHighlight style={styles.placeOrEventButton} onPress={() => { this.props.action.eventQuery(this.state); this.props.action.drawerState('Search', true); }}>
+          <TouchableHighlight style={styles.placeOrEventButton} onPress={() => { this.handleSubmit(); }}>
             <Text style={styles.buttonText}>submit</Text>
           </TouchableHighlight>
         </View>

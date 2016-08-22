@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import {
   Text,
+  View,
+  TouchableHighlight
 } from 'react-native';
 import styles from '../styles/style';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -20,31 +22,19 @@ import * as Actions from '../actions/index';
 class Main extends Component {
   constructor(props) {
     super(props);
-    console.log(this);
   }
 
   componentWillMount() {
     this.graphRequestForUser();
-    this.props.action.fetchPlaces();
   }
 
   graphRequestForUser() {
     let infoRequest = new GraphRequest(
-        '/me?fields=name,picture',
+        '/me?fields=name,picture,friends',
         null,
         this.props.action.getUserInfo
       );
     new GraphRequestManager().addRequest(infoRequest).start();
-  }
-
-  getUserInfo(err, data) {
-    if (err) {
-      console.log('ERR ', err);
-    } else {
-      this.setState({username: data.name,
-        picture: data.picture.data.url});
-      console.log('DATA - ', data.name + ' ' + data.picture.data.url);
-    }
   }
 
   render() {
@@ -72,9 +62,11 @@ class Main extends Component {
         type="overlay"
         side="right"
         ref={(ref) => {this._drawer = ref;}}
-        content={drawerItems}
+        content={<View style={styles.panel}><TouchableHighlight onPress={() => {this._drawer.close()}}>
+      <Text style={styles.exit}>x</Text>
+      </TouchableHighlight>{drawerItems}</View>}
         panOpenMask={0.5}
-        panCloseMask={0.2}
+        panCloseMask={0.1}
         tweenHandler={(ratio) => ({main: { opacity:(3 - ratio) / 3 }})}>
         <ARview
           pressProfile={() => {this.props.action.drawerState('User'); this._drawer.open();}}

@@ -28,6 +28,7 @@ export const fetchPlaces = (position) => {
   .catch(function(error) {
     console.error(error);
   });
+  console.log(collection, 'COLLECTION');
   return {
     type: PLACES_COLLECTION,
     payload: collection
@@ -36,7 +37,8 @@ export const fetchPlaces = (position) => {
 
 export const placeQuery = (query) => {
   // post request
-    let search = fetch('https://agile-peak-45133.herokuapp.com/events', {
+  console.log(query, 'QUERY');
+    let search = fetch('https://agile-peak-45133.herokuapp.com/places', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -46,7 +48,6 @@ export const placeQuery = (query) => {
   })
   .then(function(response) {
     if (response.status === 200) {
-      console.log(response);
       return response.json();
     } else  {
       console.log('error');
@@ -139,6 +140,7 @@ export const getUserInfo = (err, data) => {
   if (err) {
     console.log('ERR ', err);
   } else {
+    console.log(data, 'data');
     return {
       type: SET_USER,
       payload: {
