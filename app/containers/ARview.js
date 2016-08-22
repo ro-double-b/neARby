@@ -90,7 +90,7 @@ class ARcomponent extends Component {
   }
 
   //initGeolocation gets the initial geolocation and set it to initialPosition state
-  initGeolocation(initialCameraAngleCallback, sendInitLocToMainView) {
+  initGeolocation(initialCameraAngleCallback) {
     Location.startUpdatingLocation();
     //this will listen to geolocation changes and update it in state
     this.getInitialLocation = DeviceEventEmitter.addListener(
@@ -112,21 +112,22 @@ class ARcomponent extends Component {
         threejsLon: 0
       };
       this.props.action.fetchPlaces(positionObj)
+      // .then((response) => {
+      //   if (response.payload.length === 0) {
+      //     setTimeout(() => {this.props.action.fetchPlaces(positionObj)}, 5000);
+      //   }
+      // })
       .catch((err) => {
         //implement error message
         setTimeout(() => {this.props.action.fetchPlaces(positionObj)}, 5000);
       });
-
-      if (sendInitLocToMainView) {
-        sendInitLocToMainView(sendInitLocToMainView);
-      }
 
       initialCameraAngleCallback();
     }, 2000);
   }
 
   //watchGeolocation will subsequenly track the geolocation changes and update it in lastPosition state
-  watchGeolocation(cameraCallback, placesCallback, sendLocToMainView) {
+  watchGeolocation(cameraCallback, placesCallback) {
     Location.startUpdatingLocation();
     //this will listen to geolocation changes and update it in state
     DeviceEventEmitter.addListener(
@@ -236,9 +237,10 @@ class ARcomponent extends Component {
         //more filters
       };
 
+
       this.props.action.fetchPlaces(positionObj)
       .catch((err) => {
-        setTimeout(() => this.props.action.fetchPlaces(positionObj), 5);
+        setTimeout(() => this.props.action.fetchPlaces(positionObj), 3000);
       });
     };
 

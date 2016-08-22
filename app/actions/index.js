@@ -318,10 +318,11 @@ export const sendVote = (place) => {
   })
   .then(function(response) {
     if (response.status === 200) {
-      console.log(response);
+      console.log('response', response);
       return response.json();
     } else  {
       console.log('error');
+      return [];
     }
   })
   .catch(function(error) {

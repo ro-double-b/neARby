@@ -150,7 +150,7 @@ class CreatePanel extends Component {
 
   render() {
     return (
-      <View style={styles.panel}>
+      <View>
         <Text style={styles.headingSmall}>make a spot</Text>
         <View style={styles.row}>
           <TouchableOpacity onPress={() => {this.switchType('place')} }>
