@@ -1,7 +1,8 @@
-import { SEARCH_PHOTOS } from '../actions/index';
+import { SEARCH_PHOTOS, GET_DIRECTIONS } from '../actions/index';
 
 const initialState = {
-  photos: []
+  photos: [],
+  directions: []
 };
 
 export default function(state = initialState, action) {
@@ -10,6 +11,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         photos: action.payload
+      };
+    case GET_DIRECTIONS:
+      return {
+        ...state,
+        directions: action.payload
       };
     default:
       return state;

@@ -9,6 +9,7 @@ export const DETAIL_SELECTED = 'DETAIL_SELECTED';
 export const SEARCH_PHOTOS = 'SEARCH_PHOTOS';
 export const UPDATE_EVENT_QUERY = 'UPDATE_EVENT_QUERY';
 export const UPDATE_PLACE_QUERY = 'UPDATE_PLACE_QUERY';
+export const GET_DIRECTIONS = 'GET_DIRECTIONS';
 
 export const fetchPlaces = (position) => {
   let collection = fetch('https://agile-peak-45133.herokuapp.com/location', {
@@ -114,7 +115,7 @@ export const updateEventQuery = (query) => {
 
 export const imageQuery = (query) => {
   // post request
-  fetch('https://agile-peak-45133.herokuapp.com/images', {
+  let search = fetch('https://agile-peak-45133.herokuapp.com/images', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -141,6 +142,31 @@ export const imageQuery = (query) => {
   };
 };
 
+export const directionsQuery = (query) => {
+  let search = fetch('https://agile-peak-45133.herokuapp.com/directions', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(query)
+  })
+  .then(function(response) {
+    if (response.status === 200) {
+      return response.json();
+    } else  {
+      console.log('error getting directions: ', response);
+    }
+  })
+  .catch(function(error) {
+    console.error('error getting directions: ', error);
+  });
+  return {
+    type: GET_DIRECTIONS,
+    payload: search
+  };
+};
+
 export const drawerState = (option, isOpen) => {
   // isOpen = isOpen ? !store.getState.drawerState.isOpen :  store.getState.drawerState.isOpen;
   return {
@@ -163,7 +189,7 @@ export const getUserInfo = (err, data) => {
         username: data.name,
         picture: data.picture.data.url,
         id: data.id,
-        friends: data.friends.data
+        // friends: data.friends.data
       }
     };
   }

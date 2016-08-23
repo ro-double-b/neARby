@@ -5,6 +5,7 @@ import drawer from './drawer-reducer';
 import detail from './detail-reducer';
 import photos from './photo-reducer';
 import Geolocation from './location-reducer';
+import directions from './photo-reducer';
 
 const rootReducer = combineReducers({
   places: places,
@@ -12,7 +13,8 @@ const rootReducer = combineReducers({
   drawer: drawer,
   detail: detail,
   photos: photos,
-  Geolocation: Geolocation
+  Geolocation: Geolocation,
+  directions: directions,
 });
 
 export default rootReducer;

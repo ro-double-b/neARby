@@ -276,6 +276,11 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     paddingRight: 20
+  },
+  images: {
+    width: 100,
+    height: 100,
+    padding: 8
   }
 });
 
