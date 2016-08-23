@@ -1,0 +1,11 @@
+{
+	"metadata": {
+		"version": 4.4,
+		"type": "Geometry",
+		"generator": "Geometry.toJSON"
+	},
+	"uuid": "27D0A9E9-12E8-41AC-B62F-275F19A7B06F",
+	"type": "IcosahedronGeometry",
+	"radius": 1,
+	"detail": 2
+}

@@ -78,6 +78,17 @@ export const injectScript = `
           window.divs = [];
           places.forEach(function(place, key) {
             if (place.type && (place.type === 'userPlace')) {
+
+              // loader.load('/geometry.json',
+              //   function ( geometry ) {
+              //     window.alert('sdfs');
+              //     var material = new THREE.MeshBasicMaterial( { color: color, wireframe: true } );
+              //     var object = new THREE.Mesh( geometry, material );
+              //     scene.add( object );
+              //   }
+              // );
+
+              // window.alert('object');
               addCubeHere(place.lat, place.lon, "rgb(255, 0, 0)");
             } else if (place.type && (place.type === 'userEvent')) {
               addCubeHere(place.lat, place.lon, "rgb(255, 255, 0)");

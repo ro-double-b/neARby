@@ -26,6 +26,9 @@ class SearchPanel extends Component {
           <TouchableHighlight style={styles.searchButtons} onPress={() => { this.props.action.drawerState('Events'); }}>
             <Text style={styles.searchButtonText}>events</Text>
           </TouchableHighlight>
+          <TouchableHighlight style={styles.placeOrEventButton} onPress={() => { this.props.action.resetSearch(); }}>
+            <Text style={styles.buttonText}>reset</Text>
+          </TouchableHighlight>
         </View>
       </View>
     );

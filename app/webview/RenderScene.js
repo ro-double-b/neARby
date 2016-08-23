@@ -1,7 +1,7 @@
 const RenderScene =
 `
   <script>
-    var camera, controls, animate, heading, scene, headingUpdate;
+    var camera, controls, animate, heading, scene, headingUpdate, loader;
     window.divs = [];
     (function() {
       "use strict";
@@ -174,6 +174,7 @@ const RenderScene =
         container = document.getElementById( 'container' );
         scene = new THREE.Scene();
         renderer = new THREE.WebGLRenderer({alpha: true});
+        loader = new THREE.JSONLoader();
         renderer.setClearColor( 0x000000, 0 ); // the default
         renderer.setPixelRatio( window.devicePixelRatio );
         renderer.setSize(window.innerWidth, window.innerHeight);

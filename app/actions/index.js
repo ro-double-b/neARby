@@ -10,6 +10,8 @@ export const SEARCH_PHOTOS = 'SEARCH_PHOTOS';
 export const UPDATE_EVENT_QUERY = 'UPDATE_EVENT_QUERY';
 export const UPDATE_PLACE_QUERY = 'UPDATE_PLACE_QUERY';
 export const GET_DIRECTIONS = 'GET_DIRECTIONS';
+export const RESET_SEARCH = 'RESET_SEARCH';
+export const RESET_PLACES_UPDATE = 'RESET_PLACES_UPDATE';
 
 export const fetchPlaces = (position) => {
   let collection = fetch('https://agile-peak-45133.herokuapp.com/location', {
@@ -204,7 +206,13 @@ export const selectPlace = (data) => {
   };
 };
 
-export const RESET_PLACES_UPDATE = 'RESET_PLACES_UPDATE';
+export const resetSearch = () => {
+  return {
+    type: RESET_SEARCH,
+    payload: 'none'
+  };
+};
+
 
 export const resetPlaceUpdate = () => {
   return {
