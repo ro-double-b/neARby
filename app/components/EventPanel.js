@@ -9,7 +9,7 @@ import {
   Alert
 } from 'react-native';
 import styles from '../styles/style';
-import { drawerState, eventQuery } from '../actions/index';
+import { drawerState, eventQuery, updateEventQuery } from '../actions/index';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -77,6 +77,7 @@ class EventPanel extends Component {
 
   handleSubmit() {
     this.props.action.eventQuery(this.state);
+    this.props.action.updateEventQuery(this.state);
     this.setState({
       business: false,
       family: false,
@@ -155,7 +156,7 @@ const mapStateToProps = function(state) {
 
 const mapDispatchToProps = function(dispatch) {
   return {
-    action: bindActionCreators({ drawerState, eventQuery }, dispatch)
+    action: bindActionCreators({ drawerState, eventQuery, updateEventQuery }, dispatch)
   };
 };
 

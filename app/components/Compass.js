@@ -18,6 +18,7 @@ const calculateOffSet = (userLocation, placeLocation) => {
 const Compass = (props) => {
 
   let renderPlacesOnCompass = (originX, originZ) => {
+    console.log(props, 'IN COMPASS');
     return props.places.map((place, idx) => {
       let offset = calculateOffSet(props.currentLocation, place);
       let theta = Math.atan2(offset.xOffset, offset.zOffset) * 180 / Math.PI;

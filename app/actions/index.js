@@ -7,6 +7,8 @@ export const SEARCH_PLACES = 'SEARCH_PLACES';
 export const SEARCH_EVENTS = 'SEARCH_EVENTS';
 export const DETAIL_SELECTED = 'DETAIL_SELECTED';
 export const SEARCH_PHOTOS = 'SEARCH_PHOTOS';
+export const UPDATE_EVENT_QUERY = 'UPDATE_EVENT_QUERY';
+export const UPDATE_PLACE_QUERY = 'UPDATE_PLACE_QUERY';
 
 export const fetchPlaces = (position) => {
   let collection = fetch('https://agile-peak-45133.herokuapp.com/location', {
@@ -62,16 +64,13 @@ export const placeQuery = (query) => {
 
   return {
     type: SEARCH_PLACES,
-    payload: {
-      search: search,
-      query: query
-    }
+    payload: search
   };
 };
 
 export const eventQuery = (query) => {
   // post request
-  let search = fetch('https://agile-peak-45133.herokuapp.com/events', {
+    let search = fetch('https://agile-peak-45133.herokuapp.com/events', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -81,7 +80,6 @@ export const eventQuery = (query) => {
   })
   .then(function(response) {
     if (response.status === 200) {
-      console.log(response, 'RESULTS');
       return response.json();
     } else  {
       return [];
@@ -92,19 +90,31 @@ export const eventQuery = (query) => {
     return [];
   });
 
+  console.log(search);
 
   return {
     type: SEARCH_EVENTS,
-    payload: {
-      search: search,
-      query: query
-    }
+    payload: search
   };
 };
 
+export const updatePlaceQuery = (query) => {
+  return {
+    type: UPDATE_PLACE_QUERY,
+    payload: query
+  }
+}
+
+export const updateEventQuery = (query) => {
+  return {
+    type: UPDATE_EVENT_QUERY,
+    payload: query
+  }
+}
+
 export const imageQuery = (query) => {
   // post request
-  let search = fetch('https://agile-peak-45133.herokuapp.com/images', {
+  fetch('https://agile-peak-45133.herokuapp.com/images', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -151,7 +161,9 @@ export const getUserInfo = (err, data) => {
       type: SET_USER,
       payload: {
         username: data.name,
-        picture: data.picture.data.url
+        picture: data.picture.data.url,
+        id: data.id,
+        friends: data.friends.data
       }
     };
   }

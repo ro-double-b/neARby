@@ -8,7 +8,7 @@ import {
   Alert
 } from 'react-native';
 import styles from '../styles/style';
-import { drawerState, placeQuery } from '../actions/index';
+import { drawerState, placeQuery, updatePlaceQuery } from '../actions/index';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -46,6 +46,7 @@ class PlacePanel extends Component {
 
   handleSubmit() {
     this.props.action.placeQuery(this.state);
+    this.props.action.updatePlaceQuery(this.state);
     this.setState({
       food: false,
       hotel: false,
@@ -114,7 +115,7 @@ const mapStateToProps = function(state) {
 
 const mapDispatchToProps = function(dispatch) {
   return {
-    action: bindActionCreators({ drawerState, placeQuery }, dispatch)
+    action: bindActionCreators({ drawerState, placeQuery, updatePlaceQuery }, dispatch)
   };
 };
 
