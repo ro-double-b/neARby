@@ -26,7 +26,9 @@ class PlacePanel extends Component {
       gasStation: false,
       parking: false,
       park: false,
-      placeSearch: ''
+      placeSearch: '',
+      latitude: !this.props.geolocation.currentPosition ? 37.785834 : this.props.geolocation.currentPosition.latitude,
+      longitude: !this.props.geolocation.currentPosition ? -122.406417 : this.props.geolocation.currentPosition.longitude
     };
   }
 
@@ -104,14 +106,13 @@ class PlacePanel extends Component {
 }
 
 const mapStateToProps = function(state) {
-  console.log('map state to props is called, this is state: ', state);
   return {
-    user: state.user
+    user: state.user,
+    geolocation: state.Geolocation
   };
 };
 
 const mapDispatchToProps = function(dispatch) {
-  console.log('map dispatch to props is called');
   return {
     action: bindActionCreators({ drawerState, placeQuery }, dispatch)
   };

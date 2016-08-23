@@ -9,8 +9,6 @@ export const DETAIL_SELECTED = 'DETAIL_SELECTED';
 export const SEARCH_PHOTOS = 'SEARCH_PHOTOS';
 
 export const fetchPlaces = (position) => {
-  // 'https://agile-peak-45133.herokuapp.com/location
-  //http://10.6.23.239:3000
   let collection = fetch('https://agile-peak-45133.herokuapp.com/location', {
     method: 'POST',
     headers: {
@@ -24,13 +22,14 @@ export const fetchPlaces = (position) => {
       console.log(response);
       return response.json();
     } else  {
+      return [];
       console.log('error');
     }
   })
   .catch(function(error) {
     console.error(error);
+    return [];
   });
-  console.log(collection, 'COLLECTION');
   return {
     type: PLACES_COLLECTION,
     payload: collection
@@ -39,7 +38,6 @@ export const fetchPlaces = (position) => {
 
 export const placeQuery = (query) => {
   // post request
-  console.log(query, 'QUERY');
     let search = fetch('https://agile-peak-45133.herokuapp.com/places', {
     method: 'POST',
     headers: {
@@ -52,18 +50,22 @@ export const placeQuery = (query) => {
     if (response.status === 200) {
       return response.json();
     } else  {
-      console.log('error');
+      return [];
     }
   })
   .catch(function(error) {
     console.error(error);
+    return [];
   });
 
   console.log(search);
 
   return {
     type: SEARCH_PLACES,
-    payload: search
+    payload: {
+      search: search,
+      query: query
+    }
   };
 };
 
@@ -79,21 +81,24 @@ export const eventQuery = (query) => {
   })
   .then(function(response) {
     if (response.status === 200) {
-      console.log(response);
+      console.log(response, 'RESULTS');
       return response.json();
     } else  {
-      console.log('error');
+      return [];
     }
   })
   .catch(function(error) {
     console.error(error);
+    return [];
   });
 
-  console.log(search);
 
   return {
     type: SEARCH_EVENTS,
-    payload: search
+    payload: {
+      search: search,
+      query: query
+    }
   };
 };
 
@@ -112,14 +117,13 @@ export const imageQuery = (query) => {
       console.log(response);
       return response.json();
     } else  {
-      console.log('error');
+      return [];
     }
   })
   .catch(function(error) {
     console.error(error);
+    return [];
   });
-
-  console.log(search);
 
   return {
     type: SEARCH_PHOTOS,
@@ -161,17 +165,6 @@ export const selectPlace = (data) => {
     }
   };
 };
-// export const setUser = function(name, picture) {
-//   let user = {
-//     name: name,
-//     picture: picture
-//   };
-
-//   return {
-//     type: SET_USER,
-//     payload: user
-//   };
-// };
 
 export const RESET_PLACES_UPDATE = 'RESET_PLACES_UPDATE';
 
@@ -302,6 +295,3 @@ export const sendVote = (place) => {
     payload: collection
   };
 };
-
-
-

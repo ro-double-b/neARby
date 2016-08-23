@@ -331,7 +331,7 @@ class ARcomponent extends Component {
         </TouchableHighlight>
         <TouchableHighlight style={styles.menu} onPress={this.props.pressCreate}>
           <View style={styles.button}>
-            <Image style={styles.search} source={require('../assets/place.png')}/>
+            <Image style={styles.objectButton} source={require('../assets/place.png')}/>
           </View>
         </TouchableHighlight>
         <TouchableHighlight style={styles.menu} onPress={this.props.pressProfile}>
@@ -357,9 +357,11 @@ class ARcomponent extends Component {
             onBridgeMessage={this.onBridgeMessage.bind(this)}
             injectedJavaScript={injectScript}
             source={{html}}
-            style={{backgroundColor: 'transparent', flex: 1, flexDirection: 'row', alignItems: 'flex-start'}}>
-            {this.renderButtons()}
+            style={{backgroundColor: 'transparent', flex: 1, flexDirection: 'column', alignItems: 'flex-end'}}>
+            <View>{this.renderButtons()}</View>
+            <View style={{flex: 1, justifyContent: 'center'}}>
             <Compass style={styles.compass} rotation={this.state.currentHeading} places={this.props.places} currentLocation={{threeLat: this.props.threeLat, threeLon: this.props.threeLon}}/>
+            </View>
           </WebViewBridge>
         </Camera>
         {/* this.renderDebug() */}

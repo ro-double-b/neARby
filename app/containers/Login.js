@@ -71,7 +71,7 @@ let html = `
 
   // colors
   var randomColor = Math.floor(Math.random()*256);
-  red = new THREE.Color(Math.floor(Math.random()*256), Math.floor(Math.random()*256), Math.floor(Math.random()*256));
+  red = new THREE.Color(randomColor, randomColor, randomColor);
   green = new THREE.Color(randomColor, randomColor, randomColor);
   blue = new THREE.Color(randomColor, randomColor, randomColor);
   var colors = [red, green, blue];
