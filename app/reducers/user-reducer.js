@@ -2,7 +2,7 @@ import { SET_USER } from '../actions/index';
 
 const initialState = {
   username: '',
-  picture: ''
+  picture: 'https://www.beautifulpeople.com/cdn/beautifulpeople/images/default_profile/signup_male.png'
 };
 
 export default function(state = initialState, action) {

@@ -31,6 +31,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
+  objectButton: {
+    height: 40,
+    width: 25
+  },
   buttonText: {
     color: '#FFF',
     fontSize: 25,
@@ -83,6 +87,21 @@ const styles = StyleSheet.create({
     width: 150,
     margin: 10
   },
+  searchButtons: {
+    backgroundColor: '#009D9D',
+    padding: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 3,
+    borderColor: '#000',
+    margin: 30
+  },
+  searchButtonText: {
+    color: '#FFF',
+    fontSize: 35,
+    fontFamily: 'AvenirNext-Regular',
+    textAlign: 'center'
+  },
   text: {
     fontSize: 18,
     fontFamily: 'AvenirNext-Regular',
@@ -114,7 +133,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     paddingTop: 5,
-    paddingBottom: 5
+    paddingBottom: 5,
+    height: 180
   },
   textInput: {
     fontSize: 16,
@@ -135,6 +155,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'flex-end',
     flexDirection: 'row',
+    marginTop: 40
     // justifyContent: 'center'
   },
   listText: {

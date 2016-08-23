@@ -12,19 +12,19 @@ import { bindActionCreators } from 'redux';
 class SearchPanel extends Component {
   constructor(props) {
     super(props);
-    console.log(this, 'search')
+    console.log(this, 'search');
   }
 
   render() {
     return (
-      <View>
+      <View style={{justifyContent: 'center'}}>
         <Text style={styles.heading}>search</Text>
-        <View style={{alignItems: 'center'}}>
-          <TouchableHighlight style={styles.placeOrEventButton} onPress={() => { this.props.action.drawerState('Places'); }}>
-            <Text style={styles.buttonText}>places</Text>
+        <View style={{alignItems: 'center', justifyContent: 'center', height: 400}}>
+          <TouchableHighlight style={styles.searchButtons} onPress={() => { this.props.action.drawerState('Places'); }}>
+            <Text style={styles.searchButtonText}>places</Text>
           </TouchableHighlight>
-          <TouchableHighlight style={styles.placeOrEventButton} onPress={() => { this.props.action.drawerState('Events'); }}>
-            <Text style={styles.buttonText}>events</Text>
+          <TouchableHighlight style={styles.searchButtons} onPress={() => { this.props.action.drawerState('Events'); }}>
+            <Text style={styles.searchButtonText}>events</Text>
           </TouchableHighlight>
         </View>
       </View>

@@ -21,15 +21,17 @@ class EventPanel extends Component {
       business: false,
       family: false,
       comedy: false,
-      festival: false,
+      festivals: false,
       sports: false,
       music: false,
       social: false,
       film: false,
       art: false,
-      sciTech: false,
+      sci_tec: false,
       eventDays: 1,
-      eventSearch: ''
+      eventSearch: '',
+      latitude: !this.props.geolocation.currentPosition ? 37.785834 : this.props.geolocation.currentPosition.latitude,
+      longitude: !this.props.geolocation.currentPosition ? -122.406417 : this.props.geolocation.currentPosition.longitude
     };
   }
 
@@ -54,10 +56,10 @@ class EventPanel extends Component {
     let d = new Date();
     let dayOfWeek = d.getDay();
 
-    if (this.state.sliderValue === 1) {
+    if (this.state.eventDays === 1) {
       return 'today';
     } else {
-      return 'between today and ' + weekdays[dayOfWeek + this.state.sliderValue - 1];
+      return 'between today and ' + weekdays[dayOfWeek + this.state.eventDays - 1];
     }
   }
 
@@ -76,17 +78,18 @@ class EventPanel extends Component {
   handleSubmit() {
     this.props.action.eventQuery(this.state);
     this.setState({
-      food: false,
-      hotel: false,
-      cafes: false,
-      nightlife: false,
-      shopping: false,
-      publicTransit: false,
-      bank: false,
-      gasStation: false,
-      parking: false,
-      park: false,
-      placeSearch: ''
+      business: false,
+      family: false,
+      comedy: false,
+      festivals: false,
+      sports: false,
+      music: false,
+      social: false,
+      film: false,
+      art: false,
+      sci_tec: false,
+      eventDays: 1,
+      eventSearch: ''
     });
     Alert.alert(
       'Query submitted!',
@@ -108,7 +111,7 @@ class EventPanel extends Component {
           <Text style={styles.text}>{this.renderSliderValue()}</Text>
           <Slider
             {...this.props}
-            onValueChange={(value) => this.setState({sliderValue: value})}
+            onValueChange={(value) => this.setState({eventDays: value})}
             minimumValue={1}
             maximumValue={7}
             step={1} />
@@ -118,7 +121,7 @@ class EventPanel extends Component {
             {this.createSwitch('business', 'Business')}
             {this.createSwitch('family', 'Family')}
             {this.createSwitch('comedy', 'Comedy')}
-            {this.createSwitch('festival', 'Festivals')}
+            {this.createSwitch('festivals', 'Festivals')}
             {this.createSwitch('sports', 'Sports')}
           </View>
           <View style={styles.switchColumn}>
@@ -126,7 +129,7 @@ class EventPanel extends Component {
             {this.createSwitch('social', 'Social')}
             {this.createSwitch('film', 'Film')}
             {this.createSwitch('art', 'Art')}
-            {this.createSwitch('sciTech', 'Sci/Tech')}
+            {this.createSwitch('sci_tec', 'Sci/Tech')}
           </View>
         </View>
         <View style={styles.buttonContainer}>
@@ -145,7 +148,8 @@ class EventPanel extends Component {
 const mapStateToProps = function(state) {
   return {
     user: state.user,
-    drawer: state.drawer
+    drawer: state.drawer,
+    geolocation: state.Geolocation
   };
 };
 

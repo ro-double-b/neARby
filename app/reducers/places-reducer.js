@@ -1,5 +1,6 @@
 import { PLACES_COLLECTION } from '../actions/index';
 import { SEARCH_PLACES } from '../actions/index';
+import { SEARCH_EVENTS } from '../actions/index';
 import { USER_PLACES } from '../actions/index';
 import { USER_EVENTS } from '../actions/index';
 import { RESET_PLACES_UPDATE } from '../actions/index';
@@ -19,7 +20,22 @@ const initialState = {
     park: false,
     placeSearch: ''
   },
-  placeUpdate: false
+  eventQuery: {
+    business: false,
+    family: false,
+    comedy: false,
+    festivals: false,
+    sports: false,
+    music: false,
+    social: false,
+    film: false,
+    art: false,
+    sci_tec: false,
+    eventDays: 1,
+    eventSearch: '',
+  },
+  placeUpdate: false,
+  searchMode: 'none'
 };
 
 export default function(state = initialState, action) {
@@ -34,7 +50,19 @@ export default function(state = initialState, action) {
     console.log(action.payload, 'place query');
       return {
         ...state,
-        placeQuery: action.payload,
+        places: action.payload.search,
+        placeQuery: action.payload.query,
+        placeUpdate: true,
+        searchMode: 'places'
+      };
+    case SEARCH_EVENTS:
+    console.log(action.payload, 'place query');
+      return {
+        ...state,
+        places: action.payload.search,
+        eventQuery: action.payload.query,
+        placeUpdate: true,
+        searchMode: 'events'
       };
     case USER_PLACES:
       return {
@@ -56,4 +84,4 @@ export default function(state = initialState, action) {
     default:
       return state;
   }
-};
+}
