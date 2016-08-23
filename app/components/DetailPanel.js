@@ -24,7 +24,7 @@ class PlacePanel extends Component {
 
   render() {
     return (
-      <View style={styles.panel}>
+      <View>
 
 
         <Text style={styles.subheading}>{this.props.detail.name}</Text>

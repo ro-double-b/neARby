@@ -19,7 +19,7 @@ class ListPanel extends Component {
 
   render() {
     return (
-      <View style={styles.panel}>
+      <View>
         <Text style={styles.subheading}>Whats nearby</Text>
 
         <ScrollView>
