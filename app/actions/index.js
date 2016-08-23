@@ -43,7 +43,7 @@ export const fetchPlaces = (position) => {
 
 export const placeQuery = (query) => {
   // post request
-    let search = fetch('https://agile-peak-45133.herokuapp.com/places', {
+  let search = fetch('https://agile-peak-45133.herokuapp.com/places', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
