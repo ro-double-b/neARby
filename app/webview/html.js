@@ -1,8 +1,6 @@
 import DeviceOrientationControls from '../lib/DeviceOrientationControls';
 import RenderScene from './RenderScene';
-import base64 from './base64';
-import Projector from './Projector';
-import THREEx from './threex.objcoord';
+
 const html =
 `
   <!DOCTYPE html>
@@ -41,9 +39,6 @@ const html =
 
       <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r79/three.min.js"></script>
       ${DeviceOrientationControls}
-      ${base64}
-      ${Projector}
-      ${THREEx}
       ${RenderScene}
     </body>
   </html>
