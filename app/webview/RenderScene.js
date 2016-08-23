@@ -10,7 +10,12 @@ const RenderScene =
         var frustum = new THREE.Frustum();
         document.body.style.fontFamily = 'Helvetica, sans-serif';
         window.divs = [];
-        var divsInSight = [];
+
+        var width = window.innerWidth;
+        var height = window.innerHeight;
+        var widthHalf = width / 2
+        var heightHalf = height / 2;
+
 
         // Check overlap of two rectangle-objects
         var checkOverlap = function(rect1, rect2) {
@@ -20,17 +25,6 @@ const RenderScene =
                  rect1.top > rect2.bottom);
         }
 
-        // Returns array of divs that are visible on the screen
-        var checkFrustum = function() {
-          frustum.setFromMatrix( new THREE.Matrix4().multiplyMatrices( camera.projectionMatrix, camera.matrixWorldInverse ) );
-          return window.divs.filter(function(obj) {
-            var visible = frustum.intersectsObject(obj.cube);
-            if (!visible) {
-              obj.div.style.display = 'none';
-            }
-            return visible;
-          });
-        };
         var scaleDivSize = function(element, distance) {
           var normalized = distance - 30;
           var scale = 1 / (normalized / 2000) * 0.3;
@@ -110,7 +104,7 @@ const RenderScene =
         // Check collision between argument div and all visible divs
         var checkCollision = function(div) {
           var rect1 = div.getBoundingClientRect();
-          return divsInSight.some(function(e) {
+          return divs.some(function(e) {
             if (e.div === div) {
               return false;
             }
@@ -129,9 +123,8 @@ const RenderScene =
         };
 
         animate = function(now){
-          divsInSight = checkFrustum();
 
-          divsInSight.forEach(function(element) {
+          divs.forEach(function(element) {
             var div = element.div;
 
             // Position denotes the height of the div
@@ -144,14 +137,13 @@ const RenderScene =
             // Show the div since it is currently visible
             div.style.display = '';
 
-
             var cube = element.cube;
 
-            // Library that finds visible threejs objects and maps them to css coordinates.
-            // Note that there is a bug in the library which results in two divs for every
-            // threejs cube 180 degrees from one another. The problem is solved by checking
-            // the frustum for cubes that are actually visible.
-            var position = THREEx.ObjCoord.cssPosition(cube, camera, renderer);
+            // Converting 3d coordinates of invisible cubes to css coordinates
+            var position = cube.position.clone();
+            position.project(camera);
+            position.x = ( position.x * widthHalf ) + widthHalf;
+            position.y = - ( position.y * heightHalf ) + heightHalf;
 
             var left = (position.x - div.offsetWidth /2);
             div.style.left = left + 'px';
