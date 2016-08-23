@@ -44,7 +44,7 @@ class PlacePanel extends Component {
         <View>
           {this.props.directions.map(function(item, key) {
             return (
-              <Text>{item}</Text>
+              <Text key={key}>{item}</Text>
               );
             }.bind(this))
           }

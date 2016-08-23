@@ -115,7 +115,7 @@ export const updateEventQuery = (query) => {
 
 export const imageQuery = (query) => {
   // post request
-  fetch('https://agile-peak-45133.herokuapp.com/images', {
+  let search = fetch('https://agile-peak-45133.herokuapp.com/images', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -189,7 +189,7 @@ export const getUserInfo = (err, data) => {
         username: data.name,
         picture: data.picture.data.url,
         id: data.id,
-        friends: data.friends.data
+        // friends: data.friends.data
       }
     };
   }
