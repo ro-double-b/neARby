@@ -3,10 +3,7 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Image,
-  TextInput,
-  TouchableHighlight,
-  Slider,
+  Image
 } from 'react-native';
 
 import { connect } from 'react-redux';

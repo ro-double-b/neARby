@@ -18,7 +18,8 @@ export default function(state = initialState, action) {
 
     case INIT_POSITION_UPDATE:
       return { ...state,
-        initialPosition: action.payload.initialPosition
+        initialPosition: action.payload.initialPosition,
+        currentPosition: action.payload.initialPosition
       };
 
     case CURRENT_POSITION_UPDATE:

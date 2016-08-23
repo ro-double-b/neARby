@@ -16,7 +16,7 @@ const calculateOffSet = (userLocation, placeLocation) => {
 };
 
 const Compass = (props) => {
-
+  console.log('props.places',props.places);
   let renderPlacesOnCompass = (originX, originZ) => {
     console.log(props, 'IN COMPASS');
     return props.places.map((place, idx) => {

@@ -1,7 +1,7 @@
 const RenderScene =
 `
   <script>
-    var camera, controls, animate, heading, scene, headingUpdate;
+    var camera, controls, animate, heading, scene, headingUpdate, loader;
     window.divs = [];
     (function() {
       "use strict";

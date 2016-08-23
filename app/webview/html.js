@@ -3,7 +3,6 @@ import RenderScene from './RenderScene';
 import base64 from './base64';
 import Projector from './Projector';
 import THREEx from './threex.objcoord';
-
 const html =
 `
   <!DOCTYPE html>

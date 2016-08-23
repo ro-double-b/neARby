@@ -5,7 +5,7 @@ import {
   Text
 } from 'react-native';
 import styles from '../styles/style';
-import { drawerState } from '../actions/index';
+import { drawerState, resetSearch } from '../actions/index';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -26,6 +26,9 @@ class SearchPanel extends Component {
           <TouchableHighlight style={styles.searchButtons} onPress={() => { this.props.action.drawerState('Events'); }}>
             <Text style={styles.searchButtonText}>events</Text>
           </TouchableHighlight>
+          <TouchableHighlight style={styles.placeOrEventButton} onPress={() => { this.props.action.resetSearch(); }}>
+            <Text style={styles.buttonText}>reset</Text>
+          </TouchableHighlight>
         </View>
       </View>
     );
@@ -40,7 +43,7 @@ const mapStateToProps = function(state) {
 
 const mapDispatchToProps = function(dispatch) {
   return {
-    action: bindActionCreators({ drawerState }, dispatch)
+    action: bindActionCreators({ drawerState, resetSearch }, dispatch)
   };
 };
 

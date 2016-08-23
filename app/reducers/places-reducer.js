@@ -3,6 +3,7 @@ import { SEARCH_PLACES } from '../actions/index';
 import { SEARCH_EVENTS } from '../actions/index';
 import { UPDATE_PLACE_QUERY } from '../actions/index';
 import { UPDATE_EVENT_QUERY } from '../actions/index';
+import { RESET_SEARCH } from '../actions/index';
 import { USER_PLACES } from '../actions/index';
 import { USER_EVENTS } from '../actions/index';
 import { RESET_PLACES_UPDATE } from '../actions/index';
@@ -49,7 +50,7 @@ export default function(state = initialState, action) {
         placeUpdate: true
       };
     case SEARCH_PLACES:
-    console.log(action.payload, 'place query');
+    // console.log(action.payload, 'place query');
       return {
         ...state,
         places: action.payload,
@@ -63,6 +64,11 @@ export default function(state = initialState, action) {
         places: action.payload,
         placeUpdate: true,
         searchMode: 'events'
+      };
+    case RESET_SEARCH:
+      return {
+        ...state,
+        searchMode: action.payload
       };
     case USER_PLACES:
       return {

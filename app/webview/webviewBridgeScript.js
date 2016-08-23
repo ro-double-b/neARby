@@ -1,33 +1,17 @@
 export const injectScript = `
   (function () {
 
-    //add some directional axis for debugging
-    var addAxis = function() {
-      //red
-      // var geo = new THREE.BoxGeometry(1000, .3, .3);
-      // var mat = new THREE.MeshBasicMaterial({color: "rgba(0,255,255,.1)", wireframe: true});
-      // var axisX = new THREE.Mesh(geo, mat);
-      // axisX.name = 'axisX';
-      // axisX.position.set(0, -20, 0);
-      // window.scene.add(axisX);
+    // //icosahedron
+    // var icosahedron = new THREE.IcosahedronGeometry( 2, 0 );
 
-      //green
-      // var geo = new THREE.BoxGeometry(.3, 1000, .3);
-      // var mat = new THREE.MeshBasicMaterial({color: "rgba(0,255,255,.1)", wireframe: true});
-      // var axisY = new THREE.Mesh(geo, mat);
-      // axisY.name = 'axisY';
-      // axisY.position.set(0, 0, 0);
-      // axisY.rotation.y = 45 * Math.PI / 180;
-      // window.scene.add(axisY);
+    // // octahedron
+    // var diamond = new THREE.OctahedronGeometry( 2, 0 );
 
-      //blue
-      // var geo = new THREE.BoxGeometry(.3, .3, 1000);
-      // var mat = new THREE.MeshBasicMaterial({color: "rgba(0,255,255,.1)", wireframe: true});
-      // var axisZ = new THREE.Mesh(geo, mat);
-      // axisZ.name = 'axisZ';
-      // axisZ.position.set(0, -20, 0);
-      // window.scene.add(axisZ);
-    };
+    // // tetrahedron
+    // var pyramid = new THREE.TetrahedronGeometry( 2, 0 );
+
+    // // torus
+    // var torus = new THREE.TorusGeometry( 3, 1, 16, 40 );
 
     var orientCompass = function(message) {
       //set compass to current location too
@@ -37,8 +21,8 @@ export const injectScript = `
     }
 
     //add cube in arbitraury location
-    var addCubeHere = function(threejsLat, threejsLon, color) {
-      var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+    var addCubeHere = function(threejsLat, threejsLon, color, geometry) {
+      // var geometry = new THREE.BoxGeometry( 1, 1, 1 );
       var material = new THREE.MeshBasicMaterial( { color: color, wireframe: true } );
       var cube = new THREE.Mesh( geometry, material );
       cube.position.set(threejsLon, 0, -1 * threejsLat);
@@ -52,7 +36,6 @@ export const injectScript = `
 
       //animate function comes from html string
       window.animate();
-      addAxis();
     }
 
     if (WebViewBridge) {
@@ -76,11 +59,14 @@ export const injectScript = `
           WebViewBridge.send(JSON.stringify("in WebViewBridge, got places"));
           window.clearScene();
           window.divs = [];
+
           places.forEach(function(place, key) {
             if (place.type && (place.type === 'userPlace')) {
-              addCubeHere(place.lat, place.lon, "rgb(255, 0, 0)");
+              var torus = new THREE.TorusGeometry( 5, 2, 16, 40 );
+              addCubeHere(place.lat, place.lon, "rgb(255, 0, 0)", torus);
             } else if (place.type && (place.type === 'userEvent')) {
-              addCubeHere(place.lat, place.lon, "rgb(255, 255, 0)");
+              var diamond = new THREE.OctahedronGeometry( 5, 0 );
+              addCubeHere(place.lat, place.lon, "rgb(255, 255, 0)", diamond);
             } else {
               window.createPlace(place.lat, place.lon, place.name, place.distance, key);
             }
@@ -95,6 +81,7 @@ export const injectScript = `
       };
 
       WebViewBridge.send(JSON.stringify("webview is loaded"));
+
     }
   }());
 `;

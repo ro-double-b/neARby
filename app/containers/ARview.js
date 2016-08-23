@@ -46,7 +46,7 @@ class ARcomponent extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    //listen to changes in search places;
+    //rerender places only when placeUpdate is true;
     if (this.sendPlacesToWebView && nextProps.placeUpdate) {
       this.sendPlacesToWebView(nextProps.places);
       this.props.action.resetPlaceUpdate();
@@ -72,23 +72,26 @@ class ARcomponent extends Component {
       'headingUpdated',
       (data) => {
 
-        // this.setState({currentHeading: data.heading});
-        // callback(data.heading);
+        this.setState({currentHeading: data.heading});
+        
+        callback(data.heading);
 
-        let smoothingValue = 12;
-        let previousHeading = this.state.currentHeading;
-        let currentHeading = data.heading;
+        // //following is an implementation of low pass filter to smooth out changes in heading
+        // //greater the smoothingValue, better the smoothing, but less accurate is the result
+        // let smoothingValue = 60;
+        // let previousHeading = this.state.currentHeading;
+        // let currentHeading = data.heading;
 
-        let newHeading = previousHeading + (currentHeading - previousHeading) / smoothingValue;
-        this.setState({currentHeading: currentHeading});
-       
-        callback(newHeading);
+        // let newHeading = previousHeading + (currentHeading - previousHeading) / smoothingValue;
+        // this.setState({currentHeading: currentHeading});
+        
+        // callback(newHeading);
       }
     );
   }
 
   //initGeolocation gets the initial geolocation and set it to initialPosition state
-  initGeolocation(initialCameraAngleCallback, sendInitLocToMainView) {
+  initGeolocation(initialCameraAngleCallback) {
     Location.startUpdatingLocation();
     //this will listen to geolocation changes and update it in state
     this.getInitialLocation = DeviceEventEmitter.addListener(
@@ -110,21 +113,22 @@ class ARcomponent extends Component {
         threejsLon: 0
       };
       this.props.action.fetchPlaces(positionObj)
+      // .then((response) => {
+      //   if (response.payload.length === 0) {
+      //     setTimeout(() => {this.props.action.fetchPlaces(positionObj)}, 5000);
+      //   }
+      // })
       .catch((err) => {
         //implement error message
         setTimeout(() => {this.props.action.fetchPlaces(positionObj)}, 5000);
       });
-
-      if (sendInitLocToMainView) {
-        sendInitLocToMainView(sendInitLocToMainView);
-      }
 
       initialCameraAngleCallback();
     }, 2000);
   }
 
   //watchGeolocation will subsequenly track the geolocation changes and update it in lastPosition state
-  watchGeolocation(cameraCallback, placesCallback, sendLocToMainView) {
+  watchGeolocation(cameraCallback, placesCallback) {
     Location.startUpdatingLocation();
     //this will listen to geolocation changes and update it in state
     DeviceEventEmitter.addListener(
@@ -209,10 +213,10 @@ class ARcomponent extends Component {
 
     //this will sent current heading to threejs to correct
     this.calibrateCameraAngle = (heading) => {
-      // if (sendNewHeading) {
+      if (sendNewHeading) {
         webviewbridge.sendToBridge(JSON.stringify({type: 'currentHeading', heading: heading}));
-        // sendNewHeading = false;
-      // }
+        sendNewHeading = false;
+      }
     };
 
     this.updateThreeJSCameraPosition = (newCameraPosition) => {
@@ -234,10 +238,14 @@ class ARcomponent extends Component {
         //more filters
       };
 
-      this.props.action.fetchPlaces(positionObj)
-      .catch((err) => {
-        setTimeout(() => this.props.action.fetchPlaces(positionObj), 5);
-      });
+      //if there are searches for events for places, keep fetching those searches
+      if (this.props.searchMode === 'none') {
+        this.props.action.fetchPlaces(positionObj);
+      } else if (this.props.searchMode === 'places') {
+        this.props.action.placeQuery(this.props.placeQuery);
+      } else if (this.props.searchMode === 'events') {
+        this.props.action.eventQuery(this.props.eventQuery);
+      }
     };
 
     message = JSON.parse(message);
@@ -252,7 +260,7 @@ class ARcomponent extends Component {
       //if distance exceed a certain treashold, updatePlaces will be called to fetch new locations
       this.watchGeolocation(this.updateThreeJSCameraPosition, this.updatePlaces);
       //calibrate threejs camera according to north every 5 seconds
-      // setInterval(() => { sendNewHeading = true; }, 5000);
+      setInterval(() => { sendNewHeading = true; }, 5000);
       this.sendOrientation(this.calibrateCameraAngle);
     } else if (message.type === 'click') {
       this.props.action.openPreview([message.key]);
@@ -356,7 +364,7 @@ class ARcomponent extends Component {
             ref="webviewbridge"
             onBridgeMessage={this.onBridgeMessage.bind(this)}
             injectedJavaScript={injectScript}
-            source={{html}}
+            source={{html: html, baseUrl:'web/'}}
             style={{backgroundColor: 'transparent', flex: 1, flexDirection: 'column', alignItems: 'flex-end'}}>
             <View>{this.renderButtons()}</View>
             <View style={{flex: 1, justifyContent: 'center'}}>
@@ -376,8 +384,9 @@ const mapStateToProps = function(state) {
     user: state.user,
     places: state.places.places,
     placeUpdate: state.places.placeUpdate,
-    userPlacesUpdate: state.places.userPlacesUpdate,
-    userEventsUpdate: state.places.userEventsUpdate,
+    searchMode: state.places.searchMode,
+    placeQuery: state.places.placeQuery,
+    eventQuery: state.places.eventQuery,
 
     initialPosition: state.Geolocation.initialPosition,
     currentPosition: state.Geolocation.currentPosition,

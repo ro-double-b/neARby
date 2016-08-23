@@ -10,6 +10,8 @@ export const SEARCH_PHOTOS = 'SEARCH_PHOTOS';
 export const UPDATE_EVENT_QUERY = 'UPDATE_EVENT_QUERY';
 export const UPDATE_PLACE_QUERY = 'UPDATE_PLACE_QUERY';
 export const GET_DIRECTIONS = 'GET_DIRECTIONS';
+export const RESET_SEARCH = 'RESET_SEARCH';
+export const RESET_PLACES_UPDATE = 'RESET_PLACES_UPDATE';
 
 export const fetchPlaces = (position) => {
   let collection = fetch('https://agile-peak-45133.herokuapp.com/location', {
@@ -41,7 +43,7 @@ export const fetchPlaces = (position) => {
 
 export const placeQuery = (query) => {
   // post request
-    let search = fetch('https://agile-peak-45133.herokuapp.com/places', {
+  let search = fetch('https://agile-peak-45133.herokuapp.com/places', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -204,7 +206,13 @@ export const selectPlace = (data) => {
   };
 };
 
-export const RESET_PLACES_UPDATE = 'RESET_PLACES_UPDATE';
+export const resetSearch = () => {
+  return {
+    type: RESET_SEARCH,
+    payload: 'none'
+  };
+};
+
 
 export const resetPlaceUpdate = () => {
   return {
@@ -318,10 +326,11 @@ export const sendVote = (place) => {
   })
   .then(function(response) {
     if (response.status === 200) {
-      console.log(response);
+      console.log('response', response);
       return response.json();
     } else  {
       console.log('error');
+      return [];
     }
   })
   .catch(function(error) {

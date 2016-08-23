@@ -150,18 +150,18 @@ class CreatePanel extends Component {
 
   render() {
     return (
-      <View style={styles.panel}>
+      <View>
         <Text style={styles.headingSmall}>make a spot</Text>
         <View style={styles.row}>
           <TouchableOpacity onPress={() => {this.switchType('place')} }>
             <View style={styles.iconRow}>
-              <Image style={styles.icons} source={require('../assets/cube_small.gif')}/>
+              <Image style={styles.icons} source={require('../assets/diamond.gif')}/>
               <Text style={styles.textCenter} >place</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => {this.switchType('event')} }>
             <View style={styles.iconRowEnd}>
-              <Image style={styles.icons} source={require('../assets/cube_small.gif')}/>
+              <Image style={styles.icons} source={require('../assets/pyramid.gif')}/>
               <Text style={styles.textCenter} >event</Text>
             </View>
           </TouchableOpacity>
