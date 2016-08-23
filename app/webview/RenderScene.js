@@ -1,7 +1,7 @@
 const RenderScene =
 `
   <script>
-    var camera, controls, animate, heading, scene, headingUpdate, loader;
+    var camera, controls, animate, heading, scene, headingUpdate, loader, openingTorus;
     window.divs = [];
     (function() {
       "use strict";
@@ -159,6 +159,7 @@ const RenderScene =
           });
 
           window.requestAnimationFrame( animate );
+          rotateTorus();
           // controls.update();
           controls.updateAlphaOffsetAngle( (360 - heading) * (Math.PI / 180));
           renderer.render(scene, camera);
@@ -172,6 +173,20 @@ const RenderScene =
         renderer.domElement.style.position = 'absolute';
         renderer.domElement.style.top = 0;
         container.appendChild(renderer.domElement);
+
+        var torus = new THREE.TorusGeometry( 100, 30, 50, 100 );
+        var torusMaterial = new THREE.MeshBasicMaterial( { color: "rgb(255, 0, 0)", wireframe: true } );
+        openingTorus = new THREE.Mesh( torus, torusMaterial );
+        openingTorus.position.set(0, 0, -1000);
+        scene.add( openingTorus );
+
+        var rotateTorus = function() {
+          if (openingTorus) {
+            // openingTorus.rotation.y += 0.1;
+            openingTorus.position.z += 10;
+          }
+        }
+
         window.addEventListener('resize', function() {
           camera.aspect = window.innerWidth / window.innerHeight;
           camera.updateProjectionMatrix();
