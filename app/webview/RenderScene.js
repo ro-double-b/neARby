@@ -40,6 +40,29 @@ const RenderScene =
           element.style.transform = 'scale(' + scale + ')';
         }
 
+        window.createImages = function(images) {
+          clearScene();
+          images.forEach(function(image) {
+            var img = document.createElement('img');
+            img.src = image;
+            img.style.position = 'absolute';
+            img.style.opacity = 0.5;
+            document.body.appendChild(img);
+
+            var geo = new THREE.BoxGeometry(1, 1, 1);
+            var mat = new THREE.MeshBasicMaterial({color: 0x00FF00, wireframe: true});
+            var cube = new THREE.Mesh(geo, mat);
+            cube.position.set(Math.random() * 2 - 1, 0, Math.random() * 2 - 1);
+            cube.position.normalize();
+            cube.position.multiplyScalar(200);
+            img.width = 150;
+            img.height =  50;
+            cube.visible = false;
+            scene.add(cube);
+            window.divs.push({div: img, cube: cube});
+          });
+        }
+
         window.createPlace = function(lat, long, name, distance, key) {
 
           // Create surrounding div
@@ -86,7 +109,7 @@ const RenderScene =
 
         // Check collision between argument div and all visible divs
         var checkCollision = function(div) {
-          var rect1 = div.querySelector('h1').getBoundingClientRect();
+          var rect1 = div.getBoundingClientRect();
           return divsInSight.some(function(e) {
             if (e.div === div) {
               return false;
@@ -96,7 +119,7 @@ const RenderScene =
           });
         }
 
-        var clearScene = function() {
+        window.clearScene = function() {
           window.divs.forEach(function(obj) {
             if (obj.cube) {
               obj.div.remove();
@@ -120,6 +143,7 @@ const RenderScene =
 
             // Show the div since it is currently visible
             div.style.display = '';
+
 
             var cube = element.cube;
 
