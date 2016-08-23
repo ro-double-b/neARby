@@ -54,7 +54,7 @@ var placesKeyword = {
   bank: 'atm+bank',
   gasStation: 'gas_station',
   parking: 'parking',
-  parks: 'park',
+  parks: 'park'
 };
 
 function placesFilter(obj) {
@@ -83,7 +83,7 @@ function placesSearch(string) {
 }
 
 function getPlaces(req, res) {
-  checkInit(req)
+  checkInit(req);
   var googleOpenNow = '';
   if (req.body.openNow !== undefined) {
     googleOpenNow = '&opennow';
@@ -144,7 +144,7 @@ var eventsCategory = {
   social: 'attractions,community,singles_social',
   film: 'movies_film',
   art: 'art,performing_arts',
-  sci_tec: 'science+technology',
+  sci_tec: 'science+technology'
 };
 
 function eventsFilter(obj) {
@@ -181,7 +181,7 @@ function getEvents(req, res) {
   endDate.setDate(endDate.getDate() + req.body.eventDays - 1);
   var date = `${dateFormat(startDate)}-${dateFormat(endDate)}`;
   var eventsApiKey = 'CbNBBV9Qm4wTwMpg';
-  var radius = .25;
+  var radius = 0.25;
   var eventsApiLink = `http://api.eventful.com/json/events/search?...&location=${req.body.latitude},${req.body.longitude}&within=${radius}&units=miles&date=${date}${eventsFilter(req.body)}${eventsSearch(req.body.eventSearch)}&app_key=${eventsApiKey}`;
   console.log(eventsApiLink);
   return new Promise((resolve, reject) => {
@@ -204,7 +204,7 @@ function getEvents(req, res) {
           };
           eventObj.push(place);
         });
-        console.log(eventObj)
+        console.log(eventObj);
         resolve(res.send(eventObj));
       }
     });
@@ -243,7 +243,10 @@ function getPhotos(req, res, userId) {
 }
 
 module.exports = {
+  deg2rad,
+  hypotenuseDistance,
+  findXDistance,
   getPlaces,
   getEvents,
-  getVenueID,
+  getVenueID
 };
