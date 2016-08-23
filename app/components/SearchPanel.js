@@ -5,7 +5,7 @@ import {
   Text
 } from 'react-native';
 import styles from '../styles/style';
-import { drawerState } from '../actions/index';
+import { drawerState, resetSearch } from '../actions/index';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -43,7 +43,7 @@ const mapStateToProps = function(state) {
 
 const mapDispatchToProps = function(dispatch) {
   return {
-    action: bindActionCreators({ drawerState }, dispatch)
+    action: bindActionCreators({ drawerState, resetSearch }, dispatch)
   };
 };
 

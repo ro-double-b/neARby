@@ -174,13 +174,26 @@ const RenderScene =
         container = document.getElementById( 'container' );
         scene = new THREE.Scene();
         renderer = new THREE.WebGLRenderer({alpha: true});
-        loader = new THREE.JSONLoader();
         renderer.setClearColor( 0x000000, 0 ); // the default
         renderer.setPixelRatio( window.devicePixelRatio );
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.domElement.style.position = 'absolute';
         renderer.domElement.style.top = 0;
         container.appendChild(renderer.domElement);
+
+        winddow.alert('asdfasdf');
+        var torus = new THREE.TorusGeometry( 100, 50, 50, 100 );
+        var torusMaterial = new THREE.MeshBasicMaterial( { color: "rgb(255, 0, 0)", wireframe: true } );
+        openingTorus = new THREE.Mesh( torus, torusMaterial );
+        openingTorus.position.set(0, 0, 0);
+        scene.add( openingTorus );
+
+        // var rotateTorus = function() {
+        //   if (openingTorus) {
+        //     openingTorus.rotation.y += 0.1;
+        //   }
+        // }
+
         window.addEventListener('resize', function() {
           camera.aspect = window.innerWidth / window.innerHeight;
           camera.updateProjectionMatrix();

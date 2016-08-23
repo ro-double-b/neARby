@@ -51,7 +51,7 @@ export const injectScript = `
         } else if (message.type === "initialHeading") {
 
           heading = message.heading;
-          beginAnimation();
+          // beginAnimation();
           WebViewBridge.send(JSON.stringify("heading received"));
 
         } else if (message.type === 'places') {
@@ -80,6 +80,8 @@ export const injectScript = `
         }
       };
 
+      heading = 0;
+      beginAnimation();
       WebViewBridge.send(JSON.stringify("webview is loaded"));
 
     }
