@@ -16,6 +16,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as Actions from '../actions/index';
 import uploadImage from '../lib/S3Upload';
+import Promise from "bluebird"; 
 
 //TODOs:
 //add color selector for geometry and a color state, fix timestamp on ev  ent request obj
@@ -48,6 +49,8 @@ class CreatePanel extends Component {
       eventDescription: '',
       startTime: '',
       duration: '',
+      placePics: [],
+      eventPics: []
     });
   }
 
@@ -64,20 +67,25 @@ class CreatePanel extends Component {
       type: 'userPlace',
       upvotes: 0,
       downvotes: 0,
-      voted: false
+      voted: false,
+      img: []
     };
 
-    if (this.state.placePics.length > 0) {
-      // console.log('this.state.placePics[0].origURL', this.state.placePics[0].origURL);
-      uploadImage(this.state.placePics[0].uri, 'places', this.eventPic[0].fileSize, (response) => {
-        obj.uri = response.location;
-        this.props.action.addPlace(obj);
-        this.resetState();
-      // sendSpotToServer('createPlace', obj);
-      });
-    } else {
+    let uploadPromises = [];
 
+    for (var i = 0; i < this.state.placePics.length; i++) {
+      let source = this.state.placePics[i];
+      uploadPromises.push(uploadImage(source.uri, 'places', source.fileSize));
     }
+
+    Promise.all(uploadPromises)
+    .then((results) => {
+      console.log('results', results);
+      obj.img = results;
+      this.props.action.addPlace(obj);
+      // sendSpotToServer('createPlace', obj);
+      this.resetState();
+    });
     this.props.close();
   }
 
@@ -95,15 +103,24 @@ class CreatePanel extends Component {
       type: 'userEvent',
       upvotes: 0,
       downvotes: 0,
-      voted: false
+      voted: false,
+      img: []
     };
 
-    uploadImage(this.eventPics[0].uri, 'events', this.eventPic[0].fileSize, (response) => {
-      obj.uri = response.location;
-      console.log('response.location', response.location);
+    let uploadPromises = [];
+
+    for (var i = 0; i < this.state.eventPics.length; i++) {
+      let source = this.state.eventPics[i];
+      uploadPromises.push(uploadImage(source.uri, 'events', source.fileSize));
+    }
+
+    Promise.all(uploadPromises)
+    .then((results) => {
+      console.log('results', results);
+      obj.img = results;
       this.props.action.addEvent(obj);
+      // sendSpotToServer('createPlace', obj);
       this.resetState();
-    // sendSpotToServer('createPlace', obj);
     });
     this.props.close();
 

@@ -10,22 +10,20 @@ const options = {
   successActionStatus: 201
 };
 
-const uploadImage = (uri, type, fileSize, callback) => {
+const uploadImage = (uri, type, fileSize) => {
 	// console.log('image.origURL', image.origURL);
 	let file = {
 	  uri: 'file://' + uri,
-	  name: '/' + type + '/' + fileSize + '.jpg',
+	  name: '/' + type + '/' + fileSize + Math.floor(Math.random() * 10000) + '.jpg',
 	  type: 'image/jpg'
 	};
 
-	console.log('options', options);
-
-	RNS3.put(file, options).then(response => {
+	return RNS3.put(file, options).then(response => {
 		if (response.status !== 201) {
 		  throw new Error('Failed to upload image to S3');
 		}
-			console.log('response.status', response);
-		callback(response.body);
+		console.log('response.status', response);
+		return response.body.postResponse.location;
 	})
 	.catch(error => {
 		console.log(error);
