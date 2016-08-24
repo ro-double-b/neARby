@@ -102,6 +102,7 @@ class ARcomponent extends Component {
         threejsLon: 0
       };
       this.props.action.fetchPlaces(positionObj)
+      .then(() => {this.props.action.userPlacesQuery(positionObj)})
       // .then((response) => {
       //   if (response.payload.length === 0) {
       //     setTimeout(() => {this.props.action.fetchPlaces(positionObj)}, 5000);
@@ -109,7 +110,8 @@ class ARcomponent extends Component {
       // })
       .catch((err) => {
         //implement error message
-        setTimeout(() => {this.props.action.fetchPlaces(positionObj)}, 5000);
+        setTimeout(() => {this.props.action.fetchPlaces(positionObj)
+          .then(() => {this.props.action.userPlacesQuery(positionObj)})}, 5000);
       });
 
       initialCameraAngleCallback();
@@ -229,9 +231,11 @@ class ARcomponent extends Component {
 
       //if there are searches for events for places, keep fetching those searches
       if (this.props.searchMode === 'none') {
-        this.props.action.fetchPlaces(positionObj);
+        this.props.action.fetchPlaces(positionObj)
+        .then(this.props.action.userPlacesQuery(positionObj));
       } else if (this.props.searchMode === 'places') {
-        this.props.action.placeQuery(this.props.placeQuery);
+        this.props.action.placeQuery(this.props.placeQuery)
+        .then(this.props.action.userPlacesQuery(this.props.placeQuery));
       } else if (this.props.searchMode === 'events') {
         this.props.action.eventQuery(this.props.eventQuery);
       }

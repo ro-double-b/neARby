@@ -13,8 +13,13 @@ export const GET_DIRECTIONS = 'GET_DIRECTIONS';
 export const RESET_SEARCH = 'RESET_SEARCH';
 export const RESET_PLACES_UPDATE = 'RESET_PLACES_UPDATE';
 
+const herokuServer = 'https://agile-peak-45133.herokuapp.com/';
+const localServer = 'http://10.6.23.239:3000/';
+const server = herokuServer;
+const redisServer = localServer;
+
 export const fetchPlaces = (position) => {
-  let collection = fetch('https://agile-peak-45133.herokuapp.com/location', {
+  let collection = fetch(`${server}location`, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -35,6 +40,7 @@ export const fetchPlaces = (position) => {
     console.error(error);
     return [];
   });
+  // userPlacesQuery(position);
   return {
     type: PLACES_COLLECTION,
     payload: collection
@@ -42,8 +48,9 @@ export const fetchPlaces = (position) => {
 };
 
 export const placeQuery = (query) => {
+  console.log('test the placeQuery out')
   // post request
-  let search = fetch('https://agile-peak-45133.herokuapp.com/places', {
+  let search = fetch(`${server}places`, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -62,9 +69,7 @@ export const placeQuery = (query) => {
     console.error(error);
     return [];
   });
-
-  console.log(search);
-
+  // userPlacesQuery(query);
   return {
     type: SEARCH_PLACES,
     payload: search
@@ -73,7 +78,7 @@ export const placeQuery = (query) => {
 
 export const eventQuery = (query) => {
   // post request
-    let search = fetch('https://agile-peak-45133.herokuapp.com/events', {
+    let search = fetch(`${server}events`, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -92,11 +97,65 @@ export const eventQuery = (query) => {
     console.error(error);
     return [];
   });
-
-  console.log(search);
-
+  userEventQuery(query);
   return {
     type: SEARCH_EVENTS,
+    payload: search
+  };
+};
+
+export const userEventQuery = (query) => {
+  // post request
+    let search = fetch(`${redisServer}db/getPlace`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(query)
+  })
+  .then(function(response) {
+    if (response.status === 200) {
+      return response.json();
+    } else  {
+      return [];
+    }
+  })
+  .catch(function(error) {
+    console.error(error);
+    return [];
+  });
+  return {
+    type: USER_EVENTS,
+    payload: search
+  };
+};
+
+export const userPlacesQuery = (query) => {
+  // post request
+  console.log('test the user place query out')
+    let search = fetch(`${redisServer}db/getPlaces`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(query)
+  })
+  .then(function(response) {
+    if (response.status === 200) {
+      return response.json();
+    } else  {
+      return [];
+    }
+  })
+  .catch(function(error) {
+    console.error(error);
+    return [];
+  });
+  console.log('testing userPlaceQuery', search);
+  return {
+    type: USER_PLACES,
     payload: search
   };
 };
@@ -117,7 +176,7 @@ export const updateEventQuery = (query) => {
 
 export const imageQuery = (query) => {
   // post request
-  let search = fetch('https://agile-peak-45133.herokuapp.com/images', {
+  let search = fetch(`${server}images`, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -145,7 +204,7 @@ export const imageQuery = (query) => {
 };
 
 export const directionsQuery = (query) => {
-  let search = fetch('https://agile-peak-45133.herokuapp.com/directions', {
+  let search = fetch(`${server}directions`, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -269,18 +328,53 @@ export const USER_PLACES = 'USER_PLACES';
 export const USER_EVENTS = 'USER_EVENTS';
 
 export const addPlace = (place) => {
-  console.log('addPlace');
+  let search = fetch(`${redisServer}db/createPlace`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(place)
+  })
+  .then(function(response) {
+    if (response.status === 200) {
+      return response.json();
+    } else  {
+      console.log('error adding Places: ', response);
+    }
+  })
+  .catch(function(error) {
+    console.error('error adding Places: ', error);
+  });
+  console.log('testing addPlace', search)
   return {
     type: USER_PLACES,
-    payload: place
+    payload: search
   };
 };
 
 export const addEvent = (event) => {
-  console.log('addEvent');
+    let search = fetch(`${redisServer}db/createEvent`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(event)
+  })
+  .then(function(response) {
+    if (response.status === 200) {
+      return response.json();
+    } else  {
+      console.log('error adding Event: ', response);
+    }
+  })
+  .catch(function(error) {
+    console.error('error adding Event: ', error);
+  });
   return {
     type: USER_EVENTS,
-    payload: event
+    payload: search
   };
 };
 
@@ -316,7 +410,7 @@ export const closePreview = () => {
 //////////////////////////////
 export const sendVote = (place) => {
   console.log('votePlace');
-  let collection = fetch('https://agile-peak-45133.herokuapp.com/vote', {
+  let collection = fetch(`${redisServer}vote`, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',

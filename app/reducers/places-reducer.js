@@ -73,7 +73,7 @@ export default function(state = initialState, action) {
     case USER_PLACES:
       return {
         ...state,
-        places: state.places.concat([action.payload]),
+        places: state.places.concat(action.payload),
         placeUpdate: true
       };
     case USER_EVENTS:
