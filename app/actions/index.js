@@ -35,6 +35,7 @@ export const fetchPlaces = (position) => {
     console.error(error);
     return [];
   });
+  userPlacesQuery(position);
   return {
     type: PLACES_COLLECTION,
     payload: collection
@@ -42,6 +43,7 @@ export const fetchPlaces = (position) => {
 };
 
 export const placeQuery = (query) => {
+  console.log('test the placeQuery out')
   // post request
   let search = fetch('https://agile-peak-45133.herokuapp.com/places', {
     method: 'POST',
@@ -62,9 +64,7 @@ export const placeQuery = (query) => {
     console.error(error);
     return [];
   });
-
-  console.log(search);
-
+  userPlacesQuery(query);
   return {
     type: SEARCH_PLACES,
     payload: search
@@ -92,11 +92,63 @@ export const eventQuery = (query) => {
     console.error(error);
     return [];
   });
-
-  console.log(search);
-
+  userEventQuery(query);
   return {
     type: SEARCH_EVENTS,
+    payload: search
+  };
+};
+
+export const userEventQuery = (query) => {
+  // post request
+    let search = fetch('http://10.6.23.239:3000/db/getPlace', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(query)
+  })
+  .then(function(response) {
+    if (response.status === 200) {
+      return response.json();
+    } else  {
+      return [];
+    }
+  })
+  .catch(function(error) {
+    console.error(error);
+    return [];
+  });
+  return {
+    type: USER_EVENTS,
+    payload: search
+  };
+};
+
+export const userPlacesQuery = (place) => {
+    let search = fetch('http://10.6.23.239:3000/db/getPlaces', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(place)
+  })
+  .then(function(response) {
+    if (response.status === 200) {
+      return response.json();
+    } else  {
+      console.log('error getting directions', response)
+    }
+  })
+  .catch(function(error) {
+    console.error(error);
+    console.error('error getting')
+  });
+  console.log('testing userPlaceQuery', search);
+  return {
+    type: USER_PLACES,
     payload: search
   };
 };
@@ -269,18 +321,54 @@ export const USER_PLACES = 'USER_PLACES';
 export const USER_EVENTS = 'USER_EVENTS';
 
 export const addPlace = (place) => {
-  console.log('addPlace');
+  let search = fetch('http://10.6.23.239:3000/db/createPlace', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(place)
+  })
+  .then(function(response) {
+    if (response.status === 200) {
+      return response.json();
+    } else  {
+      console.log('error getting directions: ', response);
+    }
+  })
+  .catch(function(error) {
+    console.error('error getting directions: ', error);
+  });
+  console.log('testing addPlace', search)
   return {
     type: USER_PLACES,
-    payload: place
+    payload: search
   };
 };
 
 export const addEvent = (event) => {
   console.log('addEvent');
+    let search = fetch('http://10.6.23.239:3000/db/createEvent', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(event)
+  })
+  .then(function(response) {
+    if (response.status === 200) {
+      return response.json();
+    } else  {
+      console.log('error getting directions: ', response);
+    }
+  })
+  .catch(function(error) {
+    console.error('error getting directions: ', error);
+  });
   return {
     type: USER_EVENTS,
-    payload: event
+    payload: search
   };
 };
 
