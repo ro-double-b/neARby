@@ -44,4 +44,4 @@ android/app/libs
 android/keystores/debug.keystore
 
 #AMAZON S3 KEYS
-app/config/AMAZON_S3_KEYS.JS
+app/config/AMAZON_S3_KEYS.js
