@@ -31,8 +31,6 @@ export const injectScript = `
 
     var beginAnimation = function() {
       //followings are global variables that allows html to render scene
-      window.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1100);
-      window.controls = new THREE.DeviceOrientationControls( camera, true );
 
       //animate function comes from html string
       window.animate();
@@ -58,11 +56,18 @@ export const injectScript = `
 
         } else if (message.type === 'places') {
           var places = message.places;
+          // var places = [
+          //   {name: 'nice place', lat: 3, lon: 4, distance: 100},
+          //   {name: 'cool place', lat: 200, lon: 102, distance: 100},
+          //   {name: 'excellent place nice', lat: 122, lon: 23, distance: 100},
+          //   {name: 'best place ever', lat: 131, lon: 200, distance: 100},
+          //   {name: 'best place ever', lat: 131, lon: 200, distance: 100},
+          // ];
+
           WebViewBridge.send(JSON.stringify("in WebViewBridge, got places"));
           window.clearScene();
           window.divs = [];
 
-          alert(JSON.stringify('wasd'));
           places.forEach(function(place, key) {
             loading = false;
             if (place.type && (place.type === 'userPlace')) {

@@ -12,59 +12,20 @@ const RenderScene =
         document.body.style.fontFamily = 'Helvetica, sans-serif';
         window.divs = [];
 
+        var mouse = new THREE.Vector2();
+        var raycaster = new THREE.Raycaster();
         var width = window.innerWidth;
         var height = window.innerHeight;
         var widthHalf = width / 2
         var heightHalf = height / 2;
 
-
-        // Check overlap of two rectangle-objects
-        var checkOverlap = function(rect1, rect2) {
-          return !(rect1.right < rect2.left ||
-                 rect1.left > rect2.right ||
-                 rect1.bottom < rect2.top ||
-                 rect1.top > rect2.bottom);
-        }
-
-        var scaleDivSize = function(element, distance) {
-          var normalized = distance - 30;
-          var scale = 1 / (normalized / 2000) * 0.3;
-          if (scale > 1.4) {
-            scale = 1.4;
-          }
-          element.style.transform = 'scale(' + scale + ')';
-        }
-
-        window.createImages = function(images) {
-          clearScene();
-          images.forEach(function(image) {
-            var img = document.createElement('img');
-            img.src = image;
-            img.style.position = 'absolute';
-            img.style.opacity = 0.5;
-            document.body.appendChild(img);
-
-            var geo = new THREE.BoxGeometry(1, 1, 1);
-            var mat = new THREE.MeshBasicMaterial({color: 0x00FF00, wireframe: true});
-            var cube = new THREE.Mesh(geo, mat);
-            cube.position.set(Math.random() * 2 - 1, 0, Math.random() * 2 - 1);
-            cube.position.normalize();
-            cube.position.multiplyScalar(200);
-            img.width = 150;
-            img.height =  50;
-            cube.visible = false;
-            scene.add(cube);
-            window.divs.push({div: img, cube: cube});
-          });
-        }
-
         // Takes a bounding box and checks for collisions against
         // all other places/events in the scene
         var checkCollision = function(bbox) {
           bbox.update();
-          return divs.some(function(obj) {
-            var cube = obj.cube;
+          return divs.some(function(cube) {
             var cubeBbox = new THREE.BoundingBoxHelper(cube);
+            cubeBbox.update();
             if (bbox.box.intersectsBox(cubeBbox.box)) {
               return true;
             }
@@ -89,6 +50,7 @@ const RenderScene =
           g.fillText(distance, 150, 125);
           g.strokeStyle = 'white';
           g.strokeText(distance, 150, 125);
+          g.strokeRect(0, 0, 300, 150);
 
           // canvas contents will be used for a texture
           var texture = new THREE.Texture(bitmap);
@@ -101,23 +63,42 @@ const RenderScene =
           cube.position.normalize();
           cube.position.multiplyScalar(3);
           cube.lookAt(camera.position);
+          cube.userData.index = key;
           // cube.visible = false;
           scene.add(cube);
 
-          var bbox = new THREE.BoundingBoxHelper(cube);
+          var bbox = new THREE.BoundingBoxHelper(cube, 0xff0000);
           while (checkCollision(bbox)) {
-            cube.translateY(0.5);
+            cube.translateY(0.3);
           }
-          window.divs.push({cube: cube});
+          window.divs.push(cube);
         };
 
 
+        var touchHandler = function(event) {
+          event.preventDefault();
+          event.clientX = event.touches[0].clientX;
+          event.clientY = event.touches[0].clientY;
+          mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
+          mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
+
+          raycaster.setFromCamera( mouse, camera );
+
+          var intersects = raycaster.intersectObjects(divs);
+
+          if ( intersects.length > 0 ) {
+
+            var key = intersects[0].object.userData.index;
+            WebViewBridge.send(JSON.stringify({type: 'click', key: key}));
+
+            intersects[ 0 ].object.material.color.setHex( Math.random() * 0xffffff );
+
+          }
+        }
+
         window.clearScene = function() {
-          window.divs.forEach(function(obj) {
-            if (obj.cube) {
-              obj.div.remove();
-              scene.remove(obj.cube);
-            }
+          window.divs.forEach(function(cube) {
+            scene.remove(cube);
           });
         };
 
@@ -138,6 +119,8 @@ const RenderScene =
         };
         container = document.getElementById( 'container' );
         scene = new THREE.Scene();
+        window.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1100);
+        window.controls = new THREE.DeviceOrientationControls( camera, true );
         renderer = new THREE.WebGLRenderer({alpha: true});
         renderer.setClearColor( 0x000000, 0 ); // the default
         renderer.setPixelRatio( window.devicePixelRatio );
@@ -145,6 +128,7 @@ const RenderScene =
         renderer.domElement.style.position = 'absolute';
         renderer.domElement.style.top = 0;
         container.appendChild(renderer.domElement);
+        renderer.domElement.addEventListener('touchstart', touchHandler, false)
 
         // var torus = new THREE.TorusGeometry( 100, 30, 50, 100 );
         // var torusMaterial = new THREE.MeshBasicMaterial( { color: "rgb(255, 0, 0)", wireframe: true } );
