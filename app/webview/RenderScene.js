@@ -12,152 +12,97 @@ const RenderScene =
         document.body.style.fontFamily = 'Helvetica, sans-serif';
         window.divs = [];
 
+        var mouse = new THREE.Vector2();
+        var raycaster = new THREE.Raycaster();
         var width = window.innerWidth;
         var height = window.innerHeight;
         var widthHalf = width / 2
         var heightHalf = height / 2;
 
-
-        // Check overlap of two rectangle-objects
-        var checkOverlap = function(rect1, rect2) {
-          return !(rect1.right < rect2.left ||
-                 rect1.left > rect2.right ||
-                 rect1.bottom < rect2.top ||
-                 rect1.top > rect2.bottom);
-        }
-
-        var scaleDivSize = function(element, distance) {
-          var normalized = distance - 30;
-          var scale = 1 / (normalized / 2000) * 0.3;
-          if (scale > 1.4) {
-            scale = 1.4;
-          }
-          element.style.transform = 'scale(' + scale + ')';
-        }
-
-        window.createImages = function(images) {
-          clearScene();
-          images.forEach(function(image) {
-            var img = document.createElement('img');
-            img.src = image;
-            img.style.position = 'absolute';
-            img.style.opacity = 0.5;
-            document.body.appendChild(img);
-
-            var geo = new THREE.BoxGeometry(1, 1, 1);
-            var mat = new THREE.MeshBasicMaterial({color: 0x00FF00, wireframe: true});
-            var cube = new THREE.Mesh(geo, mat);
-            cube.position.set(Math.random() * 2 - 1, 0, Math.random() * 2 - 1);
-            cube.position.normalize();
-            cube.position.multiplyScalar(200);
-            img.width = 150;
-            img.height =  50;
-            cube.visible = false;
-            scene.add(cube);
-            window.divs.push({div: img, cube: cube});
+        // Takes a bounding box and checks for collisions against
+        // all other places/events in the scene
+        var checkCollision = function(bbox) {
+          bbox.update();
+          return divs.some(function(cube) {
+            var cubeBbox = new THREE.BoundingBoxHelper(cube);
+            cubeBbox.update();
+            if (bbox.box.intersectsBox(cubeBbox.box)) {
+              return true;
+            }
           });
-        }
+        };
 
         window.createPlace = function(lat, long, name, distance, key) {
 
-          // Create surrounding div
-          var element = document.createElement('div')
-          element.className = 'place';
-          element.style.backgroundColor = 'rgba(0, 127, 127, 0.443137)';
-          element.style.border = '1px solid rgba(127,255,255,0.75)';
-          scaleDivSize(element, distance);
-          document.body.appendChild(element);
+          var bitmap = document.createElement('canvas');
+          var g = bitmap.getContext('2d');
+          bitmap.width = 300;
+          bitmap.height = 150;
+          g.font = 'Bold 30px Helvetica, sans-serif';
 
-          element.addEventListener("click", function(){
-            WebViewBridge.send(JSON.stringify({type: 'click', key: key}));
-          }, false);
+          g.fillStyle = '#007F7F';
+          g.fillRect(0, 0, 300, 150);
+          g.fillStyle = 'white';
+          g.textAlign = 'center';
+          g.fillText(name, 150, 75);
+          g.strokeStyle = 'white';
+          g.strokeText(name, 150, 75);
+          g.fillText(distance, 150, 125);
+          g.strokeStyle = 'white';
+          g.strokeText(distance, 150, 125);
+          g.strokeRect(0, 0, 300, 150);
 
-          var nameHeading = document.createElement('h1');
-          nameHeading.innerText = name;
-          nameHeading.style.color = 'rgba(255,255,255,0.75)';
-          nameHeading.style.fontWeight = 'bold';
-          nameHeading.style.fontSize = '15px';
-          nameHeading.style.marginLeft = '10px';
-          nameHeading.style.marginRight = '10px';
-          element.appendChild(nameHeading);
+          // canvas contents will be used for a texture
+          var texture = new THREE.Texture(bitmap);
+          texture.needsUpdate = true;
 
-          // Create distance heading
-          var distanceHeading = document.createElement('h1');
-          distanceHeading.innerText = distance;
-          distanceHeading.style.color = 'rgba(127,255,255,0.75)';
-          distanceHeading.style.fontWeight = 'bold';
-          distanceHeading.style.fontSize = '8px';
-          distanceHeading.style.marginLeft = '8px';
-          element.appendChild(distanceHeading);
-
-          element.style.position  = 'absolute';
-
-          // Create invisible threejs cube that will be used for calculating AR
-          var geo = new THREE.BoxGeometry(1, 1, 1);
-          var mat = new THREE.MeshBasicMaterial({color: 0x00FF00, wireframe: true});
+          var geo = new THREE.PlaneGeometry(0.5, 0.5);
+          var mat = new THREE.MeshBasicMaterial({transparent: true, opacity: 0.75, map: texture});
           var cube = new THREE.Mesh(geo, mat);
           cube.position.set(long, 0, -1 * lat);
-          cube.visible = false;
+          cube.position.normalize();
+          cube.position.multiplyScalar(3);
+          cube.lookAt(camera.position);
+          cube.userData.index = key;
+          // cube.visible = false;
           scene.add(cube);
-          window.divs.push({div: element, cube: cube});
+
+          var bbox = new THREE.BoundingBoxHelper(cube, 0xff0000);
+          while (checkCollision(bbox)) {
+            cube.translateY(0.3);
+          }
+          window.divs.push(cube);
         };
 
-        // Check collision between argument div and all visible divs
-        var checkCollision = function(div) {
-          var rect1 = div.getBoundingClientRect();
-          return divs.some(function(e) {
-            if (e.div === div) {
-              return false;
-            }
-            var rect2 = e.div.getBoundingClientRect();
-            return checkOverlap(rect1, rect2);
-          });
+
+        var touchHandler = function(event) {
+          event.preventDefault();
+          event.clientX = event.touches[0].clientX;
+          event.clientY = event.touches[0].clientY;
+          mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
+          mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
+
+          raycaster.setFromCamera( mouse, camera );
+
+          var intersects = raycaster.intersectObjects(divs);
+
+          if ( intersects.length > 0 ) {
+
+            var key = intersects[0].object.userData.index;
+            WebViewBridge.send(JSON.stringify({type: 'click', key: key}));
+
+            intersects[ 0 ].object.material.color.setHex( Math.random() * 0xffffff );
+
+          }
         }
 
         window.clearScene = function() {
-          window.divs.forEach(function(obj) {
-            if (obj.cube) {
-              obj.div.remove();
-              scene.remove(obj.cube);
-            }
+          window.divs.forEach(function(cube) {
+            scene.remove(cube);
           });
         };
 
         animate = function(now){
-
-          divs.forEach(function(element) {
-            var div = element.div;
-
-            // Position denotes the height of the div
-            var pos = div.pos || 0;
-
-            // Direction describes whether the div avoids collisions by moving up or down
-            var direction = div.direction || [1, -1][Math.floor(Math.random() * 2)];
-
-
-            // Show the div since it is currently visible
-            div.style.display = '';
-
-            var cube = element.cube;
-
-            // Converting 3d coordinates of invisible cubes to css coordinates
-            var position = cube.position.clone();
-            position.project(camera);
-            position.x = ( position.x * widthHalf ) + widthHalf;
-            position.y = - ( position.y * heightHalf ) + heightHalf;
-
-            var left = (position.x - div.offsetWidth /2);
-            div.style.left = left + 'px';
-            var top = (position.y - div.offsetHeight/2);
-            div.style.top = top + pos + 'px';
-
-            // Move div up or down until it is no longer colliding
-            for (var inc = 7; checkCollision(div); inc += 7) {
-              div.style.top = top + (inc * direction) + 'px';
-              div.pos = inc * direction;
-              div.direction = direction;
-            }
-          });
 
           window.requestAnimationFrame( animate );
 
@@ -174,6 +119,8 @@ const RenderScene =
         };
         container = document.getElementById( 'container' );
         scene = new THREE.Scene();
+        window.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1100);
+        window.controls = new THREE.DeviceOrientationControls( camera, true );
         renderer = new THREE.WebGLRenderer({alpha: true});
         renderer.setClearColor( 0x000000, 0 ); // the default
         renderer.setPixelRatio( window.devicePixelRatio );
@@ -181,6 +128,7 @@ const RenderScene =
         renderer.domElement.style.position = 'absolute';
         renderer.domElement.style.top = 0;
         container.appendChild(renderer.domElement);
+        renderer.domElement.addEventListener('touchstart', touchHandler, false)
 
         // var torus = new THREE.TorusGeometry( 100, 30, 50, 100 );
         // var torusMaterial = new THREE.MeshBasicMaterial( { color: "rgb(255, 0, 0)", wireframe: true } );
