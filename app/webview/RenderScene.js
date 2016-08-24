@@ -58,61 +58,59 @@ const RenderScene =
           });
         }
 
-        window.createPlace = function(lat, long, name, distance, key) {
-
-          // Create surrounding div
-          var element = document.createElement('div')
-          element.className = 'place';
-          element.style.backgroundColor = 'rgba(0, 127, 127, 0.443137)';
-          element.style.border = '1px solid rgba(127,255,255,0.75)';
-          scaleDivSize(element, distance);
-          document.body.appendChild(element);
-
-          element.addEventListener("click", function(){
-            WebViewBridge.send(JSON.stringify({type: 'click', key: key}));
-          }, false);
-
-          var nameHeading = document.createElement('h1');
-          nameHeading.innerText = name;
-          nameHeading.style.color = 'rgba(255,255,255,0.75)';
-          nameHeading.style.fontWeight = 'bold';
-          nameHeading.style.fontSize = '15px';
-          nameHeading.style.marginLeft = '10px';
-          nameHeading.style.marginRight = '10px';
-          element.appendChild(nameHeading);
-
-          // Create distance heading
-          var distanceHeading = document.createElement('h1');
-          distanceHeading.innerText = distance;
-          distanceHeading.style.color = 'rgba(127,255,255,0.75)';
-          distanceHeading.style.fontWeight = 'bold';
-          distanceHeading.style.fontSize = '8px';
-          distanceHeading.style.marginLeft = '8px';
-          element.appendChild(distanceHeading);
-
-          element.style.position  = 'absolute';
-
-          // Create invisible threejs cube that will be used for calculating AR
-          var geo = new THREE.BoxGeometry(1, 1, 1);
-          var mat = new THREE.MeshBasicMaterial({color: 0x00FF00, wireframe: true});
-          var cube = new THREE.Mesh(geo, mat);
-          cube.position.set(long, 0, -1 * lat);
-          cube.visible = false;
-          scene.add(cube);
-          window.divs.push({div: element, cube: cube});
+        // Takes a bounding box and checks for collisions against
+        // all other places/events in the scene
+        var checkCollision = function(bbox) {
+          bbox.update();
+          return divs.some(function(obj) {
+            var cube = obj.cube;
+            var cubeBbox = new THREE.BoundingBoxHelper(cube);
+            if (bbox.box.intersectsBox(cubeBbox.box)) {
+              return true;
+            }
+          });
         };
 
-        // Check collision between argument div and all visible divs
-        var checkCollision = function(div) {
-          var rect1 = div.getBoundingClientRect();
-          return divs.some(function(e) {
-            if (e.div === div) {
-              return false;
-            }
-            var rect2 = e.div.getBoundingClientRect();
-            return checkOverlap(rect1, rect2);
-          });
-        }
+        window.createPlace = function(lat, long, name, distance, key) {
+
+          var bitmap = document.createElement('canvas');
+          var g = bitmap.getContext('2d');
+          bitmap.width = 300;
+          bitmap.height = 150;
+          g.font = 'Bold 30px Helvetica, sans-serif';
+
+          g.fillStyle = '#007F7F';
+          g.fillRect(0, 0, 300, 150);
+          g.fillStyle = 'white';
+          g.textAlign = 'center';
+          g.fillText(name, 150, 75);
+          g.strokeStyle = 'white';
+          g.strokeText(name, 150, 75);
+          g.fillText(distance, 150, 125);
+          g.strokeStyle = 'white';
+          g.strokeText(distance, 150, 125);
+
+          // canvas contents will be used for a texture
+          var texture = new THREE.Texture(bitmap);
+          texture.needsUpdate = true;
+
+          var geo = new THREE.PlaneGeometry(0.5, 0.5);
+          var mat = new THREE.MeshBasicMaterial({transparent: true, opacity: 0.75, map: texture});
+          var cube = new THREE.Mesh(geo, mat);
+          cube.position.set(long, 0, -1 * lat);
+          cube.position.normalize();
+          cube.position.multiplyScalar(3);
+          cube.lookAt(camera.position);
+          // cube.visible = false;
+          scene.add(cube);
+
+          var bbox = new THREE.BoundingBoxHelper(cube);
+          while (checkCollision(bbox)) {
+            cube.translateY(0.5);
+          }
+          window.divs.push({cube: cube});
+        };
+
 
         window.clearScene = function() {
           window.divs.forEach(function(obj) {
@@ -124,40 +122,6 @@ const RenderScene =
         };
 
         animate = function(now){
-
-          divs.forEach(function(element) {
-            var div = element.div;
-
-            // Position denotes the height of the div
-            var pos = div.pos || 0;
-
-            // Direction describes whether the div avoids collisions by moving up or down
-            var direction = div.direction || [1, -1][Math.floor(Math.random() * 2)];
-
-
-            // Show the div since it is currently visible
-            div.style.display = '';
-
-            var cube = element.cube;
-
-            // Converting 3d coordinates of invisible cubes to css coordinates
-            var position = cube.position.clone();
-            position.project(camera);
-            position.x = ( position.x * widthHalf ) + widthHalf;
-            position.y = - ( position.y * heightHalf ) + heightHalf;
-
-            var left = (position.x - div.offsetWidth /2);
-            div.style.left = left + 'px';
-            var top = (position.y - div.offsetHeight/2);
-            div.style.top = top + pos + 'px';
-
-            // Move div up or down until it is no longer colliding
-            for (var inc = 7; checkCollision(div); inc += 7) {
-              div.style.top = top + (inc * direction) + 'px';
-              div.pos = inc * direction;
-              div.direction = direction;
-            }
-          });
 
           window.requestAnimationFrame( animate );
 

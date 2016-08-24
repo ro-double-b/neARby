@@ -62,6 +62,7 @@ export const injectScript = `
           window.clearScene();
           window.divs = [];
 
+          alert(JSON.stringify('wasd'));
           places.forEach(function(place, key) {
             loading = false;
             if (place.type && (place.type === 'userPlace')) {
