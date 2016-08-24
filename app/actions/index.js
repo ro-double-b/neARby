@@ -13,8 +13,13 @@ export const GET_DIRECTIONS = 'GET_DIRECTIONS';
 export const RESET_SEARCH = 'RESET_SEARCH';
 export const RESET_PLACES_UPDATE = 'RESET_PLACES_UPDATE';
 
+const herokuServer = 'https://agile-peak-45133.herokuapp.com/';
+const localServer = 'http://10.6.23.239:3000/';
+const server = herokuServer;
+const redisServer = localServer;
+
 export const fetchPlaces = (position) => {
-  let collection = fetch('http://10.6.23.239:3000/location', {
+  let collection = fetch(`${server}location`, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -45,7 +50,7 @@ export const fetchPlaces = (position) => {
 export const placeQuery = (query) => {
   console.log('test the placeQuery out')
   // post request
-  let search = fetch('http://10.6.23.239:3000/places', {
+  let search = fetch(`${server}places`, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -73,7 +78,7 @@ export const placeQuery = (query) => {
 
 export const eventQuery = (query) => {
   // post request
-    let search = fetch('http://10.6.23.239:3000/events', {
+    let search = fetch(`${server}events`, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -101,7 +106,7 @@ export const eventQuery = (query) => {
 
 export const userEventQuery = (query) => {
   // post request
-    let search = fetch('http://10.6.23.239:3000/db/getPlace', {
+    let search = fetch(`${redisServer}db/getPlace`, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -129,7 +134,7 @@ export const userEventQuery = (query) => {
 export const userPlacesQuery = (query) => {
   // post request
   console.log('test the user place query out')
-    let search = fetch('http://10.6.23.239:3000/db/getPlaces', {
+    let search = fetch(`${redisServer}db/getPlaces`, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -171,7 +176,7 @@ export const updateEventQuery = (query) => {
 
 export const imageQuery = (query) => {
   // post request
-  let search = fetch('http://10.6.23.239:3000/images', {
+  let search = fetch(`${server}images`, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -199,7 +204,7 @@ export const imageQuery = (query) => {
 };
 
 export const directionsQuery = (query) => {
-  let search = fetch('http://10.6.23.239:3000/directions', {
+  let search = fetch(`${server}directions`, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -323,7 +328,7 @@ export const USER_PLACES = 'USER_PLACES';
 export const USER_EVENTS = 'USER_EVENTS';
 
 export const addPlace = (place) => {
-  let search = fetch('http://10.6.23.239:3000/db/createPlace', {
+  let search = fetch(`${redisServer}db/createPlace`, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -349,7 +354,7 @@ export const addPlace = (place) => {
 };
 
 export const addEvent = (event) => {
-    let search = fetch('http://10.6.23.239:3000/db/createEvent', {
+    let search = fetch(`${redisServer}db/createEvent`, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -405,7 +410,7 @@ export const closePreview = () => {
 //////////////////////////////
 export const sendVote = (place) => {
   console.log('votePlace');
-  let collection = fetch('https://agile-peak-45133.herokuapp.com/vote', {
+  let collection = fetch(`${redisServer}vote`, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
