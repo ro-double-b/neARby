@@ -1,7 +1,8 @@
 const RenderScene =
 `
   <script>
-    var camera, controls, animate, heading, scene, headingUpdate, loader, openingTorus;
+    var camera, controls, animate, heading, scene, headingUpdate, loader, openingGroup;
+    var loading = true;
     window.divs = [];
     (function() {
       "use strict";
@@ -159,8 +160,15 @@ const RenderScene =
           });
 
           window.requestAnimationFrame( animate );
-          rotateTorus();
-          // controls.update();
+
+          if (openingGroup) {
+            rotateCubes();
+          }
+
+          if (!loading) {
+            fadeoutCubes();
+          }
+
           controls.updateAlphaOffsetAngle( (360 - heading) * (Math.PI / 180));
           renderer.render(scene, camera);
         };
@@ -174,18 +182,59 @@ const RenderScene =
         renderer.domElement.style.top = 0;
         container.appendChild(renderer.domElement);
 
-        var torus = new THREE.TorusGeometry( 100, 30, 50, 100 );
-        var torusMaterial = new THREE.MeshBasicMaterial( { color: "rgb(255, 0, 0)", wireframe: true } );
-        openingTorus = new THREE.Mesh( torus, torusMaterial );
-        openingTorus.position.set(0, 0, -1000);
-        scene.add( openingTorus );
+        // var torus = new THREE.TorusGeometry( 100, 30, 50, 100 );
+        // var torusMaterial = new THREE.MeshBasicMaterial( { color: "rgb(255, 0, 0)", wireframe: true } );
+        // openingTorus = new THREE.Mesh( torus, torusMaterial );
+        // openingTorus.position.set(0, 0, -1000);
+        // scene.add( openingTorus );
 
-        var rotateTorus = function() {
-          if (openingTorus) {
-            // openingTorus.rotation.y += 0.1;
-            openingTorus.position.z += 10;
-          }
+        // var rotateTorus = function() {
+        //   if (openingTorus) {
+        //     // openingTorus.rotation.y += 0.1;
+        //     openingTorus.position.z += 10;
+        //   }
+        // }
+
+        openingGroup = new THREE.Group();
+
+        for ( var i = 0; i < 100; i ++ ) {
+          var color1 = Math.floor(255 * Math.random());
+          var color2 = Math.floor(255 * Math.random());
+          var color3 = Math.floor(255 * Math.random());
+
+          var cubeMaterial = new THREE.MeshBasicMaterial( { color: "rgb(" + color1 + "," + color2 + "," + color3 + ")" , transparent: true} );
+          // var cube = new THREE.TorusGeometry( 5, 2, 10, 20 );
+          var cube = new THREE.CubeGeometry( 5, 5, 5 );
+          var mesh = new THREE.Mesh( cube, cubeMaterial );
+          mesh.position.x = Math.random() * 200 - 100;
+          mesh.position.y = Math.random() * 200 - 100;
+          mesh.position.z = Math.random() * 200 - 100;
+
+          mesh.rotation.x = Math.random() * 360 * ( Math.PI / 180 );
+          mesh.rotation.y = Math.random() * 360 * ( Math.PI / 180 );
+
+          openingGroup.add( mesh );
         }
+
+        openingGroup.position.set(0,0,0);
+        scene.add( openingGroup );
+
+        var rotateCubes = function() {
+          if (openingGroup) {
+            openingGroup.rotation.y += .005;
+            openingGroup.rotation.x += .005;
+          }
+        };
+
+        var fadeoutCubes = function() {
+          if (openingGroup.children[0].opacity === 0) {
+            scene.remove(openingGroup);
+            openingGroup = null;
+          }
+          for (var i = 0; i < openingGroup.children.length; i++) {
+            openingGroup.children[i].material.opacity -= .03
+          }
+        };
 
         window.addEventListener('resize', function() {
           camera.aspect = window.innerWidth / window.innerHeight;

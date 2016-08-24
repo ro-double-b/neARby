@@ -6,12 +6,16 @@ import {
   Image,
   TextInput,
   TouchableHighlight,
-  Slider
+  Slider,
+  ScrollView
 } from 'react-native';
+
+import ImagePicker from 'react-native-image-picker';
 import styles from '../styles/style';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as Actions from '../actions/index';
+import uploadImage from '../lib/S3Upload';
 
 //TODOs:
 //add color selector for geometry and a color state, fix timestamp on ev  ent request obj
@@ -30,6 +34,8 @@ class CreatePanel extends Component {
       eventDescription: '',
       startTime: '',
       duration: '',
+      placePics: [],
+      eventPics: []
     };
   }
 
@@ -61,9 +67,17 @@ class CreatePanel extends Component {
       voted: false
     };
 
-    // sendSpotToServer('createPlace', obj);
-    this.props.action.addPlace(obj);
-    this.resetState();
+    if (this.state.placePics.length > 0) {
+      // console.log('this.state.placePics[0].origURL', this.state.placePics[0].origURL);
+      uploadImage(this.state.placePics[0].uri, 'places', this.eventPic[0].fileSize, (response) => {
+        obj.uri = response.location;
+        this.props.action.addPlace(obj);
+        this.resetState();
+      // sendSpotToServer('createPlace', obj);
+      });
+    } else {
+
+    }
     this.props.close();
   }
 
@@ -84,10 +98,15 @@ class CreatePanel extends Component {
       voted: false
     };
 
-    // sendSpotToServer('createEvent', obj);
-    this.props.action.addEvent(obj);
-    this.resetState();
+    uploadImage(this.eventPics[0].uri, 'events', this.eventPic[0].fileSize, (response) => {
+      obj.uri = response.location;
+      console.log('response.location', response.location);
+      this.props.action.addEvent(obj);
+      this.resetState();
+    // sendSpotToServer('createPlace', obj);
+    });
     this.props.close();
+
   }
 
   startTimeSlider(value) {
@@ -110,15 +129,73 @@ class CreatePanel extends Component {
     this.setState({createType: type});
   }
 
+  pickImage() {
+    var options = {
+      title: 'select picture',
+      storageOptions: {
+        skipBackup: true,
+        path: 'images'
+      }
+    };
+
+
+    ImagePicker.showImagePicker(options, (response) => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      }
+      else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      }
+      else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      }
+      else {
+        // You can display the image using either data...
+        // const source = {uri: 'data:image/jpeg;base64,' + response.data, isStatic: true};
+
+        // or a reference to the platform specific asset location
+        const source = {uri: response.uri.replace('file://', ''), fileSize: response.fileSize, isStatic: true};
+        console.log('source', JSON.stringify(source));
+        if (this.state.createType === 'place') {
+          this.setState({
+            placePics: this.state.placePics.concat([source])
+          });
+        } else {
+          this.state({
+            eventPics: this.state.eventPics.concat([source])
+          });
+        }
+      }
+    });
+  }
+
   renderForm() {
     if (this.state.createType === 'place') {
       return (
         <View>
           <Text style={styles.inputLable}>Place Name</Text>
           <TextInput style={styles.textInput}  onChangeText={(text) => this.setState({placeName: text})} value={this.state.placeName} placeholder="place name" />
+          
           <Text style={styles.inputLable}>Place Description</Text>
           <TextInput style={styles.textInput}  onChangeText={(text) => this.setState({placeDescription: text})} value={this.state.placeDescription} placeholder="place description" />
-          <Text style={styles.inputLable}>upload picture placeHolder</Text>
+            
+            <ScrollView horizontal={true} style={{flexDirection: 'row'}}>
+              <View style={{flexDirection: 'row'}}>
+                {this.state.placePics.map(function(item, key) {
+                  return (
+                    <Image key={key} source={{uri: item.uri}} style={styles.imageUpload} />
+                    );
+                  })
+                }
+              </View>
+            </ScrollView>
+
+          <TouchableHighlight onPress={this.pickImage.bind(this)}>
+            <Text style={styles.inputLable2}>upload picture</Text>
+          </TouchableHighlight>
+          
           <TouchableHighlight style={styles.createButton} onPress={() => { this.handleSubmitPlace(); }}>
             <Text style={styles.buttonText}>add spots</Text>
           </TouchableHighlight>
@@ -139,7 +216,9 @@ class CreatePanel extends Component {
             minimumValue={0}
             maximumValue={5}
             step={1} />
-          <Text style={styles.inputLable2}>upload picture placeHolder</Text>
+          <TouchableHighlight onPress={this.pickImage.bind(this)}>
+            <Text style={styles.inputLable2}>upload picture</Text>
+          </TouchableHighlight>
           <TouchableHighlight style={styles.createButton} onPress={() => { this.handleSubmitEvent(); }}>
             <Text style={styles.buttonText}>add spots</Text>
           </TouchableHighlight>
@@ -147,6 +226,7 @@ class CreatePanel extends Component {
       );
     }
   }
+
 
   render() {
     return (
