@@ -287,6 +287,9 @@ const styles = StyleSheet.create({
     marginRight: 4,
     marginLeft: 4
   },
+    scrollView: {
+    height: 500,
+  },
 });
 
 export default styles;
