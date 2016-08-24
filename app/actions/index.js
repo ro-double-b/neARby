@@ -14,7 +14,7 @@ export const RESET_SEARCH = 'RESET_SEARCH';
 export const RESET_PLACES_UPDATE = 'RESET_PLACES_UPDATE';
 
 export const fetchPlaces = (position) => {
-  let collection = fetch('https://agile-peak-45133.herokuapp.com/location', {
+  let collection = fetch('http://10.6.23.239:3000/location', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -45,7 +45,7 @@ export const fetchPlaces = (position) => {
 export const placeQuery = (query) => {
   console.log('test the placeQuery out')
   // post request
-  let search = fetch('https://agile-peak-45133.herokuapp.com/places', {
+  let search = fetch('http://10.6.23.239:3000/places', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -64,7 +64,7 @@ export const placeQuery = (query) => {
     console.error(error);
     return [];
   });
-  userPlacesQuery(query);
+  // userPlacesQuery(query);
   return {
     type: SEARCH_PLACES,
     payload: search
@@ -73,7 +73,7 @@ export const placeQuery = (query) => {
 
 export const eventQuery = (query) => {
   // post request
-    let search = fetch('https://agile-peak-45133.herokuapp.com/events', {
+    let search = fetch('http://10.6.23.239:3000/events', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -126,25 +126,27 @@ export const userEventQuery = (query) => {
   };
 };
 
-export const userPlacesQuery = (place) => {
+export const userPlacesQuery = (query) => {
+  // post request
+  console.log('test the user place query out')
     let search = fetch('http://10.6.23.239:3000/db/getPlaces', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(place)
+    body: JSON.stringify(query)
   })
   .then(function(response) {
     if (response.status === 200) {
       return response.json();
     } else  {
-      console.log('error getting directions', response)
+      return [];
     }
   })
   .catch(function(error) {
     console.error(error);
-    console.error('error getting')
+    return [];
   });
   console.log('testing userPlaceQuery', search);
   return {
@@ -169,7 +171,7 @@ export const updateEventQuery = (query) => {
 
 export const imageQuery = (query) => {
   // post request
-  let search = fetch('https://agile-peak-45133.herokuapp.com/images', {
+  let search = fetch('http://10.6.23.239:3000/images', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -197,7 +199,7 @@ export const imageQuery = (query) => {
 };
 
 export const directionsQuery = (query) => {
-  let search = fetch('https://agile-peak-45133.herokuapp.com/directions', {
+  let search = fetch('http://10.6.23.239:3000/directions', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
