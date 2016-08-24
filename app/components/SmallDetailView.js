@@ -12,12 +12,6 @@ import * as Actions from '../actions/index';
 
 import styles from '../styles/style';
 
-//TODOs:
-//add color selector for geometry and a color state, fix timestamp on ev  ent request obj
-//implement rating on detail view for user generated content, every time a rating is made, will send post request to server
-//implement edit view, which let user remove the obj
-//show countdown on obj
-
 class SmallDetailView extends Component {
   constructor(props) {
     super(props);

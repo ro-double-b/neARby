@@ -214,7 +214,6 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     height: 60,
     width: 150,
-    margin: 10
   },
   geometryButton: {
     height: 50
@@ -224,7 +223,7 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirNext-Medium',
     textAlign: 'center',
     padding: 5,
-    paddingBottom: 50
+    paddingBottom: 20
   },
 
   // for detail preview
@@ -281,7 +280,13 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     padding: 8
-  }
+  },
+  imageUpload: {
+    width: 60,
+    height: 60,
+    marginRight: 4,
+    marginLeft: 4
+  },
 });
 
 export default styles;

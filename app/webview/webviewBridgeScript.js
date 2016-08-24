@@ -45,13 +45,15 @@ export const injectScript = `
         if (message.type === "cameraPosition") {
           //sets threejs camera position as gps location changes, deltaZ is change in long, deltaX is change in lat
           window.camera.position.set(message.deltaZ, 0, -1 * message.deltaX);
+          openingGroup.position.set(message.deltaZ, 0, -1 * message.deltaX);
           orientCompass(message);
           WebViewBridge.send(JSON.stringify("in WebViewBridge, got cameraPosition"));
 
         } else if (message.type === "initialHeading") {
 
-          heading = message.heading;
-          beginAnimation();
+          if (!loading) {
+            heading = message.heading;
+          }
           WebViewBridge.send(JSON.stringify("heading received"));
 
         } else if (message.type === 'places') {
@@ -61,6 +63,7 @@ export const injectScript = `
           window.divs = [];
 
           places.forEach(function(place, key) {
+            loading = false;
             if (place.type && (place.type === 'userPlace')) {
               var torus = new THREE.TorusGeometry( 5, 2, 16, 40 );
               addCubeHere(place.lat, place.lon, "rgb(255, 0, 0)", torus);
@@ -80,6 +83,8 @@ export const injectScript = `
         }
       };
 
+      heading = 0;
+      beginAnimation();
       WebViewBridge.send(JSON.stringify("webview is loaded"));
 
     }
