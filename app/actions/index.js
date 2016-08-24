@@ -35,7 +35,7 @@ export const fetchPlaces = (position) => {
     console.error(error);
     return [];
   });
-  userPlacesQuery(position);
+  // userPlacesQuery(position);
   return {
     type: PLACES_COLLECTION,
     payload: collection
@@ -335,11 +335,11 @@ export const addPlace = (place) => {
     if (response.status === 200) {
       return response.json();
     } else  {
-      console.log('error getting directions: ', response);
+      console.log('error adding Places: ', response);
     }
   })
   .catch(function(error) {
-    console.error('error getting directions: ', error);
+    console.error('error adding Places: ', error);
   });
   console.log('testing addPlace', search)
   return {
@@ -349,7 +349,6 @@ export const addPlace = (place) => {
 };
 
 export const addEvent = (event) => {
-  console.log('addEvent');
     let search = fetch('http://10.6.23.239:3000/db/createEvent', {
     method: 'POST',
     headers: {
@@ -362,11 +361,11 @@ export const addEvent = (event) => {
     if (response.status === 200) {
       return response.json();
     } else  {
-      console.log('error getting directions: ', response);
+      console.log('error adding Event: ', response);
     }
   })
   .catch(function(error) {
-    console.error('error getting directions: ', error);
+    console.error('error adding Event: ', error);
   });
   return {
     type: USER_EVENTS,
