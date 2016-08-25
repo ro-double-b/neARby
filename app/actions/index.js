@@ -15,7 +15,7 @@ export const RESET_PLACES_UPDATE = 'RESET_PLACES_UPDATE';
 
 const herokuServer = 'https://agile-peak-45133.herokuapp.com/';
 const localServer = 'http://10.6.23.239:3000/';
-const server = localServer;
+const server = herokuServer;
 const redisServer = localServer;
 
 export const fetchPlaces = (position) => {
