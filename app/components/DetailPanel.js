@@ -28,7 +28,7 @@ class PlacePanel extends Component {
         <View>
         <ScrollView style={styles.scrollView}>
           <Text style={styles.detailsHeading}>{this.props.detail.name}</Text>
-          <Text style={styles.detailsHeading}>{this.props.detail.startTime} - {this.props.detail.endTime}</Text>
+          <Text style={styles.detailsHeading}>Start Time: {this.props.detail.startTime}</Text>
           <Text style={styles.detailsHeading}>{this.props.detail.venue}</Text>
           <Text style={styles.detailsHeading}>Event Details</Text>
           <Text>{this.props.detail.details}</Text>
@@ -148,6 +148,5 @@ const mapDispatchToProps = function(dispatch) {
     action: bindActionCreators({ drawerState, placeQuery}, dispatch)
   };
 };
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(PlacePanel);
