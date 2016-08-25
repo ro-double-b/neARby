@@ -98,7 +98,6 @@ export const eventQuery = (query) => {
     console.error(error);
     return [];
   });
-  userEventQuery(query);
   return {
     type: SEARCH_EVENTS,
     payload: search

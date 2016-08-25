@@ -64,12 +64,12 @@ class PlacePanel extends Component {
           }}
           showsUserLocation={true}
           region={{
-            latitude: this.props.detail.realLat,
-            longitude: this.props.detail.realLon,
+            latitude: Number(this.props.detail.realLat),
+            longitude: Number(this.props.detail.realLon),
             latitudeDelta: 0.01,
             longitudeDelta: 0.01,
           }}
-          annotations={[{latitude: this.props.detail.realLat, longitude: this.props.detail.realLon, title: this.props.detail.name}]}
+          annotations={[{latitude: Number(this.props.detail.realLat), longitude: Number(this.props.detail.realLon), title: this.props.detail.name}]}
         />
         </ScrollView>
         </View>
@@ -112,12 +112,12 @@ class PlacePanel extends Component {
           }}
           showsUserLocation={true}
           region={{
-            latitude: this.props.detail.realLat,
-            longitude: this.props.detail.realLon,
+            latitude: Number(this.props.detail.realLat),
+            longitude: Number(this.props.detail.realLon),
             latitudeDelta: 0.01,
             longitudeDelta: 0.01,
           }}
-          annotations={[{latitude: this.props.detail.realLat, longitude: this.props.detail.realLon, title: this.props.detail.name}]}
+          annotations={[{latitude: Number(this.props.detail.realLat), longitude: Number(this.props.detail.realLon), title: this.props.detail.name}]}
         />
         </ScrollView>
       </View>
