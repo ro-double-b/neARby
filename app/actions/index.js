@@ -15,7 +15,7 @@ export const RESET_PLACES_UPDATE = 'RESET_PLACES_UPDATE';
 
 const herokuServer = 'https://agile-peak-45133.herokuapp.com/';
 const localServer = 'http://10.6.23.239:3000/';
-const server = herokuServer;
+const server = localServer;
 const redisServer = localServer;
 
 export const fetchPlaces = (position) => {
@@ -77,6 +77,7 @@ export const placeQuery = (query) => {
 };
 
 export const eventQuery = (query) => {
+  console.log('jsut did a query!', query)
   // post request
     let search = fetch(`${server}events`, {
     method: 'POST',

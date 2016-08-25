@@ -290,6 +290,15 @@ const styles = StyleSheet.create({
     scrollView: {
     height: 500,
   },
+  scrollViewDetails: {
+    height: 250,
+  },
+    detailsHeading: {
+    fontSize: 18,
+    fontFamily: 'AvenirNext-Medium',
+    textAlign: 'center',
+    padding: 5
+  },
 });
 
 export default styles;
